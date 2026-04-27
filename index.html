@@ -375,6 +375,10 @@ input.field::placeholder{color:var(--ink5)}
 
     <div class="auth-divider">or</div>
 
+    <button class="btn" style="width:100%;justify-content:center;margin-bottom:10px;background:var(--paper2);border-color:var(--b2)" onclick="enterDemo()">
+      Enter as demo — no account needed
+    </button>
+
     <div id="auth-email-form">
       <div class="fl"><div class="fl-label">Email</div><input class="field" type="email" id="auth-email" placeholder="you@company.com" onkeydown="if(event.key==='Enter')authSubmit()"></div>
       <div class="fl"><div class="fl-label">Password</div><input class="field" type="password" id="auth-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')authSubmit()"></div>
@@ -1707,6 +1711,12 @@ function openModal(id){document.getElementById(id)?.classList.add('open');}
 function closeModal(id){document.getElementById(id)?.classList.remove('open');}
 document.querySelectorAll('.overlay,.brief-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open,.brief-overlay.open').forEach(o=>o.classList.remove('open'));if((e.metaKey||e.ctrlKey)&&e.key==='Enter')sendToEngine();if(e.altKey&&e.key==='b')openBrief();});
+
+function enterDemo() {
+  currentUser = { email: 'demo@seed.app', user_metadata: { name: 'Demo' } };
+  localStorage.setItem('demo_user', JSON.stringify(currentUser));
+  afterLogin();
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // BOOT
