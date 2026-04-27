@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seed — Process Intelligence</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
 <style>
@@ -1540,12 +1539,14 @@ function enterDemo() {
 // ═══════════════════════════════════════════════════════════════════════════
 // BOOT
 // ═══════════════════════════════════════════════════════════════════════════
-// Restore saved connector credentials
-Object.keys(CONN_DEFS).forEach(id=>{
-  try{const c=localStorage.getItem('seed_creds_'+id);if(c){const creds=JSON.parse(c);APP.connectors[id]={status:'live',creds,artifacts:[],nodes:[],lastSync:'restored',name:CONN_DEFS[id].name};}}catch(e){}
+document.addEventListener('DOMContentLoaded', function() {
+  // Restore saved connector credentials
+  Object.keys(CONN_DEFS).forEach(id=>{
+    try{const c=localStorage.getItem('seed_creds_'+id);if(c){const creds=JSON.parse(c);APP.connectors[id]={status:'live',creds,artifacts:[],nodes:[],lastSync:'restored',name:CONN_DEFS[id].name};}}catch(e){}
+  });
+  // Boot directly into app
+  try { checkSession(); } catch(e) { showApp(); }
 });
-// Boot: check session first, init onboarding only if needed
-checkSession();
 </script>
 </body>
 </html>
