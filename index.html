@@ -1540,7 +1540,6 @@ function enterDemo() {
 // ═══════════════════════════════════════════════════════════════════════════
 // BOOT
 // ═══════════════════════════════════════════════════════════════════════════
-initSupabase();
 // Restore saved connector credentials
 Object.keys(CONN_DEFS).forEach(id=>{
   try{const c=localStorage.getItem('seed_creds_'+id);if(c){const creds=JSON.parse(c);APP.connectors[id]={status:'live',creds,artifacts:[],nodes:[],lastSync:'restored',name:CONN_DEFS[id].name};}}catch(e){}
