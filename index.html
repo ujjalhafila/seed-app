@@ -775,6 +775,54 @@ async function signInWithOAuth(provider) {
 }
 
 async function authSubmit() {
+  const btn = document.getElementById('auth-submit-btn');
+  const email = document.getElementById('auth-email').value.trim();
+  const pass = document.getElementById('auth-pass').value;
+  
+  if (!email || !pass) { showAuthMsg('Please enter your email and password', 'err'); return; }
+  
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+  showAuthMsg('Connecting to auth server…', 'ok');
+  
+  try {
+    // Always try Supabase first
+    if (!supabase) initSupabase();
+    
+    if (supabase) {
+      showAuthMsg('Authenticating…', 'ok');
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
+      if (error) throw error;
+      if (!data?.user) throw new Error('No user returned');
+      currentUser = data.user;
+      showAuthMsg('Success! Loading your workspace…', 'ok');
+      setTimeout(() => {
+        localStorage.setItem('seed_onboarded', '1');
+        localStorage.setItem('seed_ws_name', 'My workspace');
+        localStorage.setItem('seed_pack', 'software');
+        const name = currentUser.user_metadata?.name || email.split('@')[0];
+        APP.user = { name, email, initials: name.substring(0,2).toUpperCase() };
+        APP.ws.name = 'My workspace';
+        APP.domainPack = 'software';
+        showApp();
+      }, 600);
+    } else {
+      // Supabase not available — demo mode
+      showAuthMsg('Running in demo mode…', 'ok');
+      const name = email.split('@')[0];
+      APP.user = { name, email, initials: name.substring(0,2).toUpperCase() };
+      APP.ws.name = 'My workspace'; APP.domainPack = 'software';
+      localStorage.setItem('demo_user', JSON.stringify({ email, user_metadata: { name } }));
+      localStorage.setItem('seed_onboarded', '1');
+      setTimeout(showApp, 600);
+    }
+  } catch(err) {
+    showAuthMsg('Error: ' + (err.message || 'Sign in failed. Check credentials.'), 'err');
+    btn.disabled = false;
+    btn.textContent = 'Sign in →';
+  }
+}
+async function _old_authSubmit() {
   const email = document.getElementById('auth-email').value.trim();
   const pass = document.getElementById('auth-pass').value;
   if (!email || !pass) { showAuthMsg('Enter email and password', 'err'); return; }
@@ -1724,11 +1772,12 @@ document.querySelectorAll('.overlay,.brief-overlay').forEach(o=>o.addEventListen
 document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open,.brief-overlay.open').forEach(o=>o.classList.remove('open'));if((e.metaKey||e.ctrlKey)&&e.key==='Enter')sendToEngine();if(e.altKey&&e.key==='b')openBrief();});
 
 function enterDemo() {
-  currentUser = { email: 'demo@seed.app', user_metadata: { name: 'Demo' } };
-  localStorage.setItem('demo_user', JSON.stringify(currentUser));
-  localStorage.setItem('seed_onboarded', '1');
-  localStorage.setItem('seed_ws_name', 'My workspace');
-  localStorage.setItem('seed_pack', 'software');
+  try {
+    localStorage.setItem('demo_user', JSON.stringify({ email: 'demo@seed.app', user_metadata: { name: 'Demo' } }));
+    localStorage.setItem('seed_onboarded', '1');
+    localStorage.setItem('seed_ws_name', 'My workspace');
+    localStorage.setItem('seed_pack', 'software');
+  } catch(e) {}
   APP.user = { name: 'Demo', email: 'demo@seed.app', initials: 'DE' };
   APP.ws.name = 'My workspace';
   APP.domainPack = 'software';
