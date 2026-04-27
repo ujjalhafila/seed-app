@@ -782,10 +782,18 @@ async function authSubmit() {
   document.getElementById('auth-submit-btn').disabled = true;
 
   if (!supabase) {
-    // Demo mode: accept any credentials
-    currentUser = { email, user_metadata: { name: email.split('@')[0] } };
+    // Demo mode: accept any credentials, go straight to canvas
+    const dname = email.split('@')[0];
+    currentUser = { email, user_metadata: { name: dname } };
     localStorage.setItem('demo_user', JSON.stringify(currentUser));
-    afterLogin();
+    localStorage.setItem('seed_onboarded', '1');
+    localStorage.setItem('seed_ws_name', 'My workspace');
+    localStorage.setItem('seed_pack', 'software');
+    APP.user = { name: dname, email, initials: dname.substring(0,2).toUpperCase() };
+    APP.ws.name = 'My workspace';
+    APP.domainPack = 'software';
+    document.getElementById('auth-submit-btn').disabled = false;
+    showApp();
     return;
   }
 
@@ -837,6 +845,7 @@ function afterLogin() {
     showApp();
   } else {
     showView('onboarding');
+    initOnboarding();
   }
 }
 
@@ -1715,7 +1724,13 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelect
 function enterDemo() {
   currentUser = { email: 'demo@seed.app', user_metadata: { name: 'Demo' } };
   localStorage.setItem('demo_user', JSON.stringify(currentUser));
-  afterLogin();
+  localStorage.setItem('seed_onboarded', '1');
+  localStorage.setItem('seed_ws_name', 'My workspace');
+  localStorage.setItem('seed_pack', 'software');
+  APP.user = { name: 'Demo', email: 'demo@seed.app', initials: 'DE' };
+  APP.ws.name = 'My workspace';
+  APP.domainPack = 'software';
+  showApp();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -1726,7 +1741,7 @@ initSupabase();
 Object.keys(CONN_DEFS).forEach(id=>{
   try{const c=localStorage.getItem('seed_creds_'+id);if(c){const creds=JSON.parse(c);APP.connectors[id]={status:'live',creds,artifacts:[],nodes:[],lastSync:'restored',name:CONN_DEFS[id].name};}}catch(e){}
 });
-initOnboarding();
+// Boot: check session first, init onboarding only if needed
 checkSession();
 </script>
 </body>
