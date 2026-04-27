@@ -351,6 +351,22 @@ input.field::placeholder{color:var(--ink5)}
 </style>
 </head>
 <body>
+<script>
+// Critical functions defined immediately so onclick handlers work
+// even before the main script block at the bottom of the page loads
+function enterDemo() {
+  try { localStorage.setItem('seed_onboarded','1'); localStorage.setItem('seed_ws_name','My workspace'); localStorage.setItem('seed_pack','software'); localStorage.setItem('demo_user', JSON.stringify({email:'demo@seed.app',user_metadata:{name:'Demo'}})); } catch(e) {}
+  // APP may not be defined yet if main script hasn't parsed — defer
+  if (typeof APP !== 'undefined') {
+    APP.user = {name:'Demo',email:'demo@seed.app',initials:'DE'};
+    APP.ws = {name:'My workspace'};
+    APP.domainPack = 'software';
+    if (typeof showApp === 'function') { showApp(); return; }
+  }
+  // Fallback: reload so checkSession picks up the demo_user from localStorage
+  window.location.reload();
+}
+</script>
 
 <!-- ① AUTH VIEW -->
 <div class="view active" id="view-auth">
