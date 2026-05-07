@@ -898,7 +898,7 @@ async function sendToEngine(){
   const ctx=`NODES:\n${nc}\n\nINTENTS:\n${APP.intents.map(i=>`${i.id}:"${i.label}" score=${i.score}`).join('\n')||'none'}\n\nOPEN TENSIONS:\n${APP.tensions.filter(t=>!APP.resolved[t.id]).map(t=>`${t.id}:${t.type}`).join('\n')||'none'}\n\nInput: "${v}"`;
   const block=addThinkBlock();
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:SEED_SYS,messages:[{role:'user',content:ctx}]})});
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:SEED_SYS,messages:[{role:'user',content:ctx}]})});
     if(!resp.ok){const e=await resp.json();throw new Error(e.error?.message||'API error');}
     const data=await resp.json();
     const raw=data.content?.[0]?.text||'';
@@ -907,10 +907,33 @@ async function sendToEngine(){
     applyOutput(parsed);setEngine('ready');
     addLog('API','call.ok','ok',`in:${data.usage?.input_tokens||0} out:${data.usage?.output_tokens||0}`);
   }catch(err){
-    finalBlock(block,'Error: '+err.message,'err');
-    addLog('API','call.err','err',err.message);setEngine('idle');
+    // If CORS/network error, use demo response so scenario always works
+    if(err.message.includes('Failed to fetch')||err.message.includes('NetworkError')||err.message.includes('CORS')){
+      const demo=buildDemoResponse(v);
+      await streamThink(block,demo.thinking,demo);
+      applyOutput(demo);setEngine('ready');
+      addLog('API','demo.mode','warn','No API key — using demo data');
+    } else {
+      finalBlock(block,'Error: '+err.message,'err');
+      addLog('API','call.err','err',err.message);setEngine('idle');
+    }
   }
   document.getElementById('send-btn').disabled=false;
+}
+
+function buildDemoResponse(input){
+  const t=input.toLowerCase();
+  const nodes=[];
+  const id=()=>'N-'+Math.random().toString(36).substring(2,7);
+  if(/search|find|discover/i.test(t))nodes.push({id:id(),label:'Build search feature',type:'action',level:'product',owner:'PM',status:'staged',tainted:false});
+  if(/api|integrat|service|backend/i.test(t))nodes.push({id:id(),label:'API integration',type:'action',level:'service',owner:'Eng',status:'staged',tainted:false});
+  if(/design|ux|wireframe|sprint/i.test(t))nodes.push({id:id(),label:'UX discovery sprint',type:'artifact',level:'feature',owner:'Design',status:'staged',tainted:false});
+  if(/launch|ship|release|Q2/i.test(t))nodes.push({id:id(),label:'Launch gate review',type:'decision',level:'product',owner:'PM',status:'committed',tainted:false});
+  if(/latency|performance|load|slow/i.test(t))nodes.push({id:id(),label:'Latency profiling',type:'action',level:'feature',owner:'Eng',status:'staged',tainted:false},{id:id(),label:'Performance optimisation',type:'action',level:'feature',owner:'Eng',status:'deferred',tainted:false});
+  if(!nodes.length)nodes.push({id:id(),label:input.split(' ').slice(0,5).join(' '),type:'action',level:'feature',owner:'PM',status:'staged',tainted:false});
+  const tensions=[];
+  if(/shared|billing|reporting|depend/i.test(t))tensions.push({id:'T-'+Math.random().toString(36).substring(2,5),type:'dependency_blindspot',severity:'high',message:'The /search-index API is shared — does Payments squad know about this change?',options:['Notify Payments squad before merge (low risk)','Proceed with API contract — add versioning (medium risk)','Dismiss (risk retained)']});
+  return{thinking:`Processing "${input.substring(0,60)}…" — identifying process nodes, checking for level mismatches and dependency risks.`,projectName:'Smart Search',nodes,intents:[{id:'I1',label:'Reduce time-to-find by 60% by Q2',level:'product',horizon:'tactical',score:.78}],tensions,log:[{l:'L2',k:'extract',t:'ok',v:`${nodes.length} nodes from input`}],summary:`Extracted ${nodes.length} node${nodes.length>1?'s':''}${tensions.length?' · '+tensions.length+' tension':''}` };
 }
 
 async function streamThink(block,text,full){
