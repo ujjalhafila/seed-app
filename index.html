@@ -5,1223 +5,1053 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Seed — Process Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Geist+Mono:wght@300;400;500&family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
 :root {
-  --bg: #0f0f10;
-  --bg1: #161618;
-  --bg2: #1c1c1f;
-  --bg3: #242428;
-  --bg4: #2c2c31;
-  --border: rgba(255,255,255,.06);
-  --border2: rgba(255,255,255,.10);
-  --border3: rgba(255,255,255,.16);
-  --t1: #f2f2f3;
-  --t2: #a0a0a8;
-  --t3: #606068;
-  --t4: #3a3a40;
-  --accent: #5b5eef;
-  --accent-dim: rgba(91,94,239,.14);
-  --accent-glow: rgba(91,94,239,.06);
-  --green: #18c26a;
-  --green-dim: rgba(24,194,106,.12);
-  --amber: #e8a020;
-  --amber-dim: rgba(232,160,32,.12);
-  --red: #e54d4d;
-  --red-dim: rgba(229,77,77,.12);
-  --blue: #4090e8;
-  --blue-dim: rgba(64,144,232,.12);
-  --radius: 6px;
-  --radius2: 8px;
-  --radius3: 10px;
-  --f: 'Geist', -apple-system, sans-serif;
-  --fm: 'Geist Mono', 'Courier New', monospace;
+  --ink:#141413;--ink2:#2e2e2c;--ink3:#5c5c58;--ink4:#8f8f8a;--ink5:#c2c2bc;
+  --paper:#f6f5f0;--paper2:#efede7;--paper3:#e7e5de;--paper4:#dddbd3;
+  --b:rgba(20,20,19,.08);--b2:rgba(20,20,19,.14);--b3:rgba(20,20,19,.24);
+  --amber:#b87308;--abg:#fdf5e6;--abr:rgba(184,115,8,.2);
+  --teal:#0a7a52;--tbg:#eaf5f0;--tbr:rgba(10,122,82,.18);
+  --coral:#aa3318;--cbg:#fdf0ec;--cbr:rgba(170,51,24,.2);
+  --blue:#1452a0;--bbg:#edf2fb;--bbr:rgba(20,82,160,.18);
+  --purple:#4e37a8;--pbg:#f0edf9;--pbr:rgba(78,55,168,.18);
+  --green:#2a7019;--gbg:#edf4ea;--gbr:rgba(42,112,25,.18);
+  --spotify:#1db954;--sbg:#edfaf2;--sbr:rgba(29,185,84,.2);
+  --dyson:#e1251b;--dbg:#fdf0ef;--dr:rgba(225,37,27,.2);
+  --gds:#005ea5;--gbg2:#edf3fb;--gr2:rgba(0,94,165,.2);
+  --fd:'Fraunces',Georgia,serif;
+  --fb:'Geist',sans-serif;
+  --fm:'Geist Mono','Courier New',monospace;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; background: var(--bg); color: var(--t1); font-family: var(--f); font-size: 13px; -webkit-font-smoothing: antialiased; overflow: hidden; }
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--t4); }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(--fb);font-size:13px;overflow:hidden}
 
-/* ── Base components ── */
-.btn {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 6px 12px; border-radius: var(--radius);
-  border: 1px solid var(--border2); background: var(--bg2);
-  color: var(--t2); font-family: var(--f); font-size: 12px; font-weight: 500;
-  cursor: pointer; transition: all .12s; white-space: nowrap; line-height: 1;
-}
-.btn:hover { background: var(--bg3); border-color: var(--border3); color: var(--t1); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.btn.primary:hover { background: #6b6ef5; border-color: #6b6ef5; }
-.btn.ghost { background: transparent; border-color: transparent; color: var(--t3); }
-.btn.ghost:hover { background: var(--bg2); color: var(--t2); border-color: var(--border); }
-.btn.sm { padding: 4px 9px; font-size: 11px; }
-.btn.xs { padding: 2px 7px; font-size: 10px; border-radius: 4px; }
-.btn:disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+/* ── LAYOUT ── */
+.app{display:grid;grid-template-rows:54px 1fr;grid-template-columns:280px 1fr 380px;height:100vh}
+.topbar{grid-column:1/-1;display:flex;align-items:center;border-bottom:1px solid var(--b);background:var(--paper);z-index:60;gap:0}
+.left{grid-row:2;border-right:1px solid var(--b);background:var(--paper);overflow:hidden;display:flex;flex-direction:column}
+.canvas{grid-row:2;overflow:hidden;display:flex;flex-direction:column}
+.right{grid-row:2;border-left:1px solid var(--b);background:var(--paper);display:flex;flex-direction:column;overflow:hidden}
 
-.badge {
-  font-size: 10px; font-family: var(--fm); font-weight: 500;
-  padding: 2px 6px; border-radius: 4px; border: 1px solid;
-}
-.b-accent { background: var(--accent-dim); color: var(--accent); border-color: rgba(91,94,239,.25); }
-.b-green { background: var(--green-dim); color: var(--green); border-color: rgba(24,194,106,.25); }
-.b-amber { background: var(--amber-dim); color: var(--amber); border-color: rgba(232,160,32,.25); }
-.b-red { background: var(--red-dim); color: var(--red); border-color: rgba(229,77,77,.25); }
-.b-dim { background: var(--bg3); color: var(--t3); border-color: var(--border); }
+/* ── TOPBAR ── */
+.tb-logo{padding:0 18px;height:100%;display:flex;align-items:center;gap:9px;border-right:1px solid var(--b)}
+.lm{width:26px;height:26px;background:var(--ink);border-radius:5px;display:flex;align-items:center;justify-content:center}
+.lm svg{width:13px;height:13px}
+.ln{font-family:var(--fd);font-size:18px;font-weight:300;color:var(--ink);letter-spacing:-.03em}
+.tb-demos{display:flex;gap:0;height:100%;border-right:1px solid var(--b)}
+.demo-tab{padding:0 18px;height:100%;display:flex;align-items:center;gap:8px;cursor:pointer;border-bottom:2px solid transparent;transition:all.15s;font-size:12px;font-weight:500;color:var(--ink3)}
+.demo-tab:hover{background:var(--paper2);color:var(--ink)}
+.demo-tab.on{color:var(--ink);border-bottom-color:var(--amber)}
+.demo-tab .co{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.tb-pack{display:flex;align-items:center;gap:8px;padding:0 16px;border-right:1px solid var(--b)}
+.pack-badge{font-size:10px;font-family:var(--fm);padding:3px 9px;border-radius:20px;border:1px solid;font-weight:500}
+.tb-right{margin-left:auto;display:flex;align-items:center;gap:6px;padding:0 14px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:6px;border:1px solid var(--b2);background:transparent;color:var(--ink2);font-family:var(--fb);font-size:11px;cursor:pointer;transition:all.13s;font-weight:500}
+.btn:hover{background:var(--paper3);border-color:var(--b3)}
+.btn.primary{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.btn.sm{padding:3px 9px;font-size:10px}
 
-input.inp, textarea.inp, select.inp {
-  width: 100%; background: var(--bg2); border: 1px solid var(--border2);
-  color: var(--t1); font-family: var(--f); font-size: 13px;
-  padding: 8px 11px; border-radius: var(--radius); outline: none;
-  transition: border-color .15s, box-shadow .15s;
-}
-input.inp:focus, textarea.inp:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(91,94,239,.12); }
-input.inp::placeholder, textarea.inp::placeholder { color: var(--t4); }
-select.inp { cursor: pointer; }
-.field-label { font-size: 11px; font-weight: 500; color: var(--t3); margin-bottom: 5px; }
-.field-wrap { margin-bottom: 14px; }
+/* ── LEFT PANEL ── */
+.lp-head{padding:12px 14px;border-bottom:1px solid var(--b);flex-shrink:0}
+.lp-title{font-family:var(--fd);font-size:14px;font-weight:400;color:var(--ink);margin-bottom:4px;font-style:italic}
+.lp-sub{font-size:10px;font-family:var(--fm);color:var(--ink4)}
+.lp-scroll{flex:1;overflow-y:auto}
+.lp-scroll::-webkit-scrollbar{width:3px}
+.lp-scroll::-webkit-scrollbar-thumb{background:var(--paper4);border-radius:2px}
 
-/* ── Views ── */
-.view { display: none; height: 100vh; overflow: hidden; }
-.view.active { display: flex; flex-direction: column; }
+/* DATA SOURCES */
+.ds-group{border-bottom:1px solid var(--b);padding:10px 0}
+.ds-label{font-size:9px;font-family:var(--fm);color:var(--ink5);text-transform:uppercase;letter-spacing:.1em;padding:0 14px 6px}
+.ds-item{display:flex;align-items:center;gap:8px;padding:5px 14px;cursor:pointer;transition:all.12s}
+.ds-item:hover{background:var(--paper2)}
+.ds-icon{width:22px;height:22px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:var(--fd);flex-shrink:0}
+.ds-name{flex:1;font-size:11px;color:var(--ink2)}
+.ds-count{font-size:9px;font-family:var(--fm);color:var(--ink4);padding:1px 5px;background:var(--paper3);border-radius:8px}
+.ds-status{width:5px;height:5px;border-radius:50%}
+.status-live{background:var(--teal)}
+.status-synced{background:var(--amber)}
 
-/* ══════════════════════════════════════════
-   ONBOARDING
-══════════════════════════════════════════ */
-#view-ob { background: var(--bg); }
-.ob-shell { display: grid; grid-template-columns: 380px 1fr; height: 100%; }
+/* PACK PANEL */
+.pack-panel{border-bottom:1px solid var(--b);padding:10px 14px}
+.pp-label{font-size:9px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.pp-pack{border-radius:8px;padding:9px 12px;border:1px solid var(--b2);background:var(--paper2);margin-bottom:6px}
+.pp-name{font-size:11px;font-weight:500;color:var(--ink);margin-bottom:3px}
+.pp-levels{font-size:10px;font-family:var(--fm);color:var(--ink3);line-height:1.6}
+.pp-tensions{margin-top:6px;display:flex;gap:4px;flex-wrap:wrap}
+.pp-t{font-size:9px;font-family:var(--fm);padding:2px 6px;border-radius:8px;border:1px solid}
 
-.ob-left {
-  display: flex; flex-direction: column;
-  padding: 40px; border-right: 1px solid var(--border);
-  overflow-y: auto; gap: 0;
-}
-.ob-header { display: flex; align-items: center; gap: 9px; margin-bottom: 44px; }
-.ob-mark {
-  width: 26px; height: 26px; border-radius: 6px;
-  background: var(--accent); display: flex; align-items: center; justify-content: center;
-}
-.ob-mark svg { width: 13px; height: 13px; }
-.ob-wordmark { font-size: 15px; font-weight: 600; color: var(--t1); letter-spacing: -.02em; }
+/* ORG LAYER */
+.org-rules{padding:10px 14px;border-bottom:1px solid var(--b)}
+.or-item{display:flex;align-items:center;gap:7px;padding:4px 0;font-size:11px;border-bottom:0.5px solid var(--b)}
+.or-item:last-child{border-bottom:none}
+.or-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;background:var(--amber)}
+.or-text{flex:1;color:var(--ink2)}
+.or-badge{font-size:9px;font-family:var(--fm);padding:1px 6px;border-radius:8px;border:1px solid;background:var(--abg);color:var(--amber);border-color:var(--abr)}
 
-.ob-steps-track { display: flex; gap: 3px; margin-bottom: 32px; }
-.ob-track-pip { flex: 1; height: 2px; border-radius: 1px; background: var(--bg4); transition: all .3s; }
-.ob-track-pip.done { background: var(--green); }
-.ob-track-pip.active { background: var(--accent); flex: 1.8; }
+/* ── CANVAS ── */
+.c-metrics{display:flex;border-bottom:1px solid var(--b);flex-shrink:0}
+.cm{padding:8px 14px;border-right:1px solid var(--b);flex:1}
+.cm:last-child{border-right:none}
+.cm-l{font-size:8px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px}
+.cm-v{font-family:var(--fd);font-size:20px;font-weight:400;color:var(--ink);line-height:1;transition:color.3s}
+.c-toolbar{height:40px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px;padding:0 16px;background:var(--paper);flex-shrink:0}
+.c-title{font-family:var(--fd);font-size:14px;font-weight:400;font-style:italic;color:var(--ink)}
+.c-right{margin-left:auto;display:flex;align-items:center;gap:7px}
+.intent-pill{display:flex;align-items:center;gap:6px;background:var(--paper2);border:1px solid var(--b2);border-radius:20px;padding:4px 10px}
+.ip-l{font-size:9px;font-family:var(--fm);color:var(--ink4)}
+.ip-bar{width:40px;height:3px;background:var(--paper4);border-radius:2px;overflow:hidden}
+.ip-fill{height:100%;border-radius:2px;transition:width.8s ease,background.4s}
+.ip-val{font-size:11px;font-family:var(--fm);font-weight:500}
+.view-btns{display:flex;background:var(--paper3);border-radius:5px;padding:2px;gap:2px}
+.vb{padding:2px 8px;border-radius:3px;font-size:10px;font-family:var(--fm);cursor:pointer;border:none;background:transparent;color:var(--ink4);transition:all.12s}
+.vb.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.07)}
+.cs{flex:1;overflow:auto;padding:18px 20px}
+.cs::-webkit-scrollbar{width:4px}
+.cs::-webkit-scrollbar-thumb{background:var(--paper4);border-radius:2px}
 
-.ob-step { display: none; flex-direction: column; flex: 1; }
-.ob-step.active { display: flex; }
-.ob-step-num { font-size: 11px; font-family: var(--fm); color: var(--t4); margin-bottom: 10px; }
-.ob-step-title { font-size: 22px; font-weight: 600; color: var(--t1); letter-spacing: -.03em; line-height: 1.2; margin-bottom: 8px; }
-.ob-step-desc { font-size: 13px; color: var(--t3); line-height: 1.65; margin-bottom: 24px; }
-.ob-actions { display: flex; align-items: center; gap: 7px; margin-top: auto; padding-top: 20px; }
+/* LEVEL RAILS */
+.level-rail{display:flex;gap:8px;margin-bottom:10px;min-width:480px}
+.lr-lbl{font-size:8px;font-family:var(--fm);color:var(--ink5);text-transform:uppercase;letter-spacing:.08em;width:64px;flex-shrink:0;padding-top:13px;text-align:right;padding-right:8px}
+.lr-body{flex:1;display:flex;flex-wrap:wrap;gap:7px;padding:7px 9px;border-left:2px solid;min-height:48px;align-content:flex-start}
 
-.pack-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
-.pack-card {
-  border: 1px solid var(--border2); border-radius: var(--radius2);
-  padding: 13px; cursor: pointer; transition: all .12s; background: var(--bg1);
-}
-.pack-card:hover { border-color: var(--border3); background: var(--bg2); }
-.pack-card.sel { border-color: var(--accent); background: var(--accent-glow); }
-.pc-emoji { font-size: 16px; margin-bottom: 7px; }
-.pc-name { font-size: 12px; font-weight: 600; color: var(--t1); margin-bottom: 2px; }
-.pc-desc { font-size: 10px; font-family: var(--fm); color: var(--t4); line-height: 1.5; }
+/* NODES */
+.pnode{background:var(--paper);border:1px solid var(--b2);border-radius:8px;padding:7px 11px;cursor:pointer;transition:all.15s;min-width:118px;max-width:176px;position:relative}
+.pnode:hover{border-color:var(--b3);transform:translateY(-1px);box-shadow:0 3px 10px rgba(20,20,19,.07)}
+.pnode.selected{box-shadow:0 0 0 2px var(--amber);border-color:var(--amber)}
+.pnode.committed{border-color:rgba(10,122,82,.2)}
+.pnode.staged{border-color:var(--amber);background:var(--abg)}
+.pnode.tainted{border-color:var(--coral);background:var(--cbg)}
+.pnode.deferred{opacity:.5}
+.pnode.blocked{border-color:var(--purple);background:var(--pbg)}
+.pn-dot{position:absolute;top:6px;right:6px;width:5px;height:5px;border-radius:50%}
+.d-committed{background:var(--teal)}
+.d-staged{background:var(--amber)}
+.d-tainted{background:var(--coral)}
+.d-deferred{background:var(--ink5)}
+.d-blocked{background:var(--purple)}
+.pn-type{font-size:8px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.pn-label{font-size:11px;font-weight:500;color:var(--ink);line-height:1.3;font-family:var(--fb)}
+.pn-owner{font-size:9px;font-family:var(--fm);color:var(--ink4);margin-top:2px}
+.pn-source{display:flex;gap:3px;margin-top:4px;flex-wrap:wrap}
+.src-chip{font-size:8px;font-family:var(--fm);padding:1px 5px;border-radius:4px;border:0.5px solid var(--b)}
+@keyframes nodeIn{from{opacity:0;transform:translateY(5px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ni{animation:nodeIn.28s ease forwards}
 
-.tool-row {
-  display: flex; align-items: center; gap: 10px;
-  border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 9px 12px; cursor: pointer; transition: all .12s;
-  margin-bottom: 5px; background: var(--bg1);
-}
-.tool-row:hover { border-color: var(--border2); background: var(--bg2); }
-.tool-row.sel { border-color: var(--green); background: var(--green-dim); }
-.tr-icon { width: 26px; height: 26px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; font-family: var(--fm); flex-shrink: 0; }
-.tr-info { flex: 1; }
-.tr-name { font-size: 12px; font-weight: 500; color: var(--t1); }
-.tr-sub { font-size: 10px; font-family: var(--fm); color: var(--t3); }
-.tr-check { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid var(--border3); transition: all .12s; flex-shrink: 0; }
-.tool-row.sel .tr-check { background: var(--green); border-color: var(--green); }
+/* CROSS-TEAM connector */
+.ct-conn{background:var(--bbg);border:1px solid var(--bbr);border-radius:6px;padding:4px 8px;display:inline-flex;align-items:center;gap:5px;font-size:9px;font-family:var(--fm);color:var(--blue);cursor:pointer;margin:2px 0}
+.ct-conn:hover{background:#d8e9f8}
 
-/* Onboarding right */
-.ob-right { background: var(--bg1); display: flex; flex-direction: column; overflow: hidden; }
-.ob-right-hd {
-  padding: 16px 20px; border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 7px;
-  font-size: 10px; font-family: var(--fm); color: var(--t4);
-  text-transform: uppercase; letter-spacing: .08em;
-}
-.ob-live { width: 5px; height: 5px; border-radius: 50%; background: var(--green); animation: pulse-live 2s ease-in-out infinite; }
-@keyframes pulse-live { 0%,100%{opacity:1} 50%{opacity:.3} }
-.ob-preview-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
-.ob-preview-empty { text-align: center; padding: 60px 20px; font-size: 13px; color: var(--t4); }
-.ob-node-card {
-  display: flex; align-items: center; gap: 9px;
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 9px 12px; margin-bottom: 6px;
-  animation: slide-in-r .25s ease;
-}
-@keyframes slide-in-r { from{opacity:0;transform:translateX(10px)} to{opacity:1;transform:translateX(0)} }
-.ob-nc-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-.ob-nc-label { flex: 1; font-size: 12px; color: var(--t1); }
-.ob-nc-type { font-size: 9px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; }
+/* TENSION in canvas */
+.canvas-tension{border-radius:8px;padding:9px 12px;margin-bottom:8px;border:1px solid}
+.ct-high{background:var(--cbg);border-color:var(--cbr)}
+.ct-med{background:var(--abg);border-color:var(--abr)}
+.ct-blocked{background:var(--pbg);border-color:var(--pbr)}
+.ct-head{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:4px}
+.ct-type{font-size:10px;font-family:var(--fm);font-weight:500}
+.ct-high .ct-type{color:var(--coral)}
+.ct-med .ct-type{color:var(--amber)}
+.ct-blocked .ct-type{color:var(--purple)}
+.ct-msg{font-size:11px;line-height:1.5;margin-bottom:6px}
+.ct-high .ct-msg{color:var(--coral)}
+.ct-med .ct-msg{color:var(--amber)}
+.ct-blocked .ct-msg{color:var(--purple)}
+.ct-acts{display:flex;gap:5px;flex-wrap:wrap}
+.ct-btn{font-size:10px;font-family:var(--fm);padding:3px 9px;border-radius:4px;border:1px solid;cursor:pointer;background:transparent;transition:all.12s}
 
-/* ══════════════════════════════════════════
-   APP LAYOUT — Linear-style
-══════════════════════════════════════════ */
-#view-app { background: var(--bg); }
-.app-grid {
-  display: grid;
-  grid-template-rows: 44px 1fr;
-  grid-template-columns: 216px 1fr 288px;
-  height: 100vh;
-}
+/* ── RIGHT PANEL ── */
+.rp-tabs{display:flex;border-bottom:1px solid var(--b);flex-shrink:0}
+.rp-tab{flex:1;padding:9px 4px;text-align:center;font-size:10px;font-family:var(--fm);color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;transition:all.12s;background:transparent;border-top:none;border-left:none;border-right:none}
+.rp-tab:hover{color:var(--ink)}
+.rp-tab.on{color:var(--amber);border-bottom-color:var(--amber);font-weight:500}
+.rp-scroll{flex:1;overflow-y:auto;padding:12px 14px}
+.rp-scroll::-webkit-scrollbar{width:3px}
+.rp-scroll::-webkit-scrollbar-thumb{background:var(--paper4);border-radius:2px}
+.rp-section{font-size:9px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.1em;padding:8px 0 6px;border-bottom:1px solid var(--b);margin-bottom:9px}
 
-/* Topbar */
-.topbar {
-  grid-column: 1/-1; display: flex; align-items: center;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg); z-index: 50;
-}
-.tb-logo {
-  display: flex; align-items: center; gap: 8px;
-  padding: 0 16px; height: 100%;
-  border-right: 1px solid var(--border);
-  cursor: pointer; flex-shrink: 0;
-  transition: background .12s;
-}
-.tb-logo:hover { background: var(--bg1); }
-.tb-lmark {
-  width: 20px; height: 20px; border-radius: 5px;
-  background: var(--accent); display: flex; align-items: center; justify-content: center;
-}
-.tb-lmark svg { width: 10px; height: 10px; }
-.tb-lname { font-size: 14px; font-weight: 600; color: var(--t1); letter-spacing: -.02em; }
-.tb-sep { width: 1px; height: 16px; background: var(--border2); margin: 0 4px; flex-shrink: 0; }
-.tb-ws { font-size: 12px; font-weight: 500; color: var(--t2); padding: 0 8px; }
-.tb-engine { display: flex; align-items: center; gap: 6px; padding: 0 14px; border-right: 1px solid var(--border); }
-.eng-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--t4); transition: background .3s; flex-shrink: 0; position: relative; }
-.eng-dot.busy { background: var(--amber); }
-.eng-dot.busy::after { content:''; position:absolute; inset:-3px; border-radius:50%; border:1px solid var(--amber); animation: eng-ring 1s ease-out infinite; }
-.eng-dot.ready { background: var(--green); }
-@keyframes eng-ring { 0%{opacity:.7;transform:scale(1)} 100%{opacity:0;transform:scale(2)} }
-.eng-label { font-size: 11px; font-family: var(--fm); color: var(--t3); }
+/* NODE DETAIL */
+.nd-hero{padding:18px 16px 0}
+.nd-eyebrow{display:flex;align-items:center;gap:7px;margin-bottom:8px}
+.nd-type-dot{width:7px;height:7px;border-radius:50%}
+.nd-type-lbl{font-size:9px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.06em}
+.nd-status{font-size:9px;font-family:var(--fm);padding:2px 7px;border-radius:8px;border:1px solid;margin-left:auto}
+.nd-title{font-family:var(--fd);font-size:18px;font-weight:400;color:var(--ink);line-height:1.2;margin-bottom:8px}
+.nd-owner-row{display:flex;align-items:center;gap:8px;padding:10px 0;border-top:0.5px solid var(--b);border-bottom:0.5px solid var(--b);margin-bottom:0}
+.nd-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;font-family:var(--fd);flex-shrink:0}
+.dp-section{padding:12px 16px;border-bottom:0.5px solid var(--b)}
+.dp-section:last-child{border-bottom:none}
+.dp-label{font-size:9px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.tag{display:inline-block;font-size:9px;font-family:var(--fm);padding:2px 7px;border-radius:8px;border:1px solid;margin:2px}
+.tg-teal{background:var(--tbg);color:var(--teal);border-color:var(--tbr)}
+.tg-amber{background:var(--abg);color:var(--amber);border-color:var(--abr)}
+.tg-coral{background:var(--cbg);color:var(--coral);border-color:var(--cbr)}
+.tg-blue{background:var(--bbg);color:var(--blue);border-color:var(--bbr)}
+.tg-purple{background:var(--pbg);color:var(--purple);border-color:var(--pbr)}
+.tg-gray{background:var(--paper3);color:var(--ink3);border-color:var(--b2)}
 
-.tb-views { display: flex; gap: 1px; padding: 0 8px; }
-.tv {
-  font-size: 12px; font-weight: 500; color: var(--t3);
-  padding: 4px 10px; border-radius: 5px;
-  cursor: pointer; border: none; background: transparent;
-  transition: all .1s;
-}
-.tv:hover { color: var(--t1); background: var(--bg2); }
-.tv.on { color: var(--t1); background: var(--bg2); }
+/* SOURCE BLOCK */
+.src-block{background:var(--paper2);border:0.5px solid var(--b);border-radius:7px;padding:9px 11px;margin-bottom:7px;cursor:pointer;transition:all.15s}
+.src-block:hover{border-color:var(--b2);background:var(--paper)}
+.sb-head{font-size:9px;font-family:var(--fm);color:var(--ink4);margin-bottom:4px;display:flex;align-items:center;gap:5px}
+.sb-tool{width:14px;height:14px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:7px;font-weight:700;flex-shrink:0}
+.sb-text{font-size:11px;color:var(--ink2);line-height:1.5;font-style:italic}
+.sb-span{background:rgba(184,115,8,.12);border-radius:2px;padding:0 2px}
+.sb-conf{font-size:9px;font-family:var(--fm);color:var(--ink4);margin-top:5px;display:flex;align-items:center;gap:5px}
+.sb-cb{flex:1;height:2px;background:var(--paper4);border-radius:1px;overflow:hidden}
+.sb-cf{height:100%;border-radius:1px;background:var(--teal)}
 
-.tb-right { margin-left: auto; display: flex; align-items: center; gap: 6px; padding: 0 12px; }
-.user-pill {
-  display: flex; align-items: center; gap: 6px;
-  padding: 3px 8px 3px 4px; border-radius: 20px;
-  border: 1px solid var(--border2); cursor: pointer; transition: all .12s;
-}
-.user-pill:hover { background: var(--bg2); }
-.user-av {
-  width: 20px; height: 20px; border-radius: 50%;
-  background: var(--accent-dim); color: var(--accent);
-  font-size: 8px; font-weight: 700; font-family: var(--fm);
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.user-name { font-size: 11px; font-weight: 500; color: var(--t2); }
+/* RELATED */
+.rel-row{display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:0.5px solid var(--b);cursor:pointer;transition:all.12s}
+.rel-row:last-child{border-bottom:none}
+.rel-row:hover .rel-label{color:var(--amber)}
+.rel-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rel-label{flex:1;font-size:11px;color:var(--ink);transition:color.12s}
+.rel-type{font-size:9px;font-family:var(--fm);color:var(--ink4)}
 
-/* Sidebar */
-.sidebar {
-  grid-row: 2; border-right: 1px solid var(--border);
-  background: var(--bg); overflow-y: auto; display: flex; flex-direction: column;
-}
-.sb-section { padding: 6px 0; }
-.sb-section + .sb-section { border-top: 1px solid var(--border); }
-.sb-section-label {
-  font-size: 10px; font-weight: 500; color: var(--t4);
-  padding: 5px 14px 3px; text-transform: uppercase; letter-spacing: .07em;
-}
-.sb-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 5px 12px; border-radius: 5px;
-  margin: 1px 6px; cursor: pointer;
-  font-size: 12px; font-weight: 500; color: var(--t3);
-  transition: all .1s; border: 1px solid transparent;
-}
-.sb-item:hover { color: var(--t1); background: var(--bg2); }
-.sb-item.on { color: var(--t1); background: var(--bg2); border-color: var(--border); }
-.sb-item svg { width: 14px; height: 14px; flex-shrink: 0; opacity: .6; }
-.sb-item.on svg { opacity: 1; }
-.sb-count { margin-left: auto; font-size: 10px; font-family: var(--fm); font-weight: 500; }
-.sb-spacer { flex: 1; }
+/* TENSION DETAIL */
+.td{border-radius:7px;padding:9px 11px;margin-bottom:7px;border:1px solid}
+.td-high{background:var(--cbg);border-color:var(--cbr)}
+.td-med{background:var(--abg);border-color:var(--abr)}
+.td-blocked{background:var(--pbg);border-color:var(--pbr)}
+.td-head{font-size:10px;font-family:var(--fm);font-weight:500;margin-bottom:4px}
+.td-high .td-head{color:var(--coral)}
+.td-med .td-head{color:var(--amber)}
+.td-blocked .td-head{color:var(--purple)}
+.td-msg{font-size:11px;line-height:1.5;margin-bottom:7px}
+.td-high .td-msg{color:var(--coral)}
+.td-med .td-msg{color:var(--amber)}
+.td-blocked .td-msg{color:var(--purple)}
+.td-opts{display:flex;flex-direction:column;gap:4px}
+.td-opt{font-size:10px;font-family:var(--fm);padding:4px 9px;border-radius:4px;border:1px solid;cursor:pointer;background:transparent;text-align:left;transition:all.12s}
 
-/* Persona + team */
-.sb-personas { display: flex; gap: 3px; padding: 8px 10px; flex-wrap: wrap; }
-.persona-btn {
-  font-size: 10px; font-weight: 500; color: var(--t4);
-  padding: 3px 8px; border-radius: 4px;
-  cursor: pointer; border: 1px solid transparent; background: transparent;
-  transition: all .1s;
-}
-.persona-btn:hover { color: var(--t2); background: var(--bg2); }
-.persona-btn.on { color: var(--t1); background: var(--bg2); border-color: var(--border2); }
-.team-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 4px 12px; border-radius: 5px; margin: 1px 6px;
-  cursor: pointer; font-size: 11px; font-weight: 500; color: var(--t3); transition: all .1s;
-}
-.team-item:hover { color: var(--t1); background: var(--bg2); }
-.team-item.on { color: var(--t1); }
-.team-av { width: 18px; height: 18px; border-radius: 50%; font-size: 7px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.team-role { font-size: 10px; font-family: var(--fm); color: var(--t4); margin-left: auto; }
-.team-online { width: 5px; height: 5px; border-radius: 50%; background: var(--green); opacity: .7; }
+/* INTENT BARS */
+.ib{margin-bottom:9px}
+.ib-head{display:flex;justify-content:space-between;margin-bottom:3px}
+.ib-name{font-size:11px;color:var(--ink2);flex:1;padding-right:6px;line-height:1.3}
+.ib-score{font-size:11px;font-family:var(--fm);font-weight:500}
+.ib-track{height:3px;background:var(--paper3);border-radius:2px;overflow:hidden}
+.ib-fill{height:100%;border-radius:2px;transition:width.8s ease}
+.ib-level{font-size:9px;font-family:var(--fm);color:var(--ink4);margin-top:2px}
 
-/* Input zone */
-.input-zone {
-  padding: 10px; border-top: 1px solid var(--border);
-  background: var(--bg);
-}
-.iz-row { display: flex; gap: 5px; align-items: flex-end; margin-bottom: 6px; }
-.iz-input {
-  flex: 1; background: var(--bg1); border: 1px solid var(--border2);
-  color: var(--t1); font-family: var(--f); font-size: 12px;
-  padding: 7px 10px; border-radius: var(--radius); outline: none;
-  resize: none; max-height: 68px; line-height: 1.5;
-  transition: border-color .15s, box-shadow .15s;
-}
-.iz-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(91,94,239,.1); }
-.iz-input::placeholder { color: var(--t4); }
-.iz-btn {
-  width: 30px; height: 30px; border-radius: var(--radius); flex-shrink: 0;
-  background: var(--accent); border: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .12s;
-}
-.iz-btn:hover { background: #6b6ef5; transform: scale(1.04); }
-.iz-btn:disabled { background: var(--bg3); cursor: not-allowed; transform: none; }
-.iz-chips { display: flex; gap: 4px; flex-wrap: wrap; }
-.iz-chip {
-  font-size: 10px; font-family: var(--fm); color: var(--t4);
-  padding: 2px 8px; border: 1px solid var(--border); border-radius: 10px;
-  cursor: pointer; background: transparent; transition: all .1s;
-}
-.iz-chip:hover { color: var(--accent); border-color: rgba(91,94,239,.3); }
+/* HISTORY */
+.hi{display:flex;gap:8px;padding:6px 0;border-bottom:0.5px solid var(--b)}
+.hi:last-child{border-bottom:none}
+.hi-dot{width:6px;height:6px;border-radius:50%;background:var(--ink5);flex-shrink:0;margin-top:3px}
+.hi-action{font-size:11px;color:var(--ink2);line-height:1.4}
+.hi-time{font-size:9px;font-family:var(--fm);color:var(--ink4);margin-top:2px}
 
-/* Canvas */
-.canvas-area {
-  grid-row: 2; display: flex; flex-direction: column;
-  overflow: hidden; background: var(--bg);
-}
-.canvas-header {
-  height: 40px; flex-shrink: 0;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 8px;
-  padding: 0 14px; background: var(--bg);
-}
-.ch-title { font-size: 13px; font-weight: 600; color: var(--t2); letter-spacing: -.01em; }
-.ch-spacer { flex: 1; }
-.intent-chip {
-  display: flex; align-items: center; gap: 6px;
-  padding: 3px 9px; border-radius: 20px;
-  border: 1px solid var(--border2); background: var(--bg1);
-  cursor: pointer; transition: all .12s;
-}
-.intent-chip:hover { border-color: var(--accent); }
-.ic-label { font-size: 10px; font-family: var(--fm); color: var(--t4); }
-.ic-track { width: 40px; height: 2px; background: var(--bg4); border-radius: 1px; overflow: hidden; }
-.ic-fill { height: 100%; border-radius: 1px; transition: width .7s ease; }
-.ic-val { font-size: 10px; font-family: var(--fm); font-weight: 600; }
+/* LOG */
+.log-e{font-size:10px;font-family:var(--fm);padding:2px 0;border-bottom:0.5px solid rgba(20,20,19,.04);color:var(--ink3);line-height:1.6}
+.le-t{color:var(--ink5);margin-right:3px}
+.le-info{color:var(--blue)}
+.le-success{color:var(--teal)}
+.le-warn{color:var(--amber)}
+.le-error{color:var(--coral)}
 
-.stats-bar {
-  display: grid; grid-template-columns: repeat(4, 1fr);
-  border-bottom: 1px solid var(--border); flex-shrink: 0;
-}
-.stat-cell { padding: 8px 14px; border-right: 1px solid var(--border); }
-.stat-cell:last-child { border-right: none; }
-.stat-l { font-size: 9px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 3px; }
-.stat-v { font-size: 18px; font-weight: 600; letter-spacing: -.03em; line-height: 1; transition: color .3s; }
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(20,20,19,.5);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity.2s}
+.overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--paper);border:1px solid var(--b2);border-radius:14px;padding:24px;width:460px;max-width:92vw;max-height:86vh;overflow-y:auto}
+.modal-title{font-family:var(--fd);font-size:18px;font-weight:400;font-style:italic;margin-bottom:6px}
+.modal-body{font-size:12px;color:var(--ink2);line-height:1.7;margin-bottom:14px}
+.modal-acts{display:flex;gap:7px;justify-content:flex-end}
 
-.canvas-body { flex: 1; overflow: auto; padding: 18px; }
-.canvas-empty {
-  height: 100%; display: flex; flex-direction: column;
-  align-items: center; justify-content: center; text-align: center;
-}
-.ce-glyph { font-size: 28px; margin-bottom: 12px; opacity: .25; }
-.ce-heading { font-size: 15px; font-weight: 600; color: var(--t3); margin-bottom: 6px; letter-spacing: -.01em; }
-.ce-sub { font-size: 12px; color: var(--t4); line-height: 1.6; }
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+.fi{animation:fadeIn.22s ease forwards}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--paper4);border-radius:2px}
 
-/* Level rails */
-.level-rail { margin-bottom: 16px; }
-.lr-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.lr-label { font-size: 10px; font-weight: 600; font-family: var(--fm); text-transform: uppercase; letter-spacing: .07em; }
-.lr-line { flex: 1; height: 1px; }
-.lr-count { font-size: 10px; font-family: var(--fm); color: var(--t4); }
-.lr-cards { display: flex; flex-wrap: wrap; gap: 6px; }
-
-/* Process node cards */
-.pnode {
-  background: var(--bg1); border: 1px solid var(--border2);
-  border-radius: var(--radius2); padding: 9px 11px;
-  cursor: pointer; transition: all .15s;
-  min-width: 130px; max-width: 196px; position: relative;
-  animation: node-in .2s ease;
-}
-@keyframes node-in { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
-.pnode::after {
-  content: ''; position: absolute; top: 0; left: 0; bottom: 0;
-  width: 2.5px; border-radius: 2px 0 0 2px;
-  opacity: 0; transition: opacity .12s;
-}
-.pnode:hover { border-color: var(--border3); background: var(--bg2); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.35); }
-.pnode:hover::after, .pnode.sel::after { opacity: 1; }
-.pnode.sel { border-color: var(--accent); background: var(--accent-glow); }
-.pnode.sel::after { background: var(--accent); }
-.pnode.committed::after { background: var(--green); }
-.pnode.staged::after { background: var(--amber); }
-.pnode.tainted { border-color: rgba(229,77,77,.3); }
-.pnode.tainted::after { background: var(--red); }
-.pn-dot { position: absolute; top: 8px; right: 8px; width: 4px; height: 4px; border-radius: 50%; }
-.pn-type { font-size: 9px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
-.pn-label { font-size: 12px; font-weight: 500; color: var(--t1); line-height: 1.35; }
-.pn-owner { font-size: 10px; font-family: var(--fm); color: var(--t4); margin-top: 4px; }
-.pn-sources { display: flex; gap: 2px; margin-top: 5px; }
-.src-dot { width: 13px; height: 13px; border-radius: 3px; font-size: 7px; font-weight: 700; font-family: var(--fm); display: flex; align-items: center; justify-content: center; border: .5px solid var(--border); }
-
-/* Right panel */
-.right-panel {
-  grid-row: 2; border-left: 1px solid var(--border);
-  background: var(--bg); display: flex; flex-direction: column; overflow: hidden;
-}
-.rp-tabs { display: flex; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-.rp-tab {
-  flex: 1; padding: 10px 4px; text-align: center;
-  font-size: 10px; font-weight: 500; color: var(--t4);
-  cursor: pointer; border: none; background: transparent;
-  border-bottom: 1.5px solid transparent; transition: all .12s;
-  text-transform: uppercase; letter-spacing: .06em;
-}
-.rp-tab:hover { color: var(--t2); }
-.rp-tab.on { color: var(--accent); border-bottom-color: var(--accent); }
-.rp-body { flex: 1; overflow-y: auto; padding: 12px; }
-.rp-empty { text-align: center; padding: 40px 8px; font-size: 12px; color: var(--t4); line-height: 1.6; }
-
-/* Stream blocks */
-.stream-block {
-  border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 10px 11px; margin-bottom: 8px; background: var(--bg1);
-  animation: fadein-up .18s ease;
-}
-@keyframes fadein-up { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
-.sb-header { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-.sb-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent); }
-.sb-label { font-size: 9px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; letter-spacing: .07em; }
-.sb-time { margin-left: auto; font-size: 9px; font-family: var(--fm); color: var(--t4); }
-.sb-text { font-size: 12px; color: var(--t2); line-height: 1.65; }
-.sb-cursor { display: inline-block; width: 1.5px; height: 11px; background: var(--accent); animation: cur-blink .65s step-end infinite; vertical-align: middle; margin-left: 1px; }
-@keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
-.sb-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
-
-/* Intent rows */
-.intent-row { margin-bottom: 10px; animation: fadein-up .18s ease; }
-.ir-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 3px; gap: 6px; }
-.ir-name { font-size: 12px; color: var(--t1); flex: 1; line-height: 1.4; }
-.ir-pct { font-size: 11px; font-family: var(--fm); font-weight: 600; }
-.ir-track { height: 2px; background: var(--bg4); border-radius: 1px; overflow: hidden; }
-.ir-fill { height: 100%; border-radius: 1px; transition: width .7s ease; }
-.ir-meta { font-size: 10px; font-family: var(--fm); color: var(--t4); margin-top: 3px; }
-
-/* Tension cards */
-.tc {
-  border: 1px solid; border-radius: var(--radius2); padding: 10px 11px;
-  margin-bottom: 7px; animation: fadein-up .18s ease;
-}
-.tc-h { background: var(--red-dim); border-color: rgba(229,77,77,.25); }
-.tc-m { background: var(--amber-dim); border-color: rgba(232,160,32,.25); }
-.tc-r { background: var(--green-dim); border-color: rgba(24,194,106,.2); opacity: .65; }
-.tc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; gap: 6px; }
-.tc-type { font-size: 9px; font-family: var(--fm); font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
-.tc-h .tc-type { color: var(--red); } .tc-m .tc-type { color: var(--amber); } .tc-r .tc-type { color: var(--green); }
-.tc-msg { font-size: 11px; line-height: 1.55; margin-bottom: 7px; }
-.tc-h .tc-msg { color: rgba(229,77,77,.85); } .tc-m .tc-msg { color: rgba(232,160,32,.85); } .tc-r .tc-msg { color: rgba(24,194,106,.75); }
-.tc-opts { display: flex; gap: 4px; flex-wrap: wrap; }
-.tc-opt {
-  font-size: 9px; font-family: var(--fm); padding: 3px 7px;
-  border-radius: 4px; border: 1px solid; cursor: pointer; background: transparent; transition: all .1s;
-}
-.tc-h .tc-opt { color:var(--red); border-color:rgba(229,77,77,.3); } .tc-h .tc-opt:hover { background:var(--red-dim); }
-.tc-m .tc-opt { color:var(--amber); border-color:rgba(232,160,32,.3); } .tc-m .tc-opt:hover { background:var(--amber-dim); }
-
-/* Node detail */
-.nd-title { font-size: 17px; font-weight: 600; color: var(--t1); letter-spacing: -.02em; line-height: 1.25; margin-bottom: 6px; }
-.nd-sec { padding: 10px 0; border-bottom: 1px solid var(--border); }
-.nd-sec:last-child { border-bottom: none; }
-.nd-sec-label { font-size: 9px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; letter-spacing: .07em; margin-bottom: 7px; }
-.ev-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px 10px; margin-bottom: 5px; }
-.ev-source { font-size: 9px; font-family: var(--fm); color: var(--t4); margin-bottom: 3px; display: flex; align-items: center; gap: 5px; }
-.ev-text { font-size: 11px; color: var(--t3); line-height: 1.55; }
-.ev-hl { background: rgba(91,94,239,.18); color: var(--accent); border-radius: 2px; padding: 0 2px; }
-.ev-conf { font-size: 9px; font-family: var(--fm); color: var(--t4); margin-top: 4px; display: flex; align-items: center; gap: 5px; }
-.ev-cbar { flex: 1; height: 2px; background: var(--bg4); border-radius: 1px; overflow: hidden; }
-.ev-cfill { height: 100%; border-radius: 1px; background: var(--green); }
-
-.log-entry { font-size: 10px; font-family: var(--fm); padding: 2px 0; border-bottom: .5px solid rgba(255,255,255,.03); line-height: 1.7; }
-.le-layer { color: var(--t4); margin-right: 3px; }
-.le-info{color:var(--blue)} .le-ok{color:var(--green)} .le-warn{color:var(--amber)} .le-err{color:var(--red)}
-
-/* Integrations */
-.int-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 14px; }
-.int-card {
-  background: var(--bg1); border: 1px solid var(--border);
-  border-radius: var(--radius2); padding: 13px; position: relative;
-  transition: border-color .12s;
-}
-.int-card.live { border-color: rgba(24,194,106,.25); }
-.int-card.error { border-color: rgba(229,77,77,.25); }
-.ic-sdot { position: absolute; top: 10px; right: 10px; width: 6px; height: 6px; border-radius: 50%; }
-.ics-live { background: var(--green); box-shadow: 0 0 5px var(--green); }
-.ics-idle { background: var(--t4); }
-.ics-error { background: var(--red); }
-.ics-conn { background: var(--amber); animation: cur-blink .8s step-end infinite; }
-.ic-icon { width: 28px; height: 28px; border-radius: 6px; font-size: 10px; font-weight: 700; font-family: var(--fm); display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
-.ic-name { font-size: 12px; font-weight: 600; color: var(--t1); margin-bottom: 2px; }
-.ic-cat { font-size: 9px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 7px; }
-.ic-meta { font-size: 10px; font-family: var(--fm); color: var(--t3); margin-bottom: 8px; line-height: 1.5; }
-.ic-actions { display: flex; gap: 5px; flex-wrap: wrap; }
-.avail-wrap { display: flex; gap: 6px; flex-wrap: wrap; }
-.avail-pill { font-size: 10px; font-family: var(--fm); color: var(--t4); padding: 3px 9px; border: 1px solid var(--border); border-radius: 12px; cursor: pointer; background: transparent; transition: all .1s; }
-.avail-pill:hover { color: var(--accent); border-color: rgba(91,94,239,.3); }
-
-/* Enterprise */
-.squad-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 18px; }
-.squad-card { background: var(--bg1); border: 1px solid var(--border2); border-radius: var(--radius2); padding: 14px; cursor: pointer; transition: all .12s; }
-.squad-card:hover { border-color: var(--border3); transform: translateY(-1px); }
-.sq-name { font-size: 13px; font-weight: 600; color: var(--t1); letter-spacing: -.01em; margin-bottom: 7px; }
-.sq-score { font-size: 28px; font-weight: 700; letter-spacing: -.03em; line-height: 1; margin-bottom: 4px; }
-.sq-bar { height: 2px; background: var(--bg4); border-radius: 1px; overflow: hidden; margin-bottom: 7px; }
-.sq-fill { height: 100%; border-radius: 1px; }
-.sq-intent { font-size: 11px; color: var(--t4); margin-bottom: 9px; line-height: 1.4; }
-.sq-foot { display: flex; align-items: center; justify-content: space-between; }
-.sq-avs { display: flex; }
-.sq-av { width: 18px; height: 18px; border-radius: 50%; font-size: 7px; font-weight: 700; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg1); margin-right: -4px; }
-
-/* Modals */
-.overlay { position: fixed; inset: 0; background: rgba(0,0,0,.65); backdrop-filter: blur(3px); z-index: 200; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .18s; }
-.overlay.open { opacity: 1; pointer-events: all; }
-.modal { background: var(--bg1); border: 1px solid var(--border2); border-radius: var(--radius3); padding: 22px; width: 460px; max-width: 92vw; max-height: 84vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0,0,0,.6); }
-.modal-title { font-size: 16px; font-weight: 600; color: var(--t1); letter-spacing: -.02em; margin-bottom: 4px; }
-.modal-sub { font-size: 12px; color: var(--t3); margin-bottom: 16px; line-height: 1.6; }
-.modal-actions { display: flex; gap: 7px; justify-content: flex-end; margin-top: 14px; }
-.setup-step { display: flex; gap: 9px; padding: 7px 0; border-bottom: .5px solid var(--border); }
-.setup-step:last-child { border-bottom: none; }
-.ss-num { width: 18px; height: 18px; border-radius: 50%; background: var(--bg3); font-size: 9px; font-family: var(--fm); color: var(--t3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-.conn-status-msg { font-size: 11px; font-family: var(--fm); padding: 7px 10px; border-radius: 5px; margin-bottom: 10px; }
-
-/* Morning Brief */
-.brief-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(4px); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
-.brief-overlay.open { opacity: 1; pointer-events: all; }
-.brief-panel { background: var(--bg1); border: 1px solid var(--border2); border-radius: var(--radius3); width: 540px; max-width: 94vw; max-height: 85vh; overflow-y: auto; box-shadow: 0 28px 64px rgba(0,0,0,.65); }
-.bp-header { padding: 24px 28px 18px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
-.bp-date { font-size: 10px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 5px; }
-.bp-title { font-size: 20px; font-weight: 600; color: var(--t1); letter-spacing: -.02em; line-height: 1.2; }
-.bp-close { background: none; border: none; color: var(--t4); cursor: pointer; font-size: 16px; padding: 2px; transition: color .1s; line-height: 1; }
-.bp-close:hover { color: var(--t1); }
-.bp-body { padding: 20px 28px; }
-.bp-section { margin-bottom: 18px; }
-.bps-label { font-size: 9px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; letter-spacing: .09em; margin-bottom: 9px; }
-.intent-hero { display: flex; align-items: center; gap: 14px; padding: 13px 16px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius2); }
-.ih-score { font-size: 44px; font-weight: 700; letter-spacing: -.04em; line-height: 1; }
-.ih-right { flex: 1; }
-.ih-label { font-size: 12px; font-weight: 600; color: var(--t1); margin-bottom: 2px; }
-.ih-sub { font-size: 11px; color: var(--t3); }
-.ih-bar { height: 2px; background: var(--bg4); border-radius: 1px; overflow: hidden; margin-top: 7px; }
-.ih-fill { height: 100%; border-radius: 1px; transition: width 1s ease; }
-.bp-glance { display: grid; grid-template-columns: repeat(3,1fr); gap: 7px; }
-.bpg-cell { padding: 10px 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); }
-.bpg-val { font-size: 22px; font-weight: 700; letter-spacing: -.03em; line-height: 1; margin-bottom: 2px; }
-.bpg-label { font-size: 9px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; letter-spacing: .07em; }
-.bp-footer { padding: 14px 28px; border-top: 1px solid var(--border); display: flex; gap: 7px; justify-content: flex-end; }
-
-.rp-sec-label { font-size: 9px; font-family: var(--fm); color: var(--t4); text-transform: uppercase; letter-spacing: .08em; padding: 7px 0 5px; border-bottom: .5px solid var(--border); margin-bottom: 8px; }
-.fi { animation: fadein-up .18s ease; }
+/* ── ENHANCED ENGINE UI ── */
+.tb-engine{display:flex;align-items:center;gap:7px;padding:0 12px;border-right:1px solid var(--b);margin-right:2px}
+.eng-dot{width:6px;height:6px;border-radius:50%;background:var(--paper3);flex-shrink:0;transition:background .3s;position:relative}
+.eng-dot.busy{background:var(--amber)}
+.eng-dot.busy::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--amber);animation:ering 1.1s ease-out infinite}
+.eng-dot.ready{background:var(--teal)}
+@keyframes ering{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(2.2)}}
+.eng-lbl{font-size:10px;font-family:var(--fm);color:var(--ink4)}
+.engine-input-zone{padding:10px 12px;border-top:1px solid var(--b);background:var(--paper)}
+.eiz-row{display:flex;gap:5px;align-items:flex-end;margin-bottom:5px}
+.eiz-input{flex:1;background:var(--paper2);border:1px solid var(--b);color:var(--ink);font-family:var(--fb);font-size:12px;padding:7px 10px;border-radius:5px;outline:none;resize:none;max-height:68px;line-height:1.55;transition:border-color .15s}
+.eiz-input:focus{border-color:var(--amber);background:var(--paper)}
+.eiz-input::placeholder{color:var(--ink5)}
+.eiz-send{width:30px;height:30px;border-radius:5px;background:var(--ink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
+.eiz-send:hover{background:var(--ink2);transform:scale(1.05)}
+.eiz-send:disabled{background:var(--paper3);cursor:not-allowed;transform:none}
+.eiz-chips{display:flex;gap:4px;flex-wrap:wrap}
+.eiz-chip{font-size:9px;font-family:var(--fm);color:var(--ink4);padding:2px 8px;border:1px solid var(--b);border-radius:10px;cursor:pointer;background:transparent;transition:all .1s}
+.eiz-chip:hover{color:var(--amber);border-color:var(--abr)}
+/* Node animation */
+.ni{animation:node-in .22s ease forwards}
+@keyframes node-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
+<div class="app">
 
-<!-- ═══════════════════ ONBOARDING ═══════════════════ -->
-<div class="view active" id="view-ob">
-  <div class="ob-shell">
-    <div class="ob-left">
-      <div class="ob-header">
-        <div class="ob-mark">
-          <svg viewBox="0 0 13 13" fill="none">
-            <circle cx="6.5" cy="6.5" r="2.4" fill="white"/>
-            <path d="M6.5 1v1.8M6.5 10.2V12M1 6.5h1.8M10.2 6.5H12" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <span class="ob-wordmark">Seed</span>
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="tb-logo">
+    <div class="lm"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2.5" fill="#f6f5f0"/><path d="M7 1.5v2M7 10.5v2M1.5 7h2M10.5 7h2" stroke="#f6f5f0" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <span class="ln">seed</span>
+  </div>
+  <div class="tb-demos">
+    <div class="demo-tab on" onclick="loadDemo('spotify')" id="dtab-spotify">
+      <div class="co" style="background:var(--spotify)"></div>Spotify
+    </div>
+    <div class="demo-tab" onclick="loadDemo('dyson')" id="dtab-dyson">
+      <div class="co" style="background:var(--dyson)"></div>Dyson
+    </div>
+    <div class="demo-tab" onclick="loadDemo('gds')" id="dtab-gds">
+      <div class="co" style="background:var(--gds)"></div>GDS
+    </div>
+  </div>
+  <div class="tb-pack">
+    <div class="pack-badge" id="pack-badge" style="background:var(--tbg);color:var(--teal);border-color:var(--tbr)">Software pack</div>
+  </div>
+  <div class="tb-engine">
+    <div class="eng-dot" id="eng-dot"></div>
+    <span class="eng-lbl" id="eng-lbl">idle</span>
+  </div>
+  <div class="tb-right">
+    <button class="btn sm" id="btn-stage" onclick="advanceStage()">Advance stage →</button>
+    <button class="btn sm primary" onclick="openModal('how-modal')">How this works</button>
+  </div>
+</header>
+
+<!-- LEFT -->
+<aside class="left">
+  <div class="lp-head">
+    <div class="lp-title" id="lp-title">Spotify — Podcast Monetisation</div>
+    <div class="lp-sub" id="lp-sub">Software pack · 6 data sources · 3 tensions</div>
+  </div>
+  <div class="lp-scroll">
+    <div class="pack-panel">
+      <div class="pp-label">Active domain pack</div>
+      <div class="pp-pack" id="pack-info"></div>
+    </div>
+    <div class="org-rules" id="org-rules">
+      <div class="pp-label">Org customisation layer</div>
+    </div>
+    <div class="ds-group">
+      <div class="ds-label">Data sources</div>
+      <div id="data-sources"></div>
+    </div>
+    <div class="ds-group">
+      <div class="ds-label">Team</div>
+      <div id="team-list"></div>
+    </div>
+  </div>
+  <div class="engine-input-zone">
+    <div class="eiz-row">
+      <textarea class="eiz-input" id="eng-input" rows="2" placeholder="Add a process step…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendToEngine(document.getElementById('eng-input').value);document.getElementById('eng-input').value=''}"></textarea>
+      <button class="eiz-send" id="eng-send" onclick="sendToEngine(document.getElementById('eng-input').value);document.getElementById('eng-input').value=''">
+        <svg viewBox="0 0 12 12" fill="none" width="12" height="12"><path d="M1 6h10M7 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="eiz-chips">
+      <button class="eiz-chip" onclick="document.getElementById('eng-input').value=this.textContent">monetisation API contract change</button>
+      <button class="eiz-chip" onclick="document.getElementById('eng-input').value=this.textContent">design sprint Week 2 output</button>
+      <button class="eiz-chip" onclick="document.getElementById('eng-input').value=this.textContent">latency regression in staging</button>
+    </div>
+  </div>
+</aside>
+
+<!-- CANVAS -->
+<main class="canvas">
+  <div class="c-metrics">
+    <div class="cm"><div class="cm-l">Nodes</div><div class="cm-v" id="m-nodes" style="color:var(--teal)">—</div></div>
+    <div class="cm"><div class="cm-l">Tensions</div><div class="cm-v" id="m-tensions" style="color:var(--ink5)">—</div></div>
+    <div class="cm"><div class="cm-l">Intent I1</div><div class="cm-v" id="m-intent" style="color:var(--ink5)">—</div></div>
+    <div class="cm"><div class="cm-l">Stage</div><div class="cm-v" id="m-stage" style="color:var(--blue);font-size:13px;padding-top:4px">—</div></div>
+  </div>
+  <div class="c-toolbar">
+    <span class="c-title" id="canvas-title">Select a demo</span>
+    <div class="c-right">
+      <div class="intent-pill">
+        <span class="ip-l">I1</span>
+        <div class="ip-bar"><div class="ip-fill" id="ip-fill" style="width:0%"></div></div>
+        <span class="ip-val" id="ip-val" style="color:var(--ink5)">—</span>
       </div>
-      <div class="ob-steps-track" id="ob-track"></div>
-
-      <!-- Step 0 -->
-      <div class="ob-step active" id="ob-step-0">
-        <div class="ob-step-num">Step 1 of 5</div>
-        <div class="ob-step-title">Set up your workspace</div>
-        <div class="ob-step-desc">Seed maps your work into a live process graph — reading tensions, tracking intent, and surfacing blind spots before they become blockers.</div>
-        <div class="field-wrap"><div class="field-label">Workspace name</div><input class="inp" id="ob-ws" placeholder="e.g. Acme Corp · Product"></div>
-        <div class="field-wrap"><div class="field-label">Your role</div><select class="inp" id="ob-role"><option>Product Manager</option><option>Engineering Lead</option><option>Designer</option><option>CTO / VP Engineering</option><option>Program Manager</option><option>Other</option></select></div>
-        <div class="field-wrap"><div class="field-label">Team size</div><select class="inp" id="ob-size"><option>2–5 people</option><option>6–15 people</option><option>16–50 people</option><option>50+ people</option></select></div>
-        <div class="ob-actions"><button class="btn primary" onclick="obNext()">Continue →</button></div>
-      </div>
-
-      <!-- Step 1 -->
-      <div class="ob-step" id="ob-step-1">
-        <div class="ob-step-num">Step 2 of 5</div>
-        <div class="ob-step-title">What are you building?</div>
-        <div class="ob-step-desc">Pick the domain that best describes your work. This sets the process vocabulary and tension types.</div>
-        <div class="pack-grid" id="ob-packs">
-          <div class="pack-card sel" data-pack="software" onclick="selectPack(this)"><div class="pc-emoji">⬡</div><div class="pc-name">Software product</div><div class="pc-desc">SaaS · APIs · mobile<br>Platform → Feature</div></div>
-          <div class="pack-card" data-pack="hardware" onclick="selectPack(this)"><div class="pc-emoji">◈</div><div class="pc-name">Hardware product</div><div class="pc-desc">Electronics · medical<br>Program → Component</div></div>
-          <div class="pack-card" data-pack="service" onclick="selectPack(this)"><div class="pc-emoji">◎</div><div class="pc-name">Service design</div><div class="pc-desc">Customer journeys<br>Policy → Channel</div></div>
-          <div class="pack-card" data-pack="rd" onclick="selectPack(this)"><div class="pc-emoji">◌</div><div class="pc-name">R&amp;D / Research</div><div class="pc-desc">Hypothesis-driven<br>Programme → Protocol</div></div>
-        </div>
-        <div class="ob-actions"><button class="btn primary" onclick="obNext()">Continue →</button><button class="btn ghost" onclick="obBack()">Back</button></div>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="ob-step" id="ob-step-2">
-        <div class="ob-step-num">Step 3 of 5</div>
-        <div class="ob-step-title">Connect your tools</div>
-        <div class="ob-step-desc">Seed reads your existing work through their APIs. Credentials are stored only in your browser.</div>
-        <div id="ob-tools">
-          <div class="tool-row sel" data-conn="github" onclick="toggleConn(this)"><div class="tr-icon" style="background:#24292f;color:#88a0c0">G</div><div class="tr-info"><div class="tr-name">GitHub</div><div class="tr-sub">Issues, PRs, repositories</div></div><div class="tr-check"></div></div>
-          <div class="tool-row" data-conn="notion" onclick="toggleConn(this)"><div class="tr-icon" style="background:#252525;color:#888">N</div><div class="tr-info"><div class="tr-name">Notion</div><div class="tr-sub">Pages, databases, docs</div></div><div class="tr-check"></div></div>
-          <div class="tool-row" data-conn="jira" onclick="toggleConn(this)"><div class="tr-icon" style="background:#0052CC1a;color:#4090ff">J</div><div class="tr-info"><div class="tr-name">Jira</div><div class="tr-sub">Issues, epics, sprints</div></div><div class="tr-check"></div></div>
-          <div class="tool-row" data-conn="linear" onclick="toggleConn(this)"><div class="tr-icon" style="background:#5e6ad21a;color:#8090e8">L</div><div class="tr-info"><div class="tr-name">Linear</div><div class="tr-sub">Issues, projects, cycles</div></div><div class="tr-check"></div></div>
-          <div class="tool-row" data-conn="figma" onclick="toggleConn(this)"><div class="tr-icon" style="background:#ff72661a;color:#ff9980">F</div><div class="tr-info"><div class="tr-name">Figma</div><div class="tr-sub">Files, frames, comments</div></div><div class="tr-check"></div></div>
-        </div>
-        <div class="ob-actions"><button class="btn primary" onclick="obNext()">Continue →</button><button class="btn ghost" onclick="obBack()">Back</button><button class="btn ghost" onclick="obNext(true)" style="margin-left:auto">Skip</button></div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="ob-step" id="ob-step-3">
-        <div class="ob-step-num">Step 4 of 5</div>
-        <div class="ob-step-title">Describe your project</div>
-        <div class="ob-step-desc">Paste a PRD, brief, or describe what you're working on. The engine will extract your first process graph.</div>
-        <div class="field-wrap"><div class="field-label">Project brief</div><textarea class="inp" id="ob-brief" rows="6" placeholder="We're building search for our B2B SaaS. Goal: reduce time-to-find 60% by Q2. PM is Priya, Dev handles backend, Sara does UX…"></textarea></div>
-        <div class="ob-actions"><button class="btn primary" id="ob-xbtn" onclick="obExtract()">Extract graph →</button><button class="btn ghost" onclick="obBack()">Back</button><button class="btn ghost" onclick="obNext(true)" style="margin-left:auto">Skip</button></div>
-      </div>
-
-      <!-- Step 4 -->
-      <div class="ob-step" id="ob-step-4">
-        <div class="ob-step-num">Step 5 of 5</div>
-        <div class="ob-step-title">You're ready</div>
-        <div class="ob-step-desc">The engine is watching your process, tracking intent coherence, and ready to surface tensions before they become blockers.</div>
-        <div id="ob-summary" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:14px;font-size:11px;font-family:var(--fm);color:var(--t3);line-height:2.1"></div>
-        <div class="ob-actions"><button class="btn primary" onclick="launchApp()">Open canvas →</button></div>
+      <div class="view-btns">
+        <button class="vb on" onclick="setView('graph',this)">Graph</button>
+        <button class="vb" onclick="setView('data',this)">Data flow</button>
+        <button class="vb" onclick="setView('timeline',this)">Timeline</button>
       </div>
     </div>
+  </div>
+  <div class="cs" id="canvas-scroll">
+    <div id="canvas-content"></div>
+  </div>
+</main>
 
-    <div class="ob-right">
-      <div class="ob-right-hd"><div class="ob-live"></div>Live preview</div>
-      <div class="ob-preview-body" id="ob-preview">
-        <div class="ob-preview-empty" id="ob-preview-empty">Nodes will appear here as the engine reads your brief</div>
-      </div>
+<!-- RIGHT -->
+<aside class="right">
+  <div class="rp-tabs">
+    <button class="rp-tab on" id="rpt-detail" onclick="setRPTab('detail')">Node detail</button>
+    <button class="rp-tab" id="rpt-intents" onclick="setRPTab('intents')">Intents</button>
+    <button class="rp-tab" id="rpt-tensions" onclick="setRPTab('tensions')">Tensions</button>
+    <button class="rp-tab" id="rpt-log" onclick="setRPTab('log')">Log</button>
+  </div>
+  <div class="rp-scroll" id="rp-content">
+    <div style="text-align:center;padding:40px 0;font-family:var(--fd);font-size:14px;font-style:italic;color:var(--ink4)">Click any node to see its details, sources, and connections</div>
+  </div>
+</aside>
+
+</div>
+
+<!-- HOW MODAL -->
+<div class="overlay" id="how-modal">
+  <div class="modal">
+    <div class="modal-title">How this demo works</div>
+    <div class="modal-body">
+      This demo shows three real organisations using Seed with different domain packs and org customisation layers. The data is synthesised from actual tool stacks used by each company.<br><br>
+      <strong style="font-weight:500">Spotify</strong> uses the Software pack. Data sources: Jira (PMFR sprint tickets), Confluence (PRD), Figma (design artifacts), Slack (decision signals), GitHub (PR metadata), Productboard (feature prioritisation).<br><br>
+      <strong style="font-weight:500">Dyson</strong> uses the Hardware pack with an exponential cost model. Data sources: PTC Windchill (DW-* parts), Altium (PCB metadata), Octopart (component supply chain), Confluence (engineering specs), internal test systems.<br><br>
+      <strong style="font-weight:500">GDS (UK Gov)</strong> uses the Service Design pack with a custom public sector org layer. Data sources: Jira (GOV-* tickets), Confluence, Miro (journey maps), GOV.UK Design System, accessibility audit reports.<br><br>
+      Click any node to see its provenance — which tool it came from, the exact text that generated it, and the confidence score. Use "Advance stage" to move the program forward and watch tensions escalate as irreversibility increases.
+    </div>
+    <div class="modal-acts">
+      <button class="btn" onclick="closeOverlay('how-modal')">Got it</button>
+      <button class="btn primary" onclick="closeOverlay('how-modal');loadDemo('spotify')">Start with Spotify →</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════ APP ═══════════════════ -->
-<div class="view" id="view-app">
-
-  <!-- Morning Brief -->
-  <div class="brief-overlay" id="brief-overlay">
-    <div class="brief-panel">
-      <div class="bp-header">
-        <div><div class="bp-date" id="bp-date"></div><div class="bp-title" id="bp-title">Good morning.</div></div>
-        <button class="bp-close" onclick="closeBrief()">✕</button>
-      </div>
-      <div class="bp-body" id="bp-body"></div>
-      <div class="bp-footer"><button class="btn ghost" onclick="closeBrief()">Dismiss</button><button class="btn primary" onclick="closeBrief()">Open canvas →</button></div>
-    </div>
-  </div>
-
-  <!-- Tension modal -->
-  <div class="overlay" id="tension-modal" onclick="if(event.target===this)closeModal('tension-modal')">
-    <div class="modal">
-      <div class="modal-title" id="tm-title">Engine surface</div>
-      <div id="tm-body" style="font-size:12px;color:var(--t2);line-height:1.7;margin-bottom:12px"></div>
-      <div class="modal-actions" id="tm-acts"></div>
-    </div>
-  </div>
-
-  <!-- Connector modal -->
-  <div class="overlay" id="conn-modal" onclick="if(event.target===this)closeModal('conn-modal')">
-    <div class="modal">
-      <div class="modal-title" id="cm-title">Connect</div>
-      <div class="modal-sub" id="cm-sub"></div>
-      <div id="cm-steps"></div>
-      <div id="cm-fields"></div>
-      <div class="conn-status-msg" id="cm-status" style="display:none"></div>
-      <div class="modal-actions"><button class="btn ghost" onclick="closeModal('conn-modal')">Cancel</button><button class="btn primary" id="cm-btn" onclick="doConnect()">Connect →</button></div>
-    </div>
-  </div>
-
-  <div class="app-grid">
-    <!-- Topbar -->
-    <header class="topbar">
-      <div class="tb-logo" onclick="openBrief()">
-        <div class="tb-lmark">
-          <svg viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="2.4" fill="white"/><path d="M6.5 1v1.8M6.5 10.2V12M1 6.5h1.8M10.2 6.5H12" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>
-        </div>
-        <span class="tb-lname">Seed</span>
-      </div>
-      <div class="tb-sep"></div>
-      <span class="tb-ws" id="tb-ws">My workspace</span>
-      <div class="tb-engine">
-        <div class="eng-dot" id="eng-dot"></div>
-        <span class="eng-label" id="eng-label">idle</span>
-      </div>
-      <nav class="tb-views">
-        <button class="tv on" onclick="setView('canvas',this)">Canvas</button>
-        <button class="tv" onclick="setView('integrations',this)">Integrations</button>
-        <button class="tv" onclick="setView('enterprise',this)">Org map</button>
-      </nav>
-      <div class="tb-right">
-        <button class="btn sm ghost" onclick="openBrief()">Brief</button>
-        <button class="btn sm" style="background:var(--accent-dim);border-color:rgba(91,94,239,.25);color:var(--accent)" onclick="loadScenario()">▶ Scenario</button>
-        <div class="user-pill">
-          <div class="user-av" id="user-av">UJ</div>
-          <span class="user-name" id="user-name">Ujjal</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sb-personas" id="persona-bar"></div>
-
-      <div class="sb-section">
-        <div class="sb-section-label">Views</div>
-        <div class="sb-item on" onclick="setView('canvas')">
-          <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="8" y="8" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
-          Canvas
-        </div>
-        <div class="sb-item" onclick="setView('integrations')">
-          <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="currentColor" stroke-width="1.2"/><path d="M7 1.5v11M1.5 7h11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-          Integrations
-          <span class="sb-count b-green" id="nb-conn">0</span>
-        </div>
-        <div class="sb-item" onclick="setView('enterprise')">
-          <svg viewBox="0 0 14 14" fill="none"><path d="M7 1L1 4.5v5L7 13l6-3.5v-5L7 1Z" stroke="currentColor" stroke-width="1.2"/></svg>
-          Org map
-        </div>
-      </div>
-
-      <div class="sb-section">
-        <div class="sb-section-label">Engine</div>
-        <div class="sb-item" onclick="setRPTab('intents')">
-          <svg viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-          Intent model
-        </div>
-        <div class="sb-item" onclick="setRPTab('tensions')">
-          <svg viewBox="0 0 14 14" fill="none"><path d="M7 1v8M7 11v2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
-          Tensions
-          <span class="sb-count b-red" id="nb-tensions" style="display:none">0</span>
-        </div>
-        <div class="sb-item" onclick="setRPTab('graph')">
-          <svg viewBox="0 0 14 14" fill="none"><circle cx="3" cy="7" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="11" cy="3.5" r="1.5" stroke="currentColor" stroke-width="1.2"/><circle cx="11" cy="10.5" r="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 7L9.5 4M4.5 7L9.5 10.2" stroke="currentColor" stroke-width="1.2"/></svg>
-          Process graph
-          <span class="sb-count b-dim" id="nb-nodes">0</span>
-        </div>
-        <div class="sb-item" onclick="setRPTab('log')">
-          <svg viewBox="0 0 14 14" fill="none"><path d="M2 3h10M2 7h6M2 11h8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-          Engine log
-        </div>
-      </div>
-
-      <div class="sb-section" style="flex:1">
-        <div class="sb-section-label">Team</div>
-        <div id="team-list"></div>
-      </div>
-
-      <div class="input-zone">
-        <div class="iz-row">
-          <textarea class="iz-input" id="user-input" rows="2" placeholder="Describe a process step…" onkeydown="handleKey(event)"></textarea>
-          <button class="iz-btn" id="send-btn" onclick="sendToEngine()">
-            <svg viewBox="0 0 12 12" fill="none" width="12" height="12"><path d="M1 6h10M7 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </div>
-        <div class="iz-chips">
-          <button class="iz-chip" onclick="useEx(this)">integrate payments API</button>
-          <button class="iz-chip" onclick="useEx(this)">design sprint starts Monday</button>
-          <button class="iz-chip" onclick="useEx(this)">Q2 launch — cut churn 30%</button>
-        </div>
-      </div>
-    </aside>
-
-    <!-- Canvas / panels -->
-    <main class="canvas-area">
-      <div class="stats-bar">
-        <div class="stat-cell"><div class="stat-l">Nodes</div><div class="stat-v" id="m-nodes" style="color:var(--green)">0</div></div>
-        <div class="stat-cell"><div class="stat-l">Tensions</div><div class="stat-v" id="m-tensions" style="color:var(--t4)">0</div></div>
-        <div class="stat-cell"><div class="stat-l">Intent I₁</div><div class="stat-v" id="m-intent" style="color:var(--t4)">—</div></div>
-        <div class="stat-cell"><div class="stat-l">API calls</div><div class="stat-v" id="m-calls" style="color:var(--t4)">0</div></div>
-      </div>
-
-      <div class="canvas-header" id="canvas-hdr">
-        <span class="ch-title" id="canvas-title">Process canvas</span>
-        <div class="ch-spacer"></div>
-        <div class="intent-chip" onclick="setRPTab('intents')">
-          <span class="ic-label">I₁</span>
-          <div class="ic-track"><div class="ic-fill" id="ic-fill" style="width:0%;background:var(--t4)"></div></div>
-          <span class="ic-val" id="ic-val" style="color:var(--t4)">—</span>
-        </div>
-        <button class="btn xs ghost" onclick="clearCanvas()">Clear</button>
-      </div>
-
-      <div class="canvas-body" id="canvas-body">
-        <div class="canvas-empty" id="canvas-empty">
-          <div class="ce-glyph">⬡</div>
-          <div class="ce-heading">The engine reads your work in real time</div>
-          <div class="ce-sub">Type a process step in the sidebar<br>or click ▶ Scenario to see the graph build</div>
-        </div>
-        <div id="canvas-levels" style="display:none"></div>
-      </div>
-
-      <!-- Integrations panel -->
-      <div id="int-panel" style="display:none;flex:1;overflow-y:auto;padding:18px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-          <div>
-            <div style="font-size:15px;font-weight:600;color:var(--t1);letter-spacing:-.02em;margin-bottom:2px">Connectors</div>
-            <div style="font-size:11px;font-family:var(--fm);color:var(--t4)">Credentials stored locally · never sent anywhere except the tool's own API</div>
-          </div>
-          <button class="btn sm ghost" onclick="syncAllConns()">↻ Sync all</button>
-        </div>
-        <div class="int-grid" id="int-grid"></div>
-        <div style="font-size:9px;font-family:var(--fm);color:var(--t4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px">Coming soon</div>
-        <div class="avail-wrap" id="avail-chips"></div>
-      </div>
-
-      <!-- Enterprise panel -->
-      <div id="ent-panel" style="display:none;flex:1;overflow-y:auto;padding:18px">
-        <div id="ent-content"></div>
-      </div>
-    </main>
-
-    <!-- Right panel -->
-    <aside class="right-panel">
-      <div class="rp-tabs">
-        <button class="rp-tab on" id="rpt-thinking" onclick="setRPTab('thinking')">Stream</button>
-        <button class="rp-tab" id="rpt-intents" onclick="setRPTab('intents')">Intents</button>
-        <button class="rp-tab" id="rpt-tensions" onclick="setRPTab('tensions')">Tensions</button>
-        <button class="rp-tab" id="rpt-graph" onclick="setRPTab('graph')">Graph</button>
-        <button class="rp-tab" id="rpt-log" onclick="setRPTab('log')">Log</button>
-      </div>
-      <div class="rp-body" id="rp-body">
-        <div class="rp-empty">Type a process step to start the engine</div>
-      </div>
-    </aside>
+<!-- TENSION MODAL -->
+<div class="overlay" id="tension-modal">
+  <div class="modal">
+    <div class="modal-title" id="tm-title">Tension detected</div>
+    <div class="modal-body" id="tm-body"></div>
+    <div class="modal-acts" id="tm-acts"></div>
   </div>
 </div>
+
 
 <script>
-// ═══════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════
-const PERSONAS={priya:{name:'Priya',role:'PM',i:'PR',bg:'#18c26a22',tc:'#18c26a'},dev:{name:'Dev',role:'Eng',i:'DV',bg:'#4090e822',tc:'#4090e8'},sara:{name:'Sara',role:'Design',i:'SA',bg:'#9060e822',tc:'#9060e8'},anand:{name:'Anand',role:'CTO',i:'AN',bg:'#e54d4d22',tc:'#e54d4d'}};
-const PO=['priya','dev','sara','anand'];
-const APP={user:{name:'Ujjal',initials:'UJ'},ws:{name:'My workspace'},domainPack:'software',persona:'priya',nodes:{},intents:[],tensions:[],log:[],resolved:{},apiCalls:0,rpTab:'thinking',view:'canvas',connectors:{},sel:null};
-const CONN={github:{name:'GitHub',cat:'engineering',icon:'G',bg:'#24292f',tc:'#88a0c0',steps:['github.com/settings/tokens → New token','Select scopes: repo → Generate','Copy token'],fields:[{id:'token',label:'Personal Access Token',type:'password',ph:'ghp_…'},{id:'repo',label:'Repository (optional)',ph:'owner/repo'}]},notion:{name:'Notion',cat:'documentation',icon:'N',bg:'#252525',tc:'#888',steps:['notion.so/my-integrations → New integration → copy token','Notion pages → ··· → Connections → select integration'],fields:[{id:'token',label:'Integration Token',type:'password',ph:'ntn_…'}]},jira:{name:'Jira',cat:'project mgmt',icon:'J',bg:'#0052CC1a',tc:'#4090ff',steps:['id.atlassian.net/security/api-tokens → Create token','Note your domain (e.g. yourcompany)'],fields:[{id:'domain',label:'Domain',ph:'yourcompany'},{id:'email',label:'Email',ph:'you@co.com'},{id:'token',label:'API Token',type:'password',ph:'ATATT3…'}]},linear:{name:'Linear',cat:'project mgmt',icon:'L',bg:'#5e6ad21a',tc:'#8090e8',steps:['Linear → Settings → API → Personal API keys → Create'],fields:[{id:'token',label:'API Key',type:'password',ph:'lin_api_…'}]},figma:{name:'Figma',cat:'design',icon:'F',bg:'#ff72661a',tc:'#ff9980',steps:['Figma → Account settings → Security → Personal access tokens'],fields:[{id:'token',label:'Access Token',type:'password',ph:'figd_…'},{id:'filekey',label:'File key (optional)',ph:'from figma.com/file/XXXXX/'}]},productboard:{name:'Productboard',cat:'product',icon:'P',bg:'#f9731618',tc:'#f97316',steps:['Productboard → Profile → API access → Generate key'],fields:[{id:'token',label:'API Token',type:'password',ph:'pb-token-…'}]}};
-const AVAIL=['Slack','Confluence','Miro','Amplitude','Datadog','Loom','PTC Windchill'];
-const PACK_LEVELS={software:['platform','product','feature','service'],hardware:['program','system','subsystem','component'],service:['policy','programme','service','channel'],rd:['programme','track','experiment','protocol']};
-const LCOLORS={platform:'#e54d4d',product:'#e8a020',feature:'#9060e8',service:'#4090e8',program:'#e54d4d',system:'#e8a020',subsystem:'#9060e8',component:'#4090e8',policy:'#e54d4d',programme:'#e8a020',channel:'#4090e8',interaction:'#4090e8',track:'#9060e8',experiment:'#4090e8',protocol:'#18c26a'};
 
-// ═══════════════════════════════════════════
-// BOOT
-// ═══════════════════════════════════════════
-function checkSession(){APP.user={name:'Ujjal',initials:'UJ'};APP.ws.name=localStorage.getItem('seed_ws_name')||'My workspace';APP.domainPack=localStorage.getItem('seed_pack')||'software';showApp();}
+// ── DEMO DATA ─────────────────────────────────────────────────────────────────
 
-function showApp(){
-  document.getElementById('view-ob').classList.remove('active');
-  document.getElementById('view-app').classList.add('active');
-  document.getElementById('tb-ws').textContent=APP.ws.name;
-  document.getElementById('user-av').textContent=APP.user.initials;
-  document.getElementById('user-name').textContent=APP.user.name;
-  renderPersonaBar();renderTeam();updateMetrics();
-  setTimeout(openBrief,700);
+const DEMOS = {
+
+spotify: {
+  company:'Spotify',
+  squad:'Podcast Monetisation squad',
+  pack:'software',
+  packDisplay:'Software pack',
+  packColor:'var(--teal)',
+  packBg:'var(--tbg)',
+  packBorder:'var(--tbr)',
+  companyColor:'var(--spotify)',
+  stages:['Sprint planning','Sprint week 1','Sprint week 2','Sprint review'],
+  currentStage:0,
+  intent:'Launch ad insertion API for podcast creators by Q3 · grow monetised podcasts 40%',
+  intentScore:.84,
+  levels:['platform','product','feature','service'],
+  levelLabels:{platform:'Platform',product:'Product',feature:'Feature',service:'Service'},
+  levelColors:{platform:'var(--coral)',product:'var(--amber)',feature:'var(--purple)',service:'var(--blue)'},
+  pack_detail:{
+    name:'Software pack v3.1',
+    levels:'Platform → Product → Feature → Service',
+    tensions:['level_mismatch','intent_conflict','scope_drift','dependency_blindspot'],
+    cost_model:'Linear (all stages = 1.0×)'
+  },
+  org_rules:[
+    {text:'IP/licensing approval gate on any API touching creator payments',badge:'Spotify legal'},
+    {text:'Privacy review required for new user data collection',badge:'GDPR'},
+    {text:'4-eyes approval for platform-level API contract changes',badge:'Platform eng'},
+  ],
+  sources:[
+    {id:'jira',name:'Jira',icon:'J',color:'#0052CC',bg:'#e6f0ff',count:'47 tickets',status:'live'},
+    {id:'conf',name:'Confluence',icon:'C',color:'#0052CC',bg:'#e6f0ff',count:'12 pages',status:'live'},
+    {id:'figma',name:'Figma',icon:'F',color:'#ff7262',bg:'#fff0ee',count:'24 frames',status:'synced'},
+    {id:'slack',name:'Slack',icon:'S',color:'#4a154b',bg:'#f5edf5',count:'38 signals',status:'live'},
+    {id:'github',name:'GitHub',icon:'G',color:'#24292f',bg:'#f0f0f0',count:'8 PRs',status:'live'},
+    {id:'pb',name:'Productboard',icon:'P',color:'#f97316',bg:'#fff3ec',count:'6 features',status:'synced'},
+  ],
+  team:[
+    {name:'Sofia',role:'PM',initials:'SO',bg:'#eaf5f0',tc:'var(--teal)'},
+    {name:'Marcus',role:'Eng Lead',initials:'MA',bg:'#edf2fb',tc:'var(--blue)'},
+    {name:'Yuki',role:'Designer',initials:'YK',bg:'#f0edf9',tc:'var(--purple)'},
+    {name:'Elena',role:'Platform Eng',initials:'EL',bg:'#fdf5e6',tc:'var(--amber)'},
+  ],
+  intents:[
+    {id:'I1',label:'Launch ad insertion API for podcast creators',level:'product',horizon:'tactical',score:.84},
+    {id:'I2',label:'Grow monetised podcasts by 40%',level:'product',horizon:'strategic',score:.76},
+    {id:'I3',label:'Maintain ad-serving API contract integrity',level:'platform',horizon:'strategic',score:.91},
+  ],
+  tensions:[
+    {id:'T1',type:'level_mismatch',severity:'high',
+     message:'The ad-targeting endpoint touches the shared monetisation contract — also consumed by Premium, Duo, and Student plans. Does the Platform team know this contract is being modified?',
+     options:['Escalate to Platform Eng lead — API fork decision (20-min call today)','Coordinate bilateral contract freeze with all consumer teams','File platform change request (3-day review)','Dismiss and accept cascade risk to Premium billing']},
+    {id:'T2',type:'scope_drift',severity:'medium',
+     message:'Offline download mode for monetised episodes has been added to the sprint. This was not in the Q3 charter. Does this change the launch date?',
+     options:['Defer offline mode to Q4 sprint (scope reduction)','Accept scope addition — revise Q3 deadline by 2 weeks','Split into separate feature — parallel track']},
+    {id:'T3',type:'dependency_blindspot',severity:'medium',
+     message:'The creator analytics node depends on the event-tracking service owned by the Growth squad. Has Growth been notified of the new event schema?',
+     options:['Notify Growth squad and request schema review','Add event schema to platform change request','Design analytics to use existing event types only']},
+  ],
+  nodes:{
+    N1:{id:'N1',label:'Ad insertion API spec',type:'artifact',level:'product',owner:'Sofia',status:'committed',tainted:false,
+      source:[{tool:'Confluence',icon:'C',color:'#0052CC',ref:'PMFR-PRD-42',text:'Podcast ad insertion API v1 specification. Supports pre-roll, mid-roll, and post-roll. Targeting via IAB categories. Requires new ad-serving contract extension on monetisation endpoint.',confidence:.92,span:'Requires new ad-serving contract extension on monetisation endpoint'}],
+      relatedNodes:['N2','N3','N5'],crossTeam:[],
+      history:[{action:'Created from Confluence PRD page PMFR-PRD-42',time:'8 days ago'},{action:'Intent I1 inferred: score=0.84',time:'8 days ago'},{action:'Intent I3 activated: API contract integrity',time:'8 days ago'}],
+      intentImpact:[{id:'I1',delta:+.08,dir:'up'},{id:'I3',delta:+.06,dir:'up'}]},
+    N2:{id:'N2',label:'Monetisation contract extension',type:'decision',level:'platform',owner:'Elena',status:'staged',tainted:true,
+      source:[{tool:'Jira',icon:'J',color:'#0052CC',ref:'PMFR-118',text:'PMFR-118: Extend monetisation-service/v2 contract to support ad targeting parameters. Blocked: Platform review required.',confidence:.88,span:'Extend monetisation-service/v2 contract to support ad targeting parameters'},{tool:'GitHub',icon:'G',color:'#24292f',ref:'PR #2847',text:'PR #2847: monetisation-service — add ad_targeting_params to contract. Consumers: premium-billing, student-plan, duo-plan, podcast-monetisation (NEW).',confidence:.96,span:'Consumers: premium-billing, student-plan, duo-plan, podcast-monetisation (NEW)'}],
+      relatedNodes:['N1','N3'],crossTeam:[{label:'Premium Billing API',team:'Platform squad',type:'blast radius'},{label:'Student Plan service',team:'Consumer squad',type:'blast radius'}],
+      history:[{action:'Created from PMFR-118',time:'5 days ago'},{action:'T1 level_mismatch detected: shared monetisation contract',time:'5 days ago'},{action:'Status: staged (platform review pending)',time:'5 days ago'},{action:'Blast radius computed: premium-billing, student-plan, duo-plan',time:'5 days ago'}],
+      intentImpact:[{id:'I1',delta:-.03,dir:'down'},{id:'I3',delta:-.08,dir:'down'}]},
+    N3:{id:'N3',label:'Ad targeting engine',type:'action',level:'feature',owner:'Marcus',status:'committed',tainted:false,
+      source:[{tool:'Jira',icon:'J',color:'#0052CC',ref:'PMFR-122',text:'PMFR-122: Build ad targeting engine using IAB category taxonomy. Integrate with ad-serving API v1.4. Est: 5 days.',confidence:.86,span:'Build ad targeting engine using IAB category taxonomy'}],
+      relatedNodes:['N1','N4'],crossTeam:[],
+      history:[{action:'Created from PMFR-122',time:'5 days ago'},{action:'Linked to N1 (PRD spec)',time:'5 days ago'}],
+      intentImpact:[{id:'I1',delta:+.05,dir:'up'},{id:'I2',delta:+.04,dir:'up'}]},
+    N4:{id:'N4',label:'Creator analytics dashboard',type:'action',level:'feature',owner:'Yuki',status:'staged',tainted:false,
+      source:[{tool:'Figma',icon:'F',color:'#ff7262',ref:'Pod-Monetisation/Analytics',text:'Analytics dashboard wireframes — 18 frames. Impression count, CPM, total earnings, episode performance breakdown.',confidence:.89,span:'Impression count, CPM, total earnings, episode performance breakdown'},{tool:'Productboard',icon:'P',color:'#f97316',ref:'PB-Feature-891',text:'Feature: Creator earnings transparency. Priority: Critical. Requested by 47 creators in research sessions.',confidence:.84,span:'Requested by 47 creators in research sessions'}],
+      relatedNodes:['N3','N5'],crossTeam:[{label:'Event tracking service',team:'Growth squad',type:'depends on'}],
+      history:[{action:'Created from Productboard PB-891',time:'4 days ago'},{action:'T3 dependency_blindspot: event tracking service',time:'4 days ago'},{action:'Figma frames linked',time:'3 days ago'}],
+      intentImpact:[{id:'I1',delta:+.04,dir:'up'},{id:'I2',delta:+.06,dir:'up'}]},
+    N5:{id:'N5',label:'Offline monetised episodes',type:'action',level:'feature',owner:'Marcus',status:'staged',tainted:false,
+      source:[{tool:'Slack',icon:'S',color:'#4a154b',ref:'#podcast-squad',text:'Sofia: "Adding offline playback for monetised episodes to this sprint — creator ask from research. Marcus can you scope?" Marcus: "2-3 days but touches the download manager which is Platform."',confidence:.91,span:'Adding offline playback for monetised episodes to this sprint'}],
+      relatedNodes:['N3'],crossTeam:[{label:'Download Manager',team:'Platform squad',type:'touches'}],
+      history:[{action:'Created from Slack message (unplanned scope addition)',time:'3 days ago'},{action:'T2 scope_drift detected: not in Q3 charter',time:'3 days ago'}],
+      intentImpact:[{id:'I1',delta:-.02,dir:'down'},{id:'I2',delta:+.02,dir:'up'}]},
+    N6:{id:'N6',label:'IP licensing review',type:'decision',level:'product',owner:'Sofia',status:'blocked',tainted:false,
+      source:[{tool:'Confluence',icon:'C',color:'#0052CC',ref:'Legal-Gate-Policy',text:'Spotify Org Policy: Any API touching creator payments or ad revenue requires IP/licensing review by Legal before staging. Gate enforced by Seed org layer.',confidence:.98,span:'Any API touching creator payments or ad revenue requires IP/licensing review'}],
+      relatedNodes:['N2','N1'],crossTeam:[],
+      history:[{action:'Gate triggered by org customisation rule',time:'5 days ago'},{action:'Assigned to Legal team for review',time:'4 days ago'}],
+      intentImpact:[{id:'I3',delta:+.04,dir:'up'}]},
+  },
+},
+
+dyson: {
+  company:'Dyson',
+  squad:'AM-12 Purifier Air Max program',
+  pack:'hardware',
+  packDisplay:'Hardware pack',
+  packColor:'var(--coral)',
+  packBg:'var(--cbg)',
+  packBorder:'var(--cbr)',
+  companyColor:'var(--dyson)',
+  stages:['Concept','Engineering design (EV)','Design freeze gate','DVT','PVT'],
+  currentStage:1,
+  intent:'Launch AM-12 Purifier Air Max by Q4 · £2,400 price point · HEPA H13 filtration · 60m² room coverage',
+  intentScore:.79,
+  levels:['program','system','subsystem','component','mfg_step'],
+  levelLabels:{program:'Program',system:'System',subsystem:'Subsystem',component:'Component',mfg_step:'Mfg step'},
+  levelColors:{program:'var(--coral)',system:'var(--amber)',subsystem:'var(--purple)',component:'var(--blue)',mfg_step:'var(--teal)'},
+  pack_detail:{
+    name:'Hardware pack v2.1',
+    levels:'Program → System → Subsystem → Component → Mfg step',
+    tensions:['tolerance_stackup','design_freeze_violation','supply_chain_risk','certification_gap','cross_discipline_conflict'],
+    cost_model:'Exponential (EV=3×, freeze=12×, DVT=40×, PVT=150×)'
+  },
+  org_rules:[
+    {text:'BSI/CE mark required before DVT gate',badge:'Regulatory'},
+    {text:'Design Review Board approval for all system-level nodes',badge:'DRB gate'},
+    {text:'Sustainability materials audit on all new component nodes',badge:'Dyson green'},
+    {text:'FCC Part 15 certification planned before PVT',badge:'FCC'},
+  ],
+  sources:[
+    {id:'windchill',name:'PTC Windchill',icon:'W',color:'#0056a0',bg:'#edf3fb',count:'DW-* parts (142)',status:'live'},
+    {id:'altium',name:'Altium Designer',icon:'A',color:'#a3292f',bg:'#fdf0ef',count:'PCB metadata',status:'synced'},
+    {id:'octopart',name:'Octopart',icon:'O',color:'#2d7a1f',bg:'#edf4ea',count:'Supply chain data',status:'live'},
+    {id:'confluence',name:'Confluence',icon:'C',color:'#0052CC',bg:'#e6f0ff',count:'Eng specs (28)',status:'live'},
+    {id:'labview',name:'LabVIEW / TestStand',icon:'L',color:'#f59e0b',bg:'#fffbeb',count:'Test protocols',status:'synced'},
+  ],
+  team:[
+    {name:'Priya',role:'Fluid dynamics lead',initials:'PR',bg:'#fdf0ef',tc:'var(--coral)'},
+    {name:'James',role:'Electronics lead',initials:'JA',bg:'#edf2fb',tc:'var(--blue)'},
+    {name:'Aisha',role:'Firmware lead',initials:'AI',bg:'#eaf5f0',tc:'var(--teal)'},
+    {name:'Tom',role:'Program manager',initials:'TO',bg:'#fdf5e6',tc:'var(--amber)'},
+  ],
+  intents:[
+    {id:'I1',label:'Launch AM-12 by Q4 at £2,400 price point',level:'program',horizon:'tactical',score:.79},
+    {id:'I2',label:'Achieve HEPA H13 filtration and 60m² coverage',level:'system',horizon:'tactical',score:.88},
+    {id:'I3',label:'Maintain regulatory certification timeline',level:'program',horizon:'strategic',score:.62},
+  ],
+  tensions:[
+    {id:'T1',type:'cross_discipline_conflict',severity:'high',
+     message:'HEPA filter housing (Fluid dynamics) specifies 47mm total height. PCB keep-out zone (Electronics) requires 52mm clearance in that cavity. These cannot both be satisfied without a design change. Has the cross-discipline interface review been scheduled?',
+     options:['Schedule interface review — Priya + James (this week, before EV closure)','Redesign housing to accommodate PCB clearance (+2 days, Priya owns)','Redesign PCB layout to reduce height (+3 days, James owns)','Flag as accepted risk — defer to design freeze review']},
+    {id:'T2',type:'supply_chain_risk',severity:'high',
+     message:'STM32H7A3ZI MCU (DW-MCU-001) is single-source from STMicroelectronics with a 28-week lead time. Program schedule buffer is 12 weeks. Q4 launch is at risk. Has procurement confirmed allocation?',
+     options:['Qualify STM32H7B3ZI as secondary source (6 weeks qualification)','Negotiate guaranteed allocation from STM (procurement to lead)','Redesign firmware to run on dual-source MCU (8 weeks, Aisha owns)','Accept risk and place allocation order immediately']},
+    {id:'T3',type:'certification_gap',severity:'medium',
+     message:'AM-12 specifications include wireless firmware update capability (Aisha\'s firmware team). FCC Part 15 Class B certification is not yet in the program graph. This must complete before PVT. Has the regulatory timeline been planned?',
+     options:['Add FCC Part 15 certification to program graph (Tom to own)','Engage pre-certification lab — 6-week lead time for testing slot','Remove wireless update feature from AM-12 v1 scope']},
+  ],
+  nodes:{
+    N1:{id:'N1',label:'AM-12 program charter',type:'event',level:'program',owner:'Tom',status:'committed',tainted:false,
+      source:[{tool:'Confluence',icon:'C',color:'#0052CC',ref:'DYS-PGM-AM12-001',text:'AM-12 Purifier Air Max program charter. Target: Q4 launch. Price point: £2,400. Filtration: HEPA H13. Coverage: 60m². Key program risks: supply chain, regulatory timeline.',confidence:.95,span:'HEPA H13. Coverage: 60m². Key program risks: supply chain, regulatory timeline'}],
+      relatedNodes:['N2','N3'],crossTeam:[],
+      history:[{action:'Created from Confluence program charter',time:'45 days ago'},{action:'Intent I1, I2, I3 inferred',time:'45 days ago'}],
+      intentImpact:[{id:'I1',delta:+.1,dir:'up'},{id:'I2',delta:+.08,dir:'up'}]},
+    N2:{id:'N2',label:'HEPA filter housing',type:'action',level:'subsystem',owner:'Priya',status:'staged',tainted:true,
+      source:[{tool:'PTC Windchill',icon:'W',color:'#0056a0',ref:'DW-SUB-HEPA-047',text:'DW-SUB-HEPA-047: HEPA H13 filter housing. Material: ABS+GF30. Total height: 47mm. Filtration area: 0.42m². Note: height constraint driven by airflow path optimisation.',confidence:.91,span:'Total height: 47mm. Filtration area: 0.42m²'},{tool:'Confluence',icon:'C',color:'#0052CC',ref:'DYS-ENG-FD-022',text:'Fluid dynamics spec: 47mm maximum housing height required to maintain 2.8 m/s face velocity across HEPA media at 60m² coverage target.',confidence:.88,span:'47mm maximum housing height required to maintain 2.8 m/s face velocity'}],
+      relatedNodes:['N3','N4'],crossTeam:[{label:'PCB assembly node',team:'Electronics (James)',type:'interface conflict — height'},{label:'Main PCB layout',team:'Electronics',type:'keep-out zone'}],
+      history:[{action:'Created from Windchill DW-SUB-HEPA-047',time:'22 days ago'},{action:'T1 cross_discipline_conflict detected: 47mm vs 52mm clearance',time:'18 days ago'},{action:'Status: staged (interface conflict unresolved)',time:'18 days ago'}],
+      intentImpact:[{id:'I2',delta:+.07,dir:'up'},{id:'I1',delta:-.04,dir:'down'}]},
+    N3:{id:'N3',label:'Main PCB layout',type:'action',level:'subsystem',owner:'James',status:'staged',tainted:true,
+      source:[{tool:'Altium Designer',icon:'A',color:'#a3292f',ref:'AM12-PCB-REV-C',text:'AM12-PCB-REV-C: Main control board. Keep-out zone in HEPA cavity: 52mm minimum clearance required for capacitor height + thermal pad. Board dimensions: 180×95mm.',confidence:.93,span:'Keep-out zone in HEPA cavity: 52mm minimum clearance required'}],
+      relatedNodes:['N2','N5'],crossTeam:[],
+      history:[{action:'Created from Altium PCB metadata',time:'20 days ago'},{action:'T1 interface conflict with N2 detected',time:'18 days ago'}],
+      intentImpact:[{id:'I2',delta:+.05,dir:'up'}]},
+    N4:{id:'N4',label:'STM32H7 MCU',type:'action',level:'component',owner:'James',status:'staged',tainted:false,
+      source:[{tool:'PTC Windchill',icon:'W',color:'#0056a0',ref:'DW-MCU-001',text:'DW-MCU-001: STMicroelectronics STM32H7A3ZITx. 280MHz ARM Cortex-M7. Single source. Lead time: 28 weeks. Last purchase: 2023-Q2. Supply risk: HIGH per Octopart allocation index.',confidence:.94,span:'Single source. Lead time: 28 weeks. Supply risk: HIGH'},{tool:'Octopart',icon:'O',color:'#2d7a1f',ref:'OC-2847102',text:'STM32H7A3ZI: Current stock: 0 at major distributors. Allocation risk: SEVERE. STM priority program required for >5K units. Lead time estimate: 24-32 weeks.',confidence:.96,span:'Allocation risk: SEVERE. STM priority program required for >5K units'}],
+      relatedNodes:['N3','N5'],crossTeam:[],
+      history:[{action:'Created from Windchill DW-MCU-001',time:'18 days ago'},{action:'T2 supply_chain_risk detected: 28w lead time vs 12w buffer',time:'16 days ago'},{action:'Octopart live data: allocation risk SEVERE',time:'2 days ago'}],
+      intentImpact:[{id:'I1',delta:-.06,dir:'down'},{id:'I3',delta:-.04,dir:'down'}]},
+    N5:{id:'N5',label:'Wireless firmware OTA',type:'action',level:'subsystem',owner:'Aisha',status:'committed',tainted:false,
+      source:[{tool:'Confluence',icon:'C',color:'#0052CC',ref:'DYS-FW-AM12-008',text:'Firmware spec: OTA update capability via Dyson Link app. BLE 5.0 + WiFi 802.11n. Frequency range: 2.4GHz + 5GHz. Regulatory note: FCC Part 15 Class B certification required before market launch.',confidence:.90,span:'FCC Part 15 Class B certification required before market launch'}],
+      relatedNodes:['N4'],crossTeam:[],
+      history:[{action:'Created from firmware spec',time:'14 days ago'},{action:'T3 certification_gap detected: FCC Part 15 not in program graph',time:'12 days ago'}],
+      intentImpact:[{id:'I2',delta:+.03,dir:'up'},{id:'I3',delta:-.07,dir:'down'}]},
+    N6:{id:'N6',label:'DRB system review',type:'decision',level:'system',owner:'Tom',status:'staged',tainted:false,
+      source:[{tool:'Confluence',icon:'C',color:'#0052CC',ref:'DYS-GATE-DRB',text:'Dyson org policy: All system-level nodes require Design Review Board approval before committing. DRB meets fortnightly. Next meeting: 6 days.',confidence:.97,span:'All system-level nodes require Design Review Board approval'}],
+      relatedNodes:['N2','N3','N5'],crossTeam:[],
+      history:[{action:'Gate triggered by org customisation: DRB approval required',time:'10 days ago'},{action:'Submitted to DRB queue',time:'8 days ago'},{action:'DRB review scheduled: in 6 days',time:'3 days ago'}],
+      intentImpact:[{id:'I3',delta:+.05,dir:'up'}]},
+  },
+},
+
+gds: {
+  company:'GDS',
+  squad:'Universal Credit digital claim journey',
+  pack:'service_design',
+  packDisplay:'Service design pack',
+  packColor:'var(--blue)',
+  packBg:'var(--bbg)',
+  packBorder:'var(--bbr)',
+  companyColor:'var(--gds)',
+  stages:['Discovery','Alpha','Beta','Live'],
+  currentStage:1,
+  intent:'Redesign Universal Credit claim journey to reduce average claim time from 54 minutes to under 30 · pass GDS Service Standard',
+  intentScore:.71,
+  levels:['policy','programme','service','channel','interaction'],
+  levelLabels:{policy:'Policy',programme:'Programme',service:'Service',channel:'Channel',interaction:'Interaction'},
+  levelColors:{policy:'var(--coral)',programme:'var(--amber)',service:'var(--blue)',channel:'var(--purple)',interaction:'var(--teal)'},
+  pack_detail:{
+    name:'Service design pack v1.4',
+    levels:'Policy → Programme → Service → Channel → Interaction',
+    tensions:['policy_conflict','channel_inconsistency','accessibility_gap','data_protection_gap','capacity_constraint'],
+    cost_model:'Linear with compliance weight: accessibility/data tensions × 2.5'
+  },
+  org_rules:[
+    {text:'Ministerial approval required for policy-level node changes',badge:'Cabinet Office'},
+    {text:'WCAG 2.1 AA required on all digital channel interactions',badge:'Accessibility'},
+    {text:'DPIA required for any personal data processing step',badge:'GDPR / DPA 2018'},
+    {text:'GDS Service Standard assessment at Alpha and Beta gates',badge:'GDS gate'},
+  ],
+  sources:[
+    {id:'jira',name:'Jira',icon:'J',color:'#0052CC',bg:'#e6f0ff',count:'GOV-* tickets (89)',status:'live'},
+    {id:'conf',name:'Confluence',icon:'C',color:'#0052CC',bg:'#e6f0ff',count:'Policy docs (34)',status:'live'},
+    {id:'miro',name:'Miro',icon:'M',color:'#ffdd00',bg:'#fffde6',count:'Journey maps (6)',status:'synced'},
+    {id:'govuk',name:'GOV.UK Design System',icon:'G',color:'#005ea5',bg:'#edf3fb',count:'Components',status:'live'},
+    {id:'axe',name:'Accessibility audit (axe)',icon:'X',color:'#7c3aed',bg:'#f0edf9',count:'2 audits',status:'synced'},
+  ],
+  team:[
+    {name:'Hamid',role:'Policy lead',initials:'HA',bg:'#fdf0ef',tc:'var(--coral)'},
+    {name:'Mina',role:'Service designer',initials:'MI',bg:'#edf3fb',tc:'var(--blue)'},
+    {name:'Raj',role:'Tech lead',initials:'RA',bg:'#eaf5f0',tc:'var(--teal)'},
+    {name:'Clara',role:'User researcher',initials:'CL',bg:'#f0edf9',tc:'var(--purple)'},
+  ],
+  intents:[
+    {id:'I1',label:'Reduce claim time from 54 to <30 minutes',level:'service',horizon:'tactical',score:.71},
+    {id:'I2',label:'Pass GDS Service Standard at Beta assessment',level:'programme',horizon:'tactical',score:.68},
+    {id:'I3',label:'Ensure full WCAG 2.1 AA accessibility compliance',level:'service',horizon:'strategic',score:.54},
+  ],
+  tensions:[
+    {id:'T1',type:'accessibility_gap',severity:'high',
+     message:'The mobile document upload interaction (GOV-407) has no screen reader path for camera permission errors. Axe audit found 3 WCAG 2.1 AA failures. This will fail the Beta accessibility assessment. Has this been raised with the accessibility team?',
+     options:['Assign to Raj — implement ARIA live regions for error states (2 days)','Commission assisted digital alternative for document upload step','Defer mobile camera path to post-Beta (scope reduction)']},
+    {id:'T2',type:'data_protection_gap',severity:'high',
+     message:'The identity verification step (GOV-412) collects biometric data (facial recognition via document scan). No DPIA is linked to this interaction. The DPA 2018 requires a DPIA before processing begins. Has the Data Protection Officer been consulted?',
+     options:['Initiate DPIA with DPO immediately (Hamid to lead, 3 weeks)','Replace biometric ID with GOV.UK One Login (no DPIA required)','Remove identity verification from Alpha scope']},
+    {id:'T3',type:'channel_inconsistency',severity:'medium',
+     message:'The childcare costs step has different question order on mobile vs desktop (GOV-419 vs GOV-420). Research shows users switch channels mid-claim. This inconsistency is causing 23% abandonment at this step. Has this been flagged in the Alpha assessment?',
+     options:['Unify question order across channels (Mina to lead, 4 days)','Add cross-channel progress save to allow switching without data loss','Flag in Beta assessment as known issue with remediation plan']},
+  ],
+  nodes:{
+    N1:{id:'N1',label:'UC reform policy brief',type:'artifact',level:'policy',owner:'Hamid',status:'committed',tainted:false,
+      source:[{tool:'Confluence',icon:'C',color:'#0052CC',ref:'DWP-POLICY-UC-2024-07',text:'Universal Credit reform: Government commitment to reduce administrative burden for claimants. Target: average claim time <30 minutes. Ministerial sign-off: Secretary of State for Work and Pensions.',confidence:.97,span:'average claim time <30 minutes'}],
+      relatedNodes:['N2','N3'],crossTeam:[],
+      history:[{action:'Created from DWP policy brief',time:'42 days ago'},{action:'Ministerial approval confirmed (org gate)',time:'40 days ago'},{action:'Intents I1, I2 inferred',time:'42 days ago'}],
+      intentImpact:[{id:'I1',delta:+.1,dir:'up'},{id:'I2',delta:+.08,dir:'up'}]},
+    N2:{id:'N2',label:'Digital claim journey redesign',type:'action',level:'programme',owner:'Mina',status:'committed',tainted:false,
+      source:[{tool:'Miro',icon:'M',color:'#f5a623',ref:'UC-Journey-Map-v4',text:'UC digital claim journey map v4. 8 stages: identity, eligibility, household, income, childcare, rent, health, declarations. Target: 28 min avg. Current: 54 min avg.',confidence:.88,span:'8 stages: identity, eligibility, household, income, childcare, rent, health, declarations'}],
+      relatedNodes:['N1','N3','N4'],crossTeam:[],
+      history:[{action:'Created from Miro journey map v4',time:'35 days ago'},{action:'6 interaction nodes generated from journey stages',time:'35 days ago'}],
+      intentImpact:[{id:'I1',delta:+.08,dir:'up'},{id:'I2',delta:+.06,dir:'up'}]},
+    N3:{id:'N3',label:'Identity verification step',type:'interaction',level:'interaction',owner:'Raj',status:'staged',tainted:true,
+      source:[{tool:'Jira',icon:'J',color:'#0052CC',ref:'GOV-412',text:'GOV-412: Identity verification using IDSP (Identity Document Scanning Provider). Biometric data: facial recognition match against passport/driving licence photo. Data retained: 7 days for fraud prevention.',confidence:.91,span:'Biometric data: facial recognition match against passport/driving licence photo'},{tool:'Accessibility audit (axe)',icon:'X',color:'#7c3aed',ref:'AXE-UC-2024-09',text:'Axe audit GOV-412: 3 WCAG 2.1 AA failures. Missing: role=alert on error messages, aria-describedby on form fields, keyboard trap on camera modal.',confidence:.96,span:'Missing: role=alert on error messages, aria-describedby on form fields, keyboard trap on camera modal'}],
+      relatedNodes:['N2','N4'],crossTeam:[],
+      history:[{action:'Created from Jira GOV-412',time:'28 days ago'},{action:'T1 accessibility_gap detected: 3 WCAG failures',time:'10 days ago'},{action:'T2 data_protection_gap: no DPIA linked',time:'10 days ago'},{action:'Status: staged (2 unresolved tensions)',time:'10 days ago'}],
+      intentImpact:[{id:'I2',delta:-.05,dir:'down'},{id:'I3',delta:-.09,dir:'down'}]},
+    N4:{id:'N4',label:'Childcare costs interaction',type:'interaction',level:'interaction',owner:'Mina',status:'staged',tainted:false,
+      source:[{tool:'Jira',icon:'J',color:'#0052CC',ref:'GOV-419',text:'GOV-419 (mobile): Childcare costs — 4 questions, ordered: provider name, weekly cost, weeks per year, payment method.'},{tool:'Jira',icon:'J',color:'#0052CC',ref:'GOV-420',text:'GOV-420 (desktop): Childcare costs — same questions but ordered: payment method, provider name, weekly cost, weeks per year. Inconsistency with mobile noted in design review.',confidence:.87,span:'Inconsistency with mobile noted in design review'}],
+      relatedNodes:['N2'],crossTeam:[],
+      history:[{action:'GOV-419 (mobile) created',time:'22 days ago'},{action:'GOV-420 (desktop) created',time:'20 days ago'},{action:'T3 channel_inconsistency detected: different question order',time:'14 days ago'},{action:'User research: 23% abandonment at childcare step',time:'8 days ago'}],
+      intentImpact:[{id:'I1',delta:-.04,dir:'down'},{id:'I2',delta:-.03,dir:'down'}]},
+    N5:{id:'N5',label:'GOV.UK design system integration',type:'artifact',level:'channel',owner:'Raj',status:'committed',tainted:false,
+      source:[{tool:'GOV.UK Design System',icon:'G',color:'#005ea5',ref:'GOVUK-DS-v5.1',text:'Using GOV.UK Frontend v5.1. Components: text input, radios, checkboxes, file upload, summary list. All components WCAG 2.1 AA compliant at library level.',confidence:.99,span:'All components WCAG 2.1 AA compliant at library level'}],
+      relatedNodes:['N3','N4'],crossTeam:[],
+      history:[{action:'Linked from GOV.UK Design System',time:'30 days ago'}],
+      intentImpact:[{id:'I3',delta:+.06,dir:'up'}]},
+    N6:{id:'N6',label:'Alpha service assessment',type:'decision',level:'programme',owner:'Mina',status:'staged',tainted:false,
+      source:[{tool:'Confluence',icon:'C',color:'#0052CC',ref:'GDS-ASSESS-UC-A',text:'GDS Service Standard Alpha assessment scheduled. 18 criteria to meet. Known risks: accessibility gaps (points 5, 9), data protection (point 10), cross-channel consistency (point 9).',confidence:.88,span:'Known risks: accessibility gaps, data protection, cross-channel consistency'}],
+      relatedNodes:['N3','N4','N5'],crossTeam:[],
+      history:[{action:'Assessment gate created by org customisation (GDS service standard)',time:'14 days ago'},{action:'3 known risk areas flagged from open tensions',time:'10 days ago'}],
+      intentImpact:[{id:'I2',delta:+.03,dir:'up'}]},
+  },
+},
+};
+
+// ── STATE ────────────────────────────────────────────────────────────────────
+const ST = {
+  demo:null, selectedNode:null, rpTab:'detail',
+  resolved:{}, view:'graph', log:[],
+};
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+
+// ── HELPERS ──────────────────────────────────────────────────────
+function srcBg(tool) {
+  const map={'Jira':'#e6f0ff','Figma':'#fff0ee','GitHub':'#f0f0f0','Slack':'#f5edf5',
+    'PTC Windchill':'#edf3fb','Altium Designer':'#fdf0ef','Octopart':'#edf4ea',
+    'GOV.UK Design System':'#edf3fb','Miro':'#fffde6','Confluence':'#e6f0ff',
+    'Accessibility audit (axe)':'#f0edf9','Productboard':'#fff3ec','LabVIEW':'#fdf5e6'};
+  return map[tool]||'var(--paper3)';
 }
 
-// ═══════════════════════════════════════════
-// VIEWS
-// ═══════════════════════════════════════════
-function setView(v,btn){
-  APP.view=v;
-  const cb=document.getElementById('canvas-body'),ch=document.getElementById('canvas-hdr');
-  const ip=document.getElementById('int-panel'),ep=document.getElementById('ent-panel');
-  cb.style.display=v==='canvas'?'':'none';
-  ch.style.display=v==='canvas'?'':'none';
-  ip.style.display=v==='integrations'?'block':'none';
-  ep.style.display=v==='enterprise'?'block':'none';
-  document.querySelectorAll('.tv').forEach(b=>b.classList.remove('on'));
-  if(btn)btn.classList.add('on');
-  // sync sidebar
-  document.querySelectorAll('.sidebar .sb-item').forEach(r=>r.classList.remove('on'));
-  const map={canvas:'Canvas',integrations:'Integrations',enterprise:'Org map'};
-  document.querySelectorAll('.sidebar .sb-item').forEach(r=>{if(r.textContent.trim().includes(map[v]))r.classList.add('on');});
-  if(v==='integrations')renderIntPanel();
-  if(v==='enterprise')renderEnterprise();
+function handleTensionBtn(btn) {
+  const tid = btn.dataset.tid;
+  const oidx = parseInt(btn.dataset.oidx);
+  const d = DEMOS[ST.demo]; if (!d) return;
+  const t = d.tensions.find(x => x.id === tid); if (!t) return;
+  const action = oidx === -1 ? 'dismissed' : (t.options[oidx] || 'resolved');
+  resolveTension(tid, action);
 }
 
-function setRPTab(tab){
-  APP.rpTab=tab;
-  document.querySelectorAll('.rp-tab').forEach(t=>t.classList.remove('on'));
-  const el=document.getElementById('rpt-'+tab);if(el)el.classList.add('on');
-  if(tab!=='thinking')renderRP();
-}
+// ── LIVE CLAUDE ENGINE ───────────────────────────────────────────
+const SEED_ENGINE_SYS_BASE = 'You are the Seed Process Intelligence Engine running inside an investor demo. Respond ONLY with valid JSON (no markdown, no preamble): {"thinking":"2-3 sentences of reasoning","node":{"id":"N-new","label":"verb noun max 5 words","type":"action|decision|artifact|event","level":"platform|product|feature|service","owner":"name from team list","status":"committed|staged|deferred","tainted":false,"source":[{"tool":"source tool","icon":"first letter","color":"#hex","ref":"ticket or page ref","text":"source excerpt max 120 chars","confidence":0.85,"span":"key phrase highlighted"}],"relatedNodes":[],"crossTeam":[],"history":[{"action":"description","time":"just now"}],"intentImpact":[]},"tension":null,"summary":"one sentence summary"} Rules: Only add a tension object if the input reveals a genuine conflict, cross-team dependency blindspot, scope drift, or blocking risk. Tension format: {"id":"T-new","type":"level_mismatch|scope_drift|dependency_blindspot|intent_conflict","severity":"high|medium","message":"question ending with ?","options":["Option A with consequence","Option B with consequence","Dismiss (risk retained)"]}.';
+function getSeedSys(demo) { return SEED_ENGINE_SYS_BASE + ' Current demo: ' + demo + '.'; }
 
-// ═══════════════════════════════════════════
-// ENGINE
-// ═══════════════════════════════════════════
-const SEED_SYS=`You are the Seed Process Intelligence Engine. Respond ONLY with valid JSON (no markdown):
-{"thinking":"2-3 sentences of concise reasoning","projectName":"short name or untitled","nodes":[{"id":"N-001","label":"verb noun ≤5 words","type":"action|decision|artifact|event","level":"platform|product|feature|service","owner":"PM|Eng|Design|Eng Lead|Joint|CTO","status":"committed|staged|deferred","tainted":false}],"intents":[{"id":"I1","label":"what is being achieved","level":"platform|product|feature","horizon":"strategic|tactical|exploratory","score":0.82}],"tensions":[{"id":"T1","type":"level_mismatch|intent_conflict|scope_drift|dependency_blindspot","severity":"high|medium|low","message":"a question for the team — must end with ?","options":["Path A with consequence","Path B with consequence","Dismiss (risk retained)"]}],"log":[{"l":"L1|L2|L3","k":"operation","t":"info|ok|warn|err","v":"description"}],"summary":"one sentence"}
-RULES: Tensions as questions. level_mismatch when feature touches shared service. dependency_blindspot when cross-team impact unacknowledged. scope_drift when cosine distance >0.45. Consequence framing in options.`;
-
-async function sendToEngine(){
-  const inp=document.getElementById('user-input');
-  const v=inp.value.trim();if(!v)return;
-  inp.value='';document.getElementById('send-btn').disabled=true;
-  setRPTab('thinking');setEngine('busy');APP.apiCalls++;updateMetrics();
-  const nc=Object.values(APP.nodes).map(n=>`${n.id}:"${n.label}"[${n.type},${n.level},${n.status}${n.tainted?',TAINTED':''}]`).join('\n')||'empty';
-  const ctx=`NODES:\n${nc}\n\nINTENTS:\n${APP.intents.map(i=>`${i.id}:"${i.label}" score=${i.score}`).join('\n')||'none'}\n\nOPEN TENSIONS:\n${APP.tensions.filter(t=>!APP.resolved[t.id]).map(t=>`${t.id}:${t.type}`).join('\n')||'none'}\n\nInput: "${v}"`;
-  const block=addThinkBlock();
-  try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:SEED_SYS,messages:[{role:'user',content:ctx}]})});
-    if(!resp.ok){const e=await resp.json();throw new Error(e.error?.message||'API error');}
-    const data=await resp.json();
-    const raw=data.content?.[0]?.text||'';
-    let parsed;try{const m=raw.match(/\{[\s\S]*\}/);parsed=JSON.parse(m?m[0]:raw);}catch{parsed={thinking:raw.substring(0,200),nodes:[],intents:[],tensions:[],log:[],summary:'Processed'};}
-    await streamThink(block,parsed.thinking||'Processing…',parsed);
-    applyOutput(parsed);setEngine('ready');
-    addLog('API','call.ok','ok',`in:${data.usage?.input_tokens||0} out:${data.usage?.output_tokens||0}`);
-  }catch(err){
-    // If CORS/network error, use demo response so scenario always works
-    if(err.message.includes('Failed to fetch')||err.message.includes('NetworkError')||err.message.includes('CORS')){
-      const demo=buildDemoResponse(v);
-      await streamThink(block,demo.thinking,demo);
-      applyOutput(demo);setEngine('ready');
-      addLog('API','demo.mode','warn','No API key — using demo data');
-    } else {
-      finalBlock(block,'Error: '+err.message,'err');
-      addLog('API','call.err','err',err.message);setEngine('idle');
+async function sendToEngine(input) {
+  if (!input || !input.trim()) return;
+  const d = DEMOS[ST.demo]; if (!d) return;
+  setEngineState('busy');
+  try {
+    const ctx = `Demo: ${ST.demo}. Squad: ${d.squad}. Intent: ${d.intent}. Input: "${input}"`;
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,
+        system: getSeedSys(ST.demo),
+        messages:[{role:'user',content:ctx}]})
+    });
+    if (!resp.ok) { const e = await resp.json(); throw new Error(e.error?.message||'API error'); }
+    const data = await resp.json();
+    const raw = data.content?.[0]?.text || '';
+    let parsed; try { const m = raw.match(/\{[\s\S]*\}/); parsed = JSON.parse(m?m[0]:raw); } catch { parsed = null; }
+    if (parsed?.node) {
+      d.nodes[parsed.node.id] = parsed.node;
+      if (parsed.tension && !d.tensions.find(t=>t.id===parsed.tension.id)) d.tensions.push(parsed.tension);
+      renderCanvas(); renderMetrics();
+      log_e('L2','engine.node','ok',`${parsed.node.id} "${parsed.node.label}" added`);
+      if (parsed.thinking) log_e('L3','engine.think','info', parsed.thinking);
     }
-  }
-  document.getElementById('send-btn').disabled=false;
-}
-
-function buildDemoResponse(input){
-  const t=input.toLowerCase();
-  const nodes=[];
-  const id=()=>'N-'+Math.random().toString(36).substring(2,7);
-  if(/search|find|discover/i.test(t))nodes.push({id:id(),label:'Build search feature',type:'action',level:'product',owner:'PM',status:'staged',tainted:false});
-  if(/api|integrat|service|backend/i.test(t))nodes.push({id:id(),label:'API integration',type:'action',level:'service',owner:'Eng',status:'staged',tainted:false});
-  if(/design|ux|wireframe|sprint/i.test(t))nodes.push({id:id(),label:'UX discovery sprint',type:'artifact',level:'feature',owner:'Design',status:'staged',tainted:false});
-  if(/launch|ship|release|Q2/i.test(t))nodes.push({id:id(),label:'Launch gate review',type:'decision',level:'product',owner:'PM',status:'committed',tainted:false});
-  if(/latency|performance|load|slow/i.test(t))nodes.push({id:id(),label:'Latency profiling',type:'action',level:'feature',owner:'Eng',status:'staged',tainted:false},{id:id(),label:'Performance optimisation',type:'action',level:'feature',owner:'Eng',status:'deferred',tainted:false});
-  if(!nodes.length)nodes.push({id:id(),label:input.split(' ').slice(0,5).join(' '),type:'action',level:'feature',owner:'PM',status:'staged',tainted:false});
-  const tensions=[];
-  if(/shared|billing|reporting|depend/i.test(t))tensions.push({id:'T-'+Math.random().toString(36).substring(2,5),type:'dependency_blindspot',severity:'high',message:'The /search-index API is shared — does Payments squad know about this change?',options:['Notify Payments squad before merge (low risk)','Proceed with API contract — add versioning (medium risk)','Dismiss (risk retained)']});
-  return{thinking:`Processing "${input.substring(0,60)}…" — identifying process nodes, checking for level mismatches and dependency risks.`,projectName:'Smart Search',nodes,intents:[{id:'I1',label:'Reduce time-to-find by 60% by Q2',level:'product',horizon:'tactical',score:.78}],tensions,log:[{l:'L2',k:'extract',t:'ok',v:`${nodes.length} nodes from input`}],summary:`Extracted ${nodes.length} node${nodes.length>1?'s':''}${tensions.length?' · '+tensions.length+' tension':''}` };
-}
-
-async function streamThink(block,text,full){
-  const el=block.querySelector('.sb-text');let d='';
-  el.innerHTML='<span class="sb-cursor"></span>';
-  for(let i=0;i<text.length;i++){d+=text[i];el.innerHTML=d+'<span class="sb-cursor"></span>';document.getElementById('rp-body').scrollTop=9999;await new Promise(r=>setTimeout(r,13));}
-  el.innerHTML=d;
-  if(full?.summary){const tags=block.querySelector('.sb-tags');const nc=(full.nodes||[]).length,tc=(full.tensions||[]).length;if(nc)tags.innerHTML+=`<span class="badge b-green">+${nc} node${nc>1?'s':''}</span>`;if(tc)tags.innerHTML+=`<span class="badge b-red">${tc} tension${tc>1?'s':''}</span>`;tags.innerHTML+=`<span class="badge b-dim">${full.summary}</span>`;}
-}
-function finalBlock(block,text,type){const el=block.querySelector('.sb-text');el.innerHTML=text;el.style.color=type==='err'?'var(--red)':'var(--t2)';}
-function addThinkBlock(){
-  const body=document.getElementById('rp-body');
-  if(APP.rpTab!=='thinking')return{querySelector:()=>({innerHTML:''}),appendChild:()=>{}};
-  const b=document.createElement('div');b.className='stream-block fi';
-  b.innerHTML=`<div class="sb-header"><div class="sb-dot"></div><span class="sb-label">engine reasoning</span><span class="sb-time">${new Date().toLocaleTimeString()}</span></div><div class="sb-text"><span class="sb-cursor"></span></div><div class="sb-tags"></div>`;
-  body.appendChild(b);body.scrollTop=9999;return b;
-}
-
-function applyOutput(data){
-  if(data.projectName&&data.projectName!=='untitled'){APP.ws.name=data.projectName;document.getElementById('tb-ws').textContent=data.projectName;document.getElementById('canvas-title').textContent=data.projectName;localStorage.setItem('seed_ws_name',data.projectName);}
-  (data.nodes||[]).forEach(n=>{APP.nodes[n.id]={...(APP.nodes[n.id]||{}),...n};addLog('L2','node','ok',`${n.id} "${n.label}" [${n.type}·${n.level}·${n.status}]`);});
-  if((data.intents||[]).length)APP.intents=data.intents;
-  (data.tensions||[]).forEach(t=>{if(!APP.tensions.find(x=>x.id===t.id)){APP.tensions.push(t);addLog('L3','tension','err',`${t.id} ${t.type} sev=${t.severity}`);}});
-  (data.log||[]).forEach(l=>addLog(l.l,l.k,l.t,l.v));
-  renderAll();
-  const nh=(data.tensions||[]).find(t=>t.severity==='high'&&!APP.resolved[t.id]);
-  if(nh)setTimeout(()=>showTensionModal(nh),800);
-}
-
-// ═══════════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════════
-function renderAll(){
-  const nodes=Object.values(APP.nodes);
-  const active=APP.tensions.filter(t=>!APP.resolved[t.id]);
-  updateMetrics();
-  const tb=document.getElementById('nb-tensions');tb.textContent=active.length;tb.style.display=active.length?'':'none';
-  document.getElementById('nb-nodes').textContent=nodes.length;
-  renderCanvas(nodes);
-  if(APP.rpTab!=='thinking')renderRP();
-}
-
-function updateMetrics(){
-  const nodes=Object.values(APP.nodes);
-  const active=APP.tensions.filter(t=>!APP.resolved[t.id]);
-  const i1=APP.intents.find(i=>i.id==='I1');
-  sm('m-nodes',nodes.length,'var(--green)');
-  sm('m-tensions',active.length,active.length?'var(--red)':'var(--t4)');
-  sm('m-calls',APP.apiCalls,'var(--amber)');
-  if(i1){const p=Math.round(i1.score*100);const c=i1.score>.85?'var(--green)':i1.score>.65?'var(--amber)':'var(--red)';sm('m-intent',p+'%',c);const f=document.getElementById('ic-fill');if(f){f.style.width=p+'%';f.style.background=c;}const iv=document.getElementById('ic-val');if(iv){iv.textContent=p+'%';iv.style.color=c;}}
-}
-function sm(id,val,color){const e=document.getElementById(id);if(e){e.textContent=val;e.style.color=color;}}
-
-function renderCanvas(nodes){
-  const empty=document.getElementById('canvas-empty'),levels=document.getElementById('canvas-levels');
-  if(!nodes.length){empty.style.display='flex';levels.style.display='none';return;}
-  empty.style.display='none';levels.style.display='block';
-  const packs=PACK_LEVELS[APP.domainPack]||PACK_LEVELS.software;
-  const byL={};packs.forEach(l=>byL[l]=[]);
-  nodes.forEach(n=>{if(byL[n.level])byL[n.level].push(n);else byL[packs[2]||'feature'].push(n);});
-  levels.innerHTML=packs.map(lv=>{
-    const ns=byL[lv];if(!ns||!ns.length)return'';
-    const c=LCOLORS[lv]||'var(--t4)';
-    return`<div class="level-rail"><div class="lr-head"><div class="lr-label" style="color:${c}">${lv}</div><div class="lr-line" style="background:${c}20"></div><div class="lr-count">${ns.length}</div></div><div class="lr-cards">${ns.map(n=>nodeHTML(n,c)).join('')}</div></div>`;
-  }).join('');
-}
-
-function nodeHTML(n,lc){
-  const dc=n.status==='committed'?'var(--green)':n.status==='staged'?'var(--amber)':n.status==='tainted'?'var(--red)':'var(--t4)';
-  const sel=APP.sel===n.id?' sel':'';
-  const cls=[n.status,n.tainted?'tainted':'',sel].filter(Boolean).join(' ');
-  const srcs=(n.sourceTools||[]).slice(0,2).map(t=>`<div class="src-dot" style="background:${t==='GitHub'?'#24292f':t==='Notion'?'#252525':'var(--bg3)'};color:var(--t3)">${t[0]}</div>`).join('');
-  return`<div class="pnode ${cls}" onclick="selectNode('${n.id}')"><div class="pnode-bar" style="position:absolute;top:0;left:0;bottom:0;width:2.5px;background:${lc};border-radius:2px 0 0 2px;opacity:0;transition:opacity .12s"></div><div class="pn-dot" style="background:${dc}"></div><div class="pn-type">${n.type}</div><div class="pn-label">${n.label}${n.tainted?' ⚠':''}</div>${n.owner?`<div class="pn-owner">${n.owner}</div>`:''} ${srcs?`<div class="pn-sources">${srcs}</div>`:''}</div>`;
-}
-
-function renderRP(){
-  const el=document.getElementById('rp-body');
-  const active=APP.tensions.filter(t=>!APP.resolved[t.id]);
-  if(APP.rpTab==='intents'){
-    if(!APP.intents.length){el.innerHTML='<div class="rp-empty">No intents established yet</div>';return;}
-    el.innerHTML='<div class="rp-sec-label">Active intents</div>'+APP.intents.map(i=>{const p=Math.round(i.score*100);const c=i.score>.85?'var(--green)':i.score>.65?'var(--amber)':'var(--red)';return`<div class="intent-row fi"><div class="ir-head"><span class="ir-name">${i.label}</span><span class="ir-pct" style="color:${c}">${p}%</span></div><div class="ir-track"><div class="ir-fill" style="width:${p}%;background:${c}"></div></div><div class="ir-meta">${i.level} · ${i.horizon}</div></div>`;}).join('');
-  }else if(APP.rpTab==='tensions'){
-    const res=APP.tensions.filter(t=>APP.resolved[t.id]);
-    if(!APP.tensions.length){el.innerHTML='<div class="rp-empty">No tensions — engine watching</div>';return;}
-    el.innerHTML=(active.length?'<div class="rp-sec-label">Open</div>':'')+active.map(t=>tensionHTML(t,false)).join('')+(res.length?'<div class="rp-sec-label">Resolved</div>'+res.map(t=>tensionHTML(t,true)).join(''):'');
-  }else if(APP.rpTab==='graph'){
-    const nodes=Object.values(APP.nodes);
-    if(!nodes.length){el.innerHTML='<div class="rp-empty">Graph is empty</div>';return;}
-    el.innerHTML=`<div class="rp-sec-label">Process nodes · ${nodes.length}</div>`+nodes.map(n=>{const c=n.status==='committed'?'var(--green)':n.status==='staged'?'var(--amber)':n.status==='tainted'?'var(--red)':'var(--t4)';const b=n.status==='committed'?'b-green':n.status==='staged'?'b-amber':'b-red';return`<div class="fi" style="display:flex;align-items:center;gap:7px;padding:5px 0;border-bottom:.5px solid rgba(255,255,255,.04);cursor:pointer" onclick="selectNode('${n.id}')"><div style="width:5px;height:5px;border-radius:50%;background:${c};flex-shrink:0"></div><span style="flex:1;font-size:11px;color:var(--t2)">${n.label}${n.tainted?' ⚠':''}</span><span class="badge ${b}">${n.status}</span></div>`;}).join('');
-  }else if(APP.rpTab==='log'){
-    if(!APP.log.length){el.innerHTML='<div class="rp-empty">Log empty</div>';return;}
-    el.innerHTML=`<div class="rp-sec-label">Log · ${APP.log.length}</div>`+APP.log.slice().reverse().slice(0,80).map(l=>`<div class="log-entry"><span class="le-layer">[${l.layer}]</span><span class="le-${l.type}">${l.key}</span> <span style="color:var(--t3)">→ ${l.msg}</span></div>`).join('');
+    setEngineState('ready');
+  } catch(err) {
+    setEngineState('idle');
+    log_e('L1','engine.err','err', err.message);
   }
 }
 
-function tensionHTML(t,res){
-  const cls=res?'tc tc-r':t.severity==='medium'?'tc tc-m':'tc tc-h';
-  const opts=res?'':(t.options||[]).map((o,i)=>`<button class="tc-opt" data-tid="${t.id}" data-oidx="${i}" onclick="handleTA(this)">${o.substring(0,48)}</button>`).join('');
-  const badge=res?'<span class="badge b-green">resolved</span>':t.severity==='medium'?'<span class="badge b-amber">medium</span>':'<span class="badge b-red">high</span>';
-  return`<div class="${cls} fi"><div class="tc-header"><span class="tc-type">${t.type}</span>${badge}</div><div class="tc-msg">${t.message}</div>${opts?`<div class="tc-opts">${opts}</div>`:''}</div>`;
-}
-function handleTA(btn){const tid=btn.dataset.tid,oidx=parseInt(btn.dataset.oidx);const t=APP.tensions.find(x=>x.id===tid);if(!t)return;resolveTension(tid,t.options?.[oidx]||'resolved');}
-function showTensionModal(t){setRPTab('tensions');document.getElementById('tm-title').textContent='Engine surface: '+t.type;document.getElementById('tm-body').innerHTML=`<strong style="color:var(--red)">${t.type} · ${t.severity}</strong><br><br>${t.message}`;document.getElementById('tm-acts').innerHTML=(t.options||[]).map((o,i)=>`<button class="btn ${i===0?'primary':''}" data-tid="${t.id}" data-oidx="${i}" onclick="handleTA(this);closeModal('tension-modal')">${o.substring(0,52)}</button>`).join('')+`<button class="btn ghost" onclick="closeModal('tension-modal')">Review later</button>`;openModal('tension-modal');}
-function resolveTension(id,action){APP.resolved[id]=action;addLog('L3','tension.resolve','ok',`${id} → "${action.substring(0,40)}"`);closeModal('tension-modal');renderAll();}
-
-function selectNode(id){
-  APP.sel=id;const n=APP.nodes[id];if(!n)return;
-  APP.rpTab='thinking';document.querySelectorAll('.rp-tab').forEach(t=>t.classList.remove('on'));document.getElementById('rpt-thinking').classList.add('on');
-  const el=document.getElementById('rp-body');
-  const c=n.status==='committed'?'var(--green)':n.status==='staged'?'var(--amber)':'var(--red)';
-  const b=n.status==='committed'?'b-green':n.status==='staged'?'b-amber':'b-red';
-  el.innerHTML=`<div class="fi"><div style="padding-bottom:10px;border-bottom:.5px solid rgba(255,255,255,.06)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:5px;height:5px;border-radius:50%;background:${LCOLORS[n.level]||'var(--t4)'}"></div><span style="font-size:9px;font-family:var(--fm);color:var(--t4);text-transform:uppercase;letter-spacing:.07em">${n.level} · ${n.type}</span><span class="badge ${b}" style="margin-left:auto">${n.status}</span></div><div class="nd-title">${n.label}${n.tainted?' ⚠':''}</div><div style="font-size:10px;font-family:var(--fm);color:var(--t4)">Owner: ${n.owner||'—'} · ${n.id}</div></div>${(n.source||[]).length?`<div class="nd-sec"><div class="nd-sec-label">Source evidence <span class="badge b-dim">${n.source.length}</span></div>${n.source.map(s=>`<div class="ev-card fi"><div class="ev-source"><span style="background:var(--bg3);padding:1px 5px;border-radius:2px;font-weight:700">${s.icon||s.tool[0]}</span>${s.tool} · ${s.ref||''}</div><div class="ev-text">"…<span class="ev-hl">${s.span||''}</span>…"</div><div style="font-size:11px;color:var(--t4);margin-top:4px;line-height:1.5">${(s.text||'').substring(0,120)}…</div><div class="ev-conf"><span>Conf.</span><div class="ev-cbar"><div class="ev-cfill" style="width:${(s.confidence||0)*100}%"></div></div><span>${Math.round((s.confidence||0)*100)}%</span></div></div>`).join('')}</div>`:''}<div class="nd-sec"><div class="nd-sec-label">Properties</div><div style="font-size:10px;font-family:var(--fm);color:var(--t4);line-height:2.1">id · ${n.id}<br>level · ${n.level}<br>type · ${n.type}<br>owner · ${n.owner||'—'}<br>tainted · ${n.tainted?'yes':'no'}</div></div></div>`;
-  renderCanvas(Object.values(APP.nodes));
+function setEngineState(s) {
+  const dot = document.getElementById('eng-dot');
+  const lbl = document.getElementById('eng-lbl');
+  if (!dot || !lbl) return;
+  dot.className = 'eng-dot' + (s==='busy'?' busy':s==='ready'?' ready':'');
+  lbl.textContent = s==='busy'?'engine thinking…':s==='ready'?'ready':'idle';
 }
 
-function renderPersonaBar(){document.getElementById('persona-bar').innerHTML=PO.map(id=>{const p=PERSONAS[id];return`<button class="persona-btn ${APP.persona===id?'on':''}" onclick="switchPersona('${id}')">${p.name}</button>`;}).join('');}
-function renderTeam(){document.getElementById('team-list').innerHTML=PO.map(id=>{const p=PERSONAS[id];return`<div class="team-item ${APP.persona===id?'on':''}" onclick="switchPersona('${id}')"><div class="team-av" style="background:${p.bg};color:${p.tc}">${p.i}</div><span>${p.name}</span><span class="team-role">${p.role}</span><div class="team-online"></div></div>`;}).join('');}
-function switchPersona(id){APP.persona=id;renderPersonaBar();renderTeam();}
+function loadDemo(id) {
+  ST.demo=id; ST.selectedNode=null; ST.resolved={};
+  const d=DEMOS[id];
+  // tabs
+  document.querySelectorAll('.demo-tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('dtab-'+id).classList.add('on');
+  // pack badge
+  const pb=document.getElementById('pack-badge');
+  pb.textContent=d.packDisplay; pb.style.background=d.packBg; pb.style.color=d.packColor; pb.style.borderColor=d.packBorder;
+  // left panel
+  document.getElementById('lp-title').textContent=d.company+' — '+d.squad;
+  document.getElementById('lp-sub').textContent=d.packDisplay+' · '+d.sources.length+' data sources · '+d.tensions.length+' tensions';
+  renderPackInfo(d); renderOrgRules(d); renderSources(d); renderTeam(d);
+  // canvas
+  renderCanvas(); renderMetrics();
+  setRPTab('detail');
+  log_e('L1','demo.load','info',id+' loaded · '+Object.keys(d.nodes).length+' nodes extracted from '+d.sources.length+' sources');
+}
 
-// ═══════════════════════════════════════════
-// MORNING BRIEF
-// ═══════════════════════════════════════════
-function openBrief(){
-  document.getElementById('brief-overlay').classList.add('open');
-  const d=new Date();
-  const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  document.getElementById('bp-date').textContent=`${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`;
-  const persona=PERSONAS[APP.persona];
-  document.getElementById('bp-title').textContent=`Good morning, ${persona.name}. Here's where your process stands.`;
-  const nodes=Object.values(APP.nodes);
-  const active=APP.tensions.filter(t=>!APP.resolved[t.id]);
-  const i1=APP.intents.find(i=>i.id==='I1');
-  const p=i1?Math.round(i1.score*100):null;
-  const sc=i1?(i1.score>.85?'var(--green)':i1.score>.65?'var(--amber)':'var(--red)'):'var(--t4)';
-  document.getElementById('bp-body').innerHTML=`
-    <div class="bp-section">
-      <div class="bps-label">Process health</div>
-      <div class="intent-hero">
-        <div class="ih-score" style="color:${sc}">${p!==null?p+'%':'—'}</div>
-        <div class="ih-right">
-          <div class="ih-label">Intent coherence</div>
-          <div class="ih-sub">${i1?i1.label:'No intent established yet'}</div>
-          <div class="ih-bar"><div class="ih-fill" style="width:${p||0}%;background:${sc}"></div></div>
-        </div>
-      </div>
+function renderPackInfo(d) {
+  const pi=document.getElementById('pack-info');
+  const tc=d.pack_detail.tensions.map(t=>`<span class="pp-t" style="background:${d.packBg};color:${d.packColor};border-color:${d.packBorder}">${t}</span>`).join('');
+  pi.innerHTML=`<div class="pp-name">${d.pack_detail.name}</div><div class="pp-levels">${d.pack_detail.levels}</div><div class="pp-tensions" style="margin-top:6px">${tc}</div><div style="font-size:9px;font-family:var(--fm);color:var(--ink4);margin-top:6px">Cost model: ${d.pack_detail.cost_model}</div>`;
+}
+
+function renderOrgRules(d) {
+  const el=document.getElementById('org-rules');
+  el.innerHTML=`<div class="pp-label">Org customisation layer</div>`+d.org_rules.map(r=>`<div class="or-item"><div class="or-dot"></div><span class="or-text">${r.text}</span><span class="or-badge">${r.badge}</span></div>`).join('');
+}
+
+function renderSources(d) {
+  const el=document.getElementById('data-sources');
+  el.innerHTML=d.sources.map(s=>`<div class="ds-item"><div class="ds-icon" style="background:${s.bg};color:${s.color}">${s.icon}</div><span class="ds-name">${s.name}</span><span class="ds-count">${s.count}</span><div class="ds-status ${s.status==='live'?'status-live':'status-synced'}"></div></div>`).join('');
+}
+
+function renderTeam(d) {
+  const el=document.getElementById('team-list');
+  el.innerHTML=d.team.map(m=>`<div class="ds-item"><div class="nd-av" style="background:${m.bg};color:${m.tc};width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:600;font-family:var(--fd);flex-shrink:0">${m.initials}</div><span class="ds-name">${m.name}</span><span class="ds-count">${m.role}</span></div>`).join('');
+}
+
+// ── CANVAS ───────────────────────────────────────────────────────────────────
+function renderCanvas() {
+  const d=DEMOS[ST.demo];
+  if(!d) return;
+  document.getElementById('canvas-title').textContent=d.company+' · '+d.stages[d.currentStage];
+  document.getElementById('m-stage').textContent=d.stages[d.currentStage];
+  const content=document.getElementById('canvas-content');
+  if(ST.view==='graph') renderGraphView(d,content);
+  else if(ST.view==='data') renderDataView(d,content);
+  else renderTimelineView(d,content);
+}
+
+function renderGraphView(d,content) {
+  const nodes=Object.values(d.nodes);
+  const active=d.tensions.filter(t=>!ST.resolved[t.id]);
+  const byL={};
+  d.levels.forEach(l=>byL[l]=[]);
+  nodes.forEach(n=>{if(byL[n.level])byL[n.level].push(n); else byL[d.levels[d.levels.length-2]].push(n);});
+  content.innerHTML=d.levels.map(lv=>{
+    const ns=byL[lv]; if(!ns.length) return '';
+    const color=d.levelColors[lv]||'var(--ink5)';
+    const lbl=d.levelLabels[lv]||lv;
+    return `<div class="level-rail fi"><div class="lr-lbl">${lbl}</div><div class="lr-body" style="border-color:${color}">${ns.map(n=>nodeHTML(n,d)).join('')}${getCrossTeamConnectors(ns,d).join('')}</div></div>`;
+  }).join('')+
+  (active.length?`<div style="margin-top:16px"><div style="font-size:9px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">Open tensions · ${active.length}</div>${active.map(t=>canvasTensionHTML(t,d)).join('')}</div>`:'');
+}
+
+function renderDataView(d,content) {
+  content.innerHTML=`<div class="fi" style="padding:4px 0"><div style="font-size:9px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Data extraction flow — all sources → node provenance</div>`+
+  d.sources.map(s=>{
+    const linkedNodes=Object.values(d.nodes).filter(n=>n.source?.some(src=>src.tool===s.name));
+    if(!linkedNodes.length) return '';
+    return `<div style="display:flex;gap:10px;margin-bottom:12px;align-items:flex-start"><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0"><div class="ds-icon" style="background:${s.bg};color:${s.color};width:28px;height:28px;font-size:11px">${s.icon}</div><div style="font-size:9px;font-family:var(--fm);color:var(--ink4);text-align:center;width:52px">${s.name}</div></div><div style="flex:1">${linkedNodes.map(n=>{const src=n.source.find(sr=>sr.tool===s.name);return `<div style="background:var(--paper);border:0.5px solid var(--b2);border-radius:7px;padding:7px 10px;margin-bottom:6px;cursor:pointer" onclick="selectNode('${n.id}')"><div style="display:flex;align-items:center;gap:6px;margin-bottom:3px"><span style="font-size:9px;font-family:var(--fm);color:var(--ink4)">${src?.ref||''}</span><span style="flex:1;font-size:11px;font-weight:500;color:var(--ink)">${n.label}</span><span style="font-size:9px;font-family:var(--fm);color:var(--ink4)">${Math.round((src?.confidence||0)*100)}% confidence</span></div><div style="font-size:10px;color:var(--ink3);font-style:italic;line-height:1.4">"${src?.span||''}"</div></div>`}).join('')}</div></div>`;
+  }).join('')+'</div>';
+}
+
+function renderTimelineView(d,content) {
+  const nodes=Object.values(d.nodes);
+  content.innerHTML=`<div class="fi"><div style="font-size:9px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Process timeline · ${d.squad}</div>`+
+  nodes.map((n,i)=>{
+    const sc=n.status==='committed'?'var(--teal)':n.status==='staged'?'var(--amber)':n.status==='tainted'?'var(--coral)':'var(--purple)';
+    const daysAgo=n.history?.[0]?.time||'recently';
+    return `<div style="display:flex;gap:10px;margin-bottom:10px;align-items:flex-start;cursor:pointer" onclick="selectNode('${n.id}')"><div style="font-size:9px;font-family:var(--fm);color:var(--ink5);width:64px;flex-shrink:0;text-align:right;padding-top:4px">${daysAgo}</div><div style="width:1px;background:var(--b2);flex-shrink:0;margin-top:5px;align-self:stretch"></div><div style="flex:1;background:var(--paper);border:0.5px solid var(--b2);border-radius:7px;padding:7px 11px"><div style="display:flex;align-items:center;gap:6px;margin-bottom:2px"><div style="width:5px;height:5px;border-radius:50%;background:${sc};flex-shrink:0"></div><span style="font-size:11px;font-weight:500;color:var(--ink)">${n.label}</span>${n.source?.[0]?.ref?`<span style="font-size:9px;font-family:var(--fm);color:var(--ink4)">${n.source[0].ref}</span>`:''}</div><div style="font-size:9px;font-family:var(--fm);color:var(--ink4)">${n.owner} · ${n.level} · ${n.status}</div></div></div>`;
+  }).join('')+'</div>';
+}
+
+function nodeHTML(n,d) {
+  const dc=n.status==='committed'?'d-committed':n.status==='staged'?'d-staged':n.status==='tainted'?'d-tainted':n.status==='blocked'?'d-blocked':'d-deferred';
+  const hasCT=n.crossTeam?.length>0;
+  const isSelected=ST.selectedNode===n.id;
+  const srcChips=n.source?.slice(0,2).map(s=>`<span class="src-chip" style="background:${srcBg(s.tool)};color:var(--ink3)">${s.icon||s.tool[0]}</span>`).join('')||'';
+  return `<div class="pnode ${n.status}${n.tainted?' tainted':''}${n.status==='blocked'?' blocked':''}${isSelected?' selected':''} ni" onclick="selectNode('${n.id}')">
+    <div class="pn-dot ${dc}"></div>
+    <div class="pn-type">${n.type}</div>
+    <div class="pn-label">${n.label}${n.tainted?' ⚠':''}</div>
+    <div class="pn-owner">${n.owner}</div>
+    ${srcChips?`<div class="pn-source">${srcChips}</div>`:''}
+    ${hasCT?'<div style="margin-top:4px"><span class="tag tg-blue" style="font-size:8px">cross-team</span></div>':''}
+  </div>`;
+}
+
+function getCrossTeamConnectors(nodes,d) {
+  return nodes.filter(n=>n.crossTeam?.length).flatMap(n=>
+    n.crossTeam.map(ct=>`<div class="ct-conn" onclick="selectNode('${n.id}')">⤤ ${ct.team} · ${ct.label.substring(0,22)} <span class="tag tg-blue" style="font-size:7px">${ct.type}</span></div>`)
+  );
+}
+
+function canvasTensionHTML(t,d) {
+  const cls=t.type==='accessibility_gap'||t.type==='data_protection_gap'?'ct-blocked':t.severity==='high'?'ct-high':'ct-med';
+  const typeColor=cls==='ct-blocked'?'var(--purple)':t.severity==='high'?'var(--coral)':'var(--amber)';
+  const btnStyle=cls==='ct-blocked'?`color:var(--purple);border-color:var(--pbr)`:`color:${typeColor};border-color:${t.severity==='high'?'var(--cbr)':'var(--abr)'}`;
+  return `<div class="canvas-tension ${cls} fi"><div class="ct-head"><span class="ct-type">${t.type}</span><span class="tag" style="font-size:9px;${t.severity==='high'?'background:var(--cbg);color:var(--coral);border-color:var(--cbr)':'background:var(--pbg);color:var(--purple);border-color:var(--pbr)'}">${t.severity}</span></div><div class="ct-msg">${t.message}</div><div class="ct-acts">${t.options.slice(0,2).map((o,i)=>`<button class="ct-btn" style="${btnStyle}" data-tid="${t.id}" data-oidx="${i}" onclick="handleTensionBtn(this)">${o.substring(0,44)}</button>`).join('')}<button class="ct-btn" style="color:var(--ink4);border-color:var(--b)" data-tid="${t.id}" data-oidx="-1" onclick="handleTensionBtn(this)">Dismiss</button></div></div>`;
+}
+
+// ── NODE DETAIL ───────────────────────────────────────────────────────────────
+function selectNode(id) {
+  const d=DEMOS[ST.demo];
+  const n=d?.nodes[id]; if(!n) return;
+  ST.selectedNode=id;
+  renderCanvas();
+  setRPTab('detail');
+  renderNodeDetail(n,d);
+  log_e('L2','node.select','info',`${id} "${n.label}"`);
+}
+
+function renderNodeDetail(n,d) {
+  const el=document.getElementById('rp-content');
+  const sc=n.status==='committed'?'var(--teal)':n.status==='staged'?'var(--amber)':n.status==='tainted'?'var(--coral)':'var(--purple)';
+  const dc=n.level==='platform'||n.level==='program'||n.level==='policy'?'var(--coral)':n.level==='product'||n.level==='system'||n.level==='programme'?'var(--amber)':n.level==='feature'||n.level==='subsystem'||n.level==='service'?'var(--purple)':'var(--blue)';
+  const owner=d.team.find(m=>m.name===n.owner)||d.team[0];
+  const relNs=(n.relatedNodes||[]).map(rid=>d.nodes[rid]).filter(Boolean);
+  const tensions=d.tensions.filter(t=>!ST.resolved[t.id]);
+
+  el.innerHTML=`
+<div class="nd-hero">
+  <div class="nd-eyebrow">
+    <div class="nd-type-dot" style="background:${dc}"></div>
+    <span class="nd-type-lbl">${(d.levelLabels[n.level]||n.level)} · ${n.type}</span>
+    <span class="nd-status" style="background:${n.status==='committed'?'var(--tbg)':n.status==='staged'?'var(--abg)':n.status==='tainted'?'var(--cbg)':'var(--pbg)'};color:${sc};border-color:${n.status==='committed'?'var(--tbr)':n.status==='staged'?'var(--abr)':n.status==='tainted'?'var(--cbr)':'var(--pbr)'}">${n.status}</span>
+  </div>
+  <div class="nd-title">${n.label}</div>
+  <div style="margin-bottom:10px">${n.tainted?'<span class="tag tg-coral">tainted</span>':''}${n.crossTeam?.length?'<span class="tag tg-blue">cross-team</span>':''}<span class="tag tg-gray">${n.type}</span></div>
+  <div class="nd-owner-row">
+    <div class="nd-av" style="background:${owner.bg};color:${owner.tc}">${owner.initials}</div>
+    <div><div style="font-size:12px;font-weight:500;color:var(--ink)">${n.owner}</div><div style="font-size:9px;font-family:var(--fm);color:var(--ink4)">${owner.role}</div></div>
+  </div>
+</div>
+${(n.source||[]).length?`
+<div class="dp-section">
+  <div class="dp-label">Source evidence <span class="tag tg-gray">${n.source.length} source${n.source.length>1?'s':''}</span></div>
+  ${n.source.map(s=>`
+  <div class="src-block fi">
+    <div class="sb-head">
+      <div class="sb-tool" style="background:${s.color}22;color:${s.color}">${s.icon||s.tool[0]}</div>
+      ${s.tool} · <span style="font-family:var(--fm)">${s.ref||''}</span>
     </div>
-    <div class="bp-section">
-      <div class="bps-label">At a glance</div>
-      <div class="bp-glance">
-        ${[['Nodes',nodes.length,'var(--green)'],['Tensions',active.length,active.length?'var(--red)':'var(--green)'],['API calls',APP.apiCalls,'var(--amber)']].map(([l,v,c])=>`<div class="bpg-cell"><div class="bpg-val" style="color:${c}">${v}</div><div class="bpg-label">${l}</div></div>`).join('')}
-      </div>
-    </div>
-    ${active.length?`<div class="bp-section"><div class="bps-label">Needs attention</div>${active.slice(0,2).map(t=>`<div class="tc ${t.severity==='high'?'tc-h':'tc-m'}" style="margin-bottom:7px"><div class="tc-header"><span class="tc-type">${t.type}</span><span class="badge ${t.severity==='high'?'b-red':'b-amber'}">${t.severity}</span></div><div class="tc-msg">${t.message}</div></div>`).join('')}</div>`:''}`;}
-function closeBrief(){document.getElementById('brief-overlay').classList.remove('open');}
-
-// ═══════════════════════════════════════════
-// SCENARIO
-// ═══════════════════════════════════════════
-async function loadScenario(){
-  clearCanvas();
-  const steps=["We're building smart search for our B2B SaaS. Goal: reduce time-to-find 60% by Q2. PM is Priya, Dev's team handles backend.","Sara is starting UX discovery this week — wireframes and a design brief as artifacts. Design sprint runs 3 days.","Dev wants to integrate the /search-index API v1.2 for ranking. It's a shared service — billing and reporting both depend on it.","QA found search latency above 800ms under load. Adding profiling step and latency optimisation before the launch gate review."];
-  for(const step of steps){document.getElementById('user-input').value=step;await sendToEngine();await new Promise(r=>setTimeout(r,1600));}
+    <div class="sb-text">"…<span class="sb-span">${s.span||''}</span>…"</div>
+    <div style="font-size:11px;color:var(--ink3);margin-top:4px;line-height:1.45">${(s.text||'').substring(0,160)}${(s.text||'').length>160?'…':''}</div>
+    <div class="sb-conf"><span>Confidence</span><div class="sb-cb"><div class="sb-cf" style="width:${(s.confidence||0)*100}%"></div></div><span>${Math.round((s.confidence||0)*100)}%</span></div>
+  </div>`).join('')}
+</div>`:''} 
+${relNs.length?`
+<div class="dp-section">
+  <div class="dp-label">Related nodes <span class="tag tg-gray">${relNs.length}</span></div>
+  ${relNs.map(rn=>{const rc=rn.status==='committed'?'var(--teal)':rn.status==='staged'?'var(--amber)':'var(--coral)';return `<div class="rel-row fi" onclick="selectNode('${rn.id}')"><div class="rel-dot" style="background:${rc}"></div><div class="rel-label">${rn.label}</div><span class="rel-type">${rn.status}</span></div>`}).join('')}
+</div>`:''} 
+${n.crossTeam?.length?`
+<div class="dp-section">
+  <div class="dp-label">Cross-team references <span class="tag tg-blue">${n.crossTeam.length}</span></div>
+  ${n.crossTeam.map(ct=>`<div class="rel-row fi"><div class="rel-dot" style="background:var(--blue)"></div><div class="rel-label">${ct.label}<div style="font-size:9px;font-family:var(--fm);color:var(--ink4)">${ct.team}</div></div><span class="rel-type tg-blue">${ct.type}</span></div>`).join('')}
+</div>`:''} 
+${tensions.length?`
+<div class="dp-section">
+  <div class="dp-label">Tension surfaces <span class="tag tg-coral">${tensions.length} open</span></div>
+  ${tensions.map(t=>{const cls=t.type==='accessibility_gap'||t.type==='data_protection_gap'?'td-blocked':t.severity==='high'?'td-high':'td-med';const tc2=cls==='td-blocked'?'var(--purple)':t.severity==='high'?'var(--coral)':'var(--amber)';const bs=cls==='td-blocked'?`color:var(--purple);border-color:var(--pbr)`:t.severity==='high'?`color:var(--coral);border-color:var(--cbr)`:`color:var(--amber);border-color:var(--abr)`;return `<div class="td ${cls} fi"><div class="td-head">${t.type} · ${t.severity}</div><div class="td-msg">${t.message}</div><div class="td-opts">${t.options.map((o,i)=>`<button class="td-opt" style="${bs}" onclick="resolveTension('${t.id}','${o.substring(0,32)}')">${o.substring(0,56)}</button>`).join('')}</div></div>`;}).join('')}
+</div>`:''} 
+${(n.intentImpact||[]).length?`
+<div class="dp-section">
+  <div class="dp-label">Intent impact</div>
+  ${n.intentImpact.map(imp=>`<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:0.5px solid var(--b);font-size:11px"><span style="flex:1;color:var(--ink2)">${(DEMOS[ST.demo]?.intents||[]).find(i=>i.id===imp.id)?.label||imp.id}</span><span style="font-weight:500;${imp.dir==='up'?'color:var(--teal)':imp.dir==='down'?'color:var(--coral)':'color:var(--ink4)'}">${imp.dir==='up'?'↑':'↓'}</span><span style="font-size:9px;font-family:var(--fm);color:var(--ink4)">${imp.delta>0?'+':''}${Math.round(imp.delta*100)}%</span></div>`).join('')}
+</div>`:''} 
+${(n.history||[]).length?`
+<div class="dp-section">
+  <div class="dp-label">History</div>
+  ${n.history.map(h=>`<div class="hi fi"><div class="hi-dot"></div><div><div class="hi-action">${h.action}</div><div class="hi-time">${h.time}</div></div></div>`).join('')}
+</div>`:''} 
+<div class="dp-section">
+  <div class="dp-label">Metadata</div>
+  <div style="font-size:11px;color:var(--ink3);line-height:2;font-family:var(--fm)">
+    id · ${n.id}<br>type · ${n.type}<br>level · ${n.level}<br>owner · ${n.owner}<br>status · ${n.status}<br>tainted · ${n.tainted?'yes':'no'}<br>sources · ${(n.source||[]).map(s=>s.tool).join(', ')||'—'}
+  </div>
+</div>`;
 }
-function clearCanvas(){Object.keys(APP.nodes).forEach(k=>delete APP.nodes[k]);APP.intents=[];APP.tensions=[];APP.log=[];APP.resolved={};APP.apiCalls=0;APP.sel=null;document.getElementById('rp-body').innerHTML='<div class="rp-empty">Type a process step to start the engine</div>';setEngine('idle');renderAll();}
 
-// ═══════════════════════════════════════════
-// INTEGRATIONS
-// ═══════════════════════════════════════════
-let curConn=null;
-function renderIntPanel(){
-  const allIds=Object.keys(CONN);const connected=allIds.filter(id=>APP.connectors[id]);const unconn=allIds.filter(id=>!APP.connectors[id]);
-  document.getElementById('int-grid').innerHTML=[...connected,...unconn].map(id=>connCard(id)).join('');
-  document.getElementById('avail-chips').innerHTML=AVAIL.map(n=>`<div class="avail-pill">${n} +</div>`).join('');
-  document.getElementById('nb-conn').textContent=connected.length;
+// ── RIGHT PANEL TABS ──────────────────────────────────────────────────────────
+function setRPTab(tab) {
+  ST.rpTab=tab;
+  document.querySelectorAll('.rp-tab').forEach(t=>t.classList.remove('on'));
+  const el=document.getElementById('rpt-'+tab); if(el) el.classList.add('on');
+  if(tab==='detail' && ST.selectedNode) { const d=DEMOS[ST.demo]; renderNodeDetail(d.nodes[ST.selectedNode],d); return; }
+  const rp=document.getElementById('rp-content');
+  const d=DEMOS[ST.demo]; if(!d) return;
+  if(tab==='intents') {
+    rp.innerHTML=`<div class="rp-section">Intent distribution</div>`+d.intents.map(i=>{const p=Math.round(i.score*100);const c=i.score>.85?'var(--teal)':i.score>.65?'var(--amber)':'var(--coral)';return `<div class="ib fi"><div class="ib-head"><span class="ib-name">${i.label}</span><span class="ib-score" style="color:${c}">${p}%</span></div><div class="ib-track"><div class="ib-fill" style="width:${p}%;background:${c}"></div></div><div class="ib-level">${i.level} · ${i.horizon}</div></div>`;}).join('');
+  } else if(tab==='tensions') {
+    const act=d.tensions.filter(t=>!ST.resolved[t.id]);
+    const res=d.tensions.filter(t=>ST.resolved[t.id]);
+    rp.innerHTML=(act.length?`<div class="rp-section">Open tensions · ${act.length}</div>`:'')+act.map(t=>{const cls=t.type==='accessibility_gap'||t.type==='data_protection_gap'?'td-blocked':t.severity==='high'?'td-high':'td-med';const bs=cls==='td-blocked'?'color:var(--purple);border-color:var(--pbr)':t.severity==='high'?'color:var(--coral);border-color:var(--cbr)':'color:var(--amber);border-color:var(--abr)';return `<div class="td ${cls} fi"><div class="td-head">${t.type} · ${t.severity}</div><div class="td-msg">${t.message}</div><div class="td-opts">${t.options.slice(0,2).map(o=>`<button class="td-opt" style="${bs}" onclick="resolveTension('${t.id}','${o.substring(0,32)}')">${o.substring(0,54)}</button>`).join('')}</div></div>`;}).join('')+(res.length?`<div class="rp-section" style="margin-top:10px">Resolved</div>`+res.map(t=>`<div class="td" style="background:var(--tbg);border-color:var(--tbr);opacity:.7"><div class="td-head" style="color:var(--teal)">${t.type} · resolved</div><div class="td-msg" style="color:var(--teal)">${ST.resolved[t.id]}</div></div>`).join(''):'');
+  } else if(tab==='log') {
+    rp.innerHTML=`<div class="rp-section">Engine log · ${ST.log.length}</div>`+ST.log.slice().reverse().slice(0,40).map(l=>`<div class="log-e"><span class="le-t">[${l.l}]</span><span class="le-${l.t}">${l.k}</span> <span style="color:var(--ink3)">→ ${l.v}</span></div>`).join('');
+  } else if(tab==='detail') {
+    rp.innerHTML=`<div style="text-align:center;padding:40px 0;font-family:var(--fd);font-size:14px;font-style:italic;color:var(--ink4)">Click any node to see its details, sources, and connections</div>`;
+  }
 }
-function connCard(id){
-  const def=CONN[id];if(!def)return'';
-  const conn=APP.connectors[id];const st=conn?(conn.status||'live'):'idle';
-  const dotC=st==='live'?'ics-live':st==='connecting'?'ics-conn':st==='error'?'ics-error':'ics-idle';
-  const cardC='int-card'+(st==='live'?' live':st==='error'?' error':'');
-  const meta=conn?`${conn.artifacts?.length||0} artifacts · ${conn.nodes?.length||0} nodes · ${conn.lastSync||'never'}`:'Not connected';
-  const btns=conn?`<button class="btn xs ghost" onclick="syncConn('${id}')">↻ Sync</button><button class="btn xs ghost" onclick="disconnConn('${id}')" style="color:var(--red)">Disconnect</button>`:`<button class="btn xs" style="background:var(--accent-dim);border-color:rgba(91,94,239,.25);color:var(--accent)" onclick="openConnModal('${id}')">Connect →</button>`;
-  return`<div class="${cardC}"><div class="ic-sdot ${dotC}"></div><div class="ic-icon" style="background:${def.bg};color:${def.tc}">${def.icon}</div><div class="ic-name">${def.name}</div><div class="ic-cat">${def.cat}</div><div class="ic-meta">${meta}</div><div class="ic-actions">${btns}</div></div>`;
+
+// ── METRICS ───────────────────────────────────────────────────────────────────
+function renderMetrics() {
+  const d=DEMOS[ST.demo]; if(!d) return;
+  const nodes=Object.values(d.nodes);
+  const active=d.tensions.filter(t=>!ST.resolved[t.id]);
+  const i1=d.intents[0];
+  const p=Math.round(i1.score*100);
+  const c=i1.score>.85?'var(--teal)':i1.score>.65?'var(--amber)':'var(--coral)';
+  document.getElementById('m-nodes').textContent=nodes.length;
+  document.getElementById('m-tensions').textContent=active.length;
+  document.getElementById('m-tensions').style.color=active.length?'var(--coral)':'var(--ink5)';
+  document.getElementById('m-intent').textContent=p+'%';
+  document.getElementById('m-intent').style.color=c;
+  document.getElementById('ip-fill').style.width=p+'%';
+  document.getElementById('ip-fill').style.background=c;
+  document.getElementById('ip-val').textContent=p+'%';
+  document.getElementById('ip-val').style.color=c;
 }
-function openConnModal(toolId){
-  curConn=toolId||'github';const def=CONN[curConn];if(!def)return;
-  document.getElementById('cm-title').textContent='Connect '+def.name;
-  document.getElementById('cm-sub').textContent=def.name+' credentials are stored only in your browser\'s localStorage.';
-  document.getElementById('cm-steps').innerHTML=def.steps.map((s,i)=>`<div class="setup-step"><div class="ss-num">${i+1}</div><div style="font-size:11px;color:var(--t2);line-height:1.55;padding-top:1px">${s}</div></div>`).join('');
-  document.getElementById('cm-fields').innerHTML=def.fields.map(f=>`<div class="field-wrap"><div class="field-label">${f.label}</div><input class="inp" id="cf-${f.id}" type="${f.type||'text'}" placeholder="${f.ph||''}" autocomplete="off"></div>`).join('');
-  const st=document.getElementById('cm-status');st.style.display='none';st.textContent='';
-  document.getElementById('cm-btn').disabled=false;
-  openModal('conn-modal');
+
+// ── INTERACTIONS ──────────────────────────────────────────────────────────────
+function resolveTension(id,action) {
+  ST.resolved[id]=action;
+  log_e('L3','tension.resolve','success',`${id} → "${action.substring(0,40)}"`);
+  renderCanvas(); renderMetrics();
+  if(ST.rpTab==='tensions') setRPTab('tensions');
 }
-async function doConnect(){
-  const def=CONN[curConn];if(!def)return;
-  const creds={};def.fields.forEach(f=>{creds[f.id]=document.getElementById('cf-'+f.id)?.value.trim()||'';});
-  if(!creds.token&&!creds.key){showConnSt('Enter your credentials','warn');return;}
-  showConnSt('Connecting to '+def.name+'…','info');document.getElementById('cm-btn').disabled=true;
-  APP.connectors[curConn]={status:'connecting',creds,artifacts:[],nodes:[],lastSync:null};
-  try{
-    const arts=await extractFromTool(curConn,creds);const nodes=artsToNodes(arts,def.name);
-    APP.connectors[curConn]={status:'live',creds,artifacts:arts,nodes,lastSync:'just now'};
-    try{localStorage.setItem('seed_creds_'+curConn,JSON.stringify(creds));}catch(e){}
-    nodes.forEach(n=>{APP.nodes[n.id]=n;});
-    showConnSt(`✓ Connected · ${arts.length} artifacts · ${nodes.length} nodes`,'ok');
-    setTimeout(()=>{closeModal('conn-modal');renderIntPanel();renderAll();},1300);
-  }catch(err){APP.connectors[curConn].status='error';showConnSt('✗ '+friendlyErr(err),'err');}
-  document.getElementById('cm-btn').disabled=false;
+
+function setView(v,btn) {
+  ST.view=v;
+  document.querySelectorAll('.vb').forEach(b=>b.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  renderCanvas();
 }
-function showConnSt(msg,type){const el=document.getElementById('cm-status');el.style.display='block';const colors={ok:'var(--green)',err:'var(--red)',warn:'var(--amber)',info:'var(--blue)'};const bgs={ok:'var(--green-dim)',err:'var(--red-dim)',warn:'var(--amber-dim)',info:'var(--blue-dim)'};el.style.color=colors[type];el.style.background=bgs[type];el.style.border=`1px solid ${colors[type]}40`;el.style.borderRadius='5px';el.textContent=msg;}
-async function syncConn(id){const conn=APP.connectors[id];const def=CONN[id];if(!conn||!def)return;conn.status='connecting';try{const arts=await extractFromTool(id,conn.creds);conn.artifacts=arts;conn.nodes=artsToNodes(arts,def.name);conn.status='live';conn.lastSync='just now';conn.nodes.forEach(n=>{APP.nodes[n.id]=n;});renderAll();}catch(e){conn.status='error';}renderIntPanel();}
-function syncAllConns(){Object.keys(APP.connectors).forEach(id=>syncConn(id));}
-function disconnConn(id){if(!confirm('Disconnect '+CONN[id]?.name+'?'))return;delete APP.connectors[id];try{localStorage.removeItem('seed_creds_'+id);}catch(e){}renderIntPanel();renderAll();}
-function friendlyErr(err){const m=err.message||String(err);if(m.includes('401')||m.includes('Unauthorized'))return 'Invalid credentials';if(m.includes('403')||m.includes('Forbidden'))return 'Access denied — check token scopes';if(m.includes('404'))return 'Not found — check domain/repo';if(m.includes('Failed to fetch')||m.includes('CORS'))return 'Network error — check token';return m.substring(0,100);}
 
-// ─── Extractors ───
-async function extractFromTool(id,creds){const ex={github:extractGH,notion:extractNotion,jira:extractJira,linear:extractLinear,figma:extractFigma,productboard:extractPB};const fn=ex[id];if(!fn)throw new Error('No extractor for '+id);return fn(creds);}
-async function extractGH(creds){const h={'Authorization':'token '+creds.token,'Accept':'application/vnd.github.v3+json'};let arts=[];if(creds.repo&&creds.repo.includes('/')){const[ir,pr]=await Promise.all([fetch(`https://api.github.com/repos/${creds.repo}/issues?state=all&per_page=15`,{headers:h}),fetch(`https://api.github.com/repos/${creds.repo}/pulls?state=all&per_page=10`,{headers:h})]);if(!ir.ok)throw new Error(ir.status+' '+ir.statusText);const[issues,prs]=await Promise.all([ir.json(),pr.json()]);arts=[...(Array.isArray(issues)?issues:[]).filter(i=>!i.pull_request).map(i=>ghIssue(i,creds.repo)),...(Array.isArray(prs)?prs:[]).map(p=>ghPR(p,creds.repo))];}else{const rr=await fetch('https://api.github.com/user/repos?sort=updated&per_page=4',{headers:h});if(!rr.ok)throw new Error(rr.status+' '+rr.statusText);const repos=await rr.json();if(!Array.isArray(repos))throw new Error('Could not fetch repos');for(const r of repos.slice(0,2)){const ir=await fetch(`https://api.github.com/repos/${r.full_name}/issues?state=all&per_page=8`,{headers:h});if(ir.ok){const is=await ir.json();if(Array.isArray(is))arts.push(...is.filter(i=>!i.pull_request).map(i=>ghIssue(i,r.full_name)));}}}return arts.slice(0,25);}
-function ghIssue(i,repo){return{sourceId:String(i.id),sourceTool:'GitHub',sourceRef:repo.split('/').pop()+'#'+i.number,extractedAt:i.created_at,title:i.title||'Untitled',body:(i.body||'').substring(0,300),span:(i.title||'').substring(0,60),confidence:.84,author:i.user?.login||'',metadata:{state:i.state,repo},tags:(i.labels||[]).map(l=>l.name)};}
-function ghPR(p,repo){return{sourceId:'pr_'+p.id,sourceTool:'GitHub',sourceRef:repo.split('/').pop()+' PR#'+p.number,extractedAt:p.created_at,title:p.title||'Untitled PR',body:(p.body||'').substring(0,300),span:(p.title||'').substring(0,60),confidence:.88,author:p.user?.login||'',metadata:{state:p.state,repo},tags:['pull-request']};}
-async function extractNotion(creds){const r=await fetch('https://api.notion.com/v1/search',{method:'POST',headers:{'Authorization':'Bearer '+creds.token,'Notion-Version':'2022-06-28','Content-Type':'application/json'},body:JSON.stringify({page_size:20})});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(r.status+' '+(e.message||r.statusText));}const data=await r.json();return(data.results||[]).map(item=>({sourceId:item.id,sourceTool:'Notion',sourceRef:item.id.substring(0,8),extractedAt:item.last_edited_time||new Date().toISOString(),title:getNotionTitle(item),body:item.object+' · '+(item.url||''),span:getNotionTitle(item).substring(0,60),confidence:.80,author:item.last_edited_by?.id||'',metadata:{type:item.object,url:item.url},tags:[]}));}
-function getNotionTitle(item){try{const p=item.properties;if(p?.title?.title?.[0]?.plain_text)return p.title.title[0].plain_text;if(p?.Name?.title?.[0]?.plain_text)return p.Name.title[0].plain_text;const v=Object.values(p||{}).find(x=>x.type==='title');if(v?.title?.[0]?.plain_text)return v.title[0].plain_text;return item.object+' '+item.id.substring(0,8);}catch{return item.id?.substring(0,8)||'Untitled';}}
-async function extractJira(creds){const domain=(creds.domain||'').replace(/\.atlassian\.net.*/,'').replace(/https?:\/\//,'').trim();if(!domain)throw new Error('Domain required');if(!creds.email)throw new Error('Email required');const auth=btoa(creds.email+':'+creds.token);const r=await fetch(`https://${domain}.atlassian.net/rest/api/3/search?jql=ORDER%20BY%20updated%20DESC&maxResults=20&fields=summary,status,assignee,issuetype,labels,created`,{headers:{'Authorization':'Basic '+auth,'Accept':'application/json'}});if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(r.status+' '+(e.errorMessages?.[0]||r.statusText));}const data=await r.json();return(data.issues||[]).map(i=>({sourceId:i.id,sourceTool:'Jira',sourceRef:i.key,extractedAt:i.fields?.created||new Date().toISOString(),title:i.fields?.summary||'Untitled',body:i.key+' · '+(i.fields?.issuetype?.name||'')+' · '+(i.fields?.status?.name||''),span:(i.fields?.summary||'').substring(0,60),confidence:.88,author:i.fields?.assignee?.displayName||'',metadata:{status:i.fields?.status?.name},tags:i.fields?.labels||[]}));}
-async function extractLinear(creds){const r=await fetch('https://api.linear.app/graphql',{method:'POST',headers:{'Authorization':creds.token,'Content-Type':'application/json'},body:JSON.stringify({query:`{issues(first:20,orderBy:updatedAt){nodes{id identifier title state{name}assignee{name}createdAt labels{nodes{name}}}}}`})});if(!r.ok)throw new Error(r.status+' '+r.statusText);const data=await r.json();if(data.errors)throw new Error(data.errors[0]?.message||'GraphQL error');return(data.data?.issues?.nodes||[]).map(i=>({sourceId:i.id,sourceTool:'Linear',sourceRef:i.identifier,extractedAt:i.createdAt,title:i.title||'Untitled',body:i.identifier+' · '+(i.state?.name||''),span:(i.title||'').substring(0,60),confidence:.86,author:i.assignee?.name||'',metadata:{state:i.state?.name},tags:(i.labels?.nodes||[]).map(l=>l.name)}));}
-async function extractFigma(creds){const h={'X-Figma-Token':creds.token};if(creds.filekey){const r=await fetch(`https://api.figma.com/v1/files/${creds.filekey}`,{headers:h});if(!r.ok)throw new Error(r.status+' '+r.statusText);const d=await r.json();return figmaFrames(d,creds.filekey);}const r=await fetch('https://api.figma.com/v1/me',{headers:h});if(!r.ok)throw new Error(r.status+' '+r.statusText);const me=await r.json();return[{sourceId:me.id,sourceTool:'Figma',sourceRef:'user',extractedAt:new Date().toISOString(),title:'Figma: '+(me.handle||me.email||'connected'),body:'Connected.',span:'Figma connected',confidence:.99,author:me.handle||'',metadata:{},tags:[]}];}
-function figmaFrames(data,key){const arts=[];function t(n,d){if(d>3)return;if(['FRAME','COMPONENT','SECTION'].includes(n.type)){arts.push({sourceId:key+'_'+n.id,sourceTool:'Figma',sourceRef:n.id,extractedAt:new Date().toISOString(),title:n.name||'Frame',body:'Figma '+n.type,span:(n.name||'').substring(0,60),confidence:.78,author:'',metadata:{type:n.type},tags:['figma-frame']});}if(n.children)n.children.forEach(c=>t(c,d+1));}if(data.document)t(data.document,0);return arts.slice(0,25);}
-async function extractPB(creds){const r=await fetch('https://api.productboard.com/features?archived=false',{headers:{'Authorization':'Bearer '+creds.token,'X-Version':'1'}});if(!r.ok)throw new Error(r.status+' '+r.statusText);const d=await r.json();return(d.data||[]).slice(0,20).map(f=>({sourceId:f.id,sourceTool:'Productboard',sourceRef:f.id.substring(0,8),extractedAt:f.createdAt||new Date().toISOString(),title:f.name||'Untitled',body:(f.description||'').substring(0,200),span:(f.name||'').substring(0,60),confidence:.82,author:f.owner?.email||'',metadata:{status:f.status?.name},tags:[]}));}
-function artsToNodes(arts,tool){return arts.map((a,i)=>{const type=inferType(a),level=inferLevel(a);return{id:'N-'+a.sourceId.substring(0,8)+'-'+i,label:a.title.substring(0,50),type,level,owner:a.author||'unknown',status:a.confidence>.75?'committed':'staged',confidence:a.confidence,tainted:false,source:[{tool:a.sourceTool,icon:a.sourceTool[0],color:tool==='GitHub'?'#24292f':tool==='Notion'?'#252525':tool==='Jira'?'#0052CC':tool==='Linear'?'#5e6ad2':tool==='Figma'?'#ff7266':'#444',ref:a.sourceRef,text:a.body,span:a.span,confidence:a.confidence}],sourceTools:[a.sourceTool]};});}
-function inferType(a){const t=(a.title+' '+a.body).toLowerCase();if(/\b(decision|decided|approved|rejected|chose)\b/.test(t))return'decision';if(/\b(spec|brief|prd|design|wireframe|diagram|report)\b/.test(t))return'artifact';if(/\b(launch|ship|release|deploy|merged|done|closed)\b/.test(t))return'event';return'action';}
-function inferLevel(a){const t=(a.title+' '+(a.tags||[]).join(' ')).toLowerCase();if(/\b(platform|architecture|api.contract|shared.service|infrastructure)\b/.test(t))return'platform';if(/\b(epic|roadmap|okr|goal|quarter|q[1-4])\b/.test(t))return'product';if(/\b(api|service|endpoint|integration|webhook)\b/.test(t))return'service';return'feature';}
+function advanceStage() {
+  const d=DEMOS[ST.demo]; if(!d) return;
+  if(d.currentStage<d.stages.length-1) { d.currentStage++; }
+  else { d.currentStage=0; }
+  // update cost weights for hardware
+  if(d.pack==='hardware') {
+    const multipliers=[1,3,12,40,150];
+    const mult=multipliers[d.currentStage]||1;
+    document.getElementById('m-stage').textContent=d.stages[d.currentStage]+` (cost ×${mult})`;
+  }
+  renderCanvas(); renderMetrics();
+  log_e('L1','stage.advance','info',d.stages[d.currentStage]);
+}
 
-// ─── Enterprise ───
-function renderEnterprise(){
-  const el=document.getElementById('ent-content');
-  const nodes=Object.values(APP.nodes);
-  const squads=[{n:'Search squad',i:'Launch smart search Q2',score:nodes.length?Math.min(.95,(nodes.filter(n=>n.status==='committed').length/Math.max(1,nodes.length))*.9+.4):.87,t:APP.tensions.filter(t=>!APP.resolved[t.id]).length,m:['priya','dev','sara']},{n:'Payments squad',i:'Reduce settlement latency <2s',score:.74,t:1,m:['dev','anand']},{n:'Platform team',i:'Unify API gateway',score:.92,t:0,m:['anand']}];
-  el.innerHTML=`<div style="font-size:11px;font-weight:500;color:var(--t3);margin-bottom:14px;letter-spacing:-.01em">Organisation canvas</div>
-  <div class="squad-grid">${squads.map(sq=>{const p=Math.round(sq.score*100),c=sq.score>.85?'var(--green)':sq.score>.65?'var(--amber)':'var(--red)';const avs=sq.m.map(id=>{const p2=PERSONAS[id];return`<div class="sq-av" style="background:${p2.bg};color:${p2.tc};border-color:var(--bg1)">${p2.i}</div>`;}).join('');return`<div class="squad-card"><div class="sq-name">${sq.n}</div><div class="sq-score" style="color:${c}">${p}%</div><div class="sq-bar"><div class="sq-fill" style="width:${p}%;background:${c}"></div></div><div class="sq-intent">${sq.i}</div><div class="sq-foot"><div class="sq-avs">${avs}</div>${sq.t?`<span class="badge b-red">${sq.t} tension${sq.t>1?'s':''}</span>`:'<span class="badge b-green">all clear</span>'}</div></div>`;}).join('')}</div>
-  <div style="font-size:9px;font-family:var(--fm);color:var(--t4);text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px">Cross-team dependencies</div>
-  <div style="background:var(--bg1);border:1px solid var(--border2);border-radius:var(--radius2);padding:11px">
-    <div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:.5px solid rgba(255,255,255,.04)"><div style="width:5px;height:5px;border-radius:50%;background:var(--red)"></div><span style="flex:1;font-size:11px;color:var(--t2)">Search squad → /search-index API v1.2 → Payments squad</span><span class="badge b-red">active</span></div>
-    <div style="display:flex;align-items:center;gap:9px;padding:6px 0"><div style="width:5px;height:5px;border-radius:50%;background:var(--green)"></div><span style="flex:1;font-size:11px;color:var(--t2)">Search squad → Platform API contract review</span><span class="badge b-green">resolved</span></div>
-  </div>`;}
+function log_e(l,k,t,v) { ST.log.push({l,k,t,v}); if(ST.log.length>200) ST.log.shift(); }
 
-// ═══════════════════════════════════════════
-// ONBOARDING
-// ═══════════════════════════════════════════
-let obStep=0,obPack='software',obConns=new Set(['github']);
-function initOb(){obStep=0;renderObTrack();showObStep(0);}
-function renderObTrack(){document.getElementById('ob-track').innerHTML=Array.from({length:5},(_,i)=>`<div class="ob-track-pip ${i<obStep?'done':i===obStep?'active':''}"></div>`).join('');}
-function showObStep(n){document.querySelectorAll('.ob-step').forEach(s=>s.classList.remove('active'));document.getElementById('ob-step-'+n)?.classList.add('active');renderObTrack();}
-function selectPack(el){document.querySelectorAll('.pack-card').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');obPack=el.dataset.pack;updateObPreview();}
-function toggleConn(el){el.classList.toggle('sel');const id=el.dataset.conn;obConns.has(id)?obConns.delete(id):obConns.add(id);}
-function obNext(skip=false){if(obStep===0){const name=document.getElementById('ob-ws').value.trim()||'My workspace';APP.ws.name=name;localStorage.setItem('seed_ws_name',name);}if(obStep===1){APP.domainPack=obPack;localStorage.setItem('seed_pack',obPack);}obStep++;if(obStep>=5){finishOb();return;}showObStep(obStep);updateObPreview();}
-function obBack(){obStep=Math.max(0,obStep-1);showObStep(obStep);}
-async function obExtract(){const brief=document.getElementById('ob-brief').value.trim();if(!brief){obNext(true);return;}const btn=document.getElementById('ob-xbtn');btn.disabled=true;btn.textContent='Extracting…';await obSimpleExtract(brief);btn.disabled=false;btn.textContent='Extract graph →';obStep++;document.getElementById('ob-summary').innerHTML=`workspace: ${APP.ws.name}<br>domain: ${APP.domainPack}<br>nodes: ${Object.keys(APP.nodes).length}<br>tools: ${[...obConns].join(', ')||'none yet'}`;showObStep(obStep);}
-async function obSimpleExtract(brief){
-  const preview=document.getElementById('ob-preview');document.getElementById('ob-preview-empty').style.display='none';
-  const candidates=[{label:APP.ws.name+' brief',type:'artifact',level:'product',color:'var(--amber)'},{label:'Receive project brief',type:'event',level:'product',color:'var(--green)'},{label:'Define intent & goals',type:'decision',level:'product',color:'var(--red)'}];
-  if(/design|ux|figma/i.test(brief))candidates.push({label:'UX discovery sprint',type:'action',level:'feature',color:'var(--accent)'});
-  if(/api|service|backend|integrat/i.test(brief))candidates.push({label:'Backend integration',type:'action',level:'service',color:'var(--blue)'});
-  if(/launch|ship|release/i.test(brief))candidates.push({label:'Launch gate review',type:'decision',level:'product',color:'var(--amber)'});
-  for(const c of candidates){await new Promise(r=>setTimeout(r,320));const d=document.createElement('div');d.className='ob-node-card';d.innerHTML=`<div class="ob-nc-dot" style="background:${c.color}"></div><span class="ob-nc-label">${c.label}</span><span class="ob-nc-type">${c.type}</span>`;preview.appendChild(d);const id='OB-'+Date.now().toString(36)+Math.random().toString(36).substring(2,5);APP.nodes[id]={id,label:c.label,type:c.type,level:c.level,owner:'PM',status:'staged',confidence:.75,tainted:false,source:[],sourceTools:[]};}}
-function updateObPreview(){if(obStep===1){const preview=document.getElementById('ob-preview');document.getElementById('ob-preview-empty').style.display='none';const levels={software:'Platform → Product → Feature → Service',hardware:'Program → System → Subsystem → Component',service:'Policy → Programme → Service → Channel',rd:'Programme → Track → Experiment → Protocol'};preview.innerHTML=`<div style="background:var(--bg2);border:1px solid rgba(91,94,239,.25);border-radius:var(--radius);padding:12px"><div style="font-size:9px;font-family:var(--fm);color:var(--accent);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px">Active pack</div><div style="font-size:12px;font-weight:600;color:var(--t1);margin-bottom:3px">${obPack.charAt(0).toUpperCase()+obPack.slice(1)}</div><div style="font-size:10px;font-family:var(--fm);color:var(--t4)">${levels[obPack]||''}</div></div>`;}}
-function finishOb(){localStorage.setItem('seed_onboarded','1');showApp();if(obConns.size>0)setTimeout(()=>{setView('integrations');renderIntPanel();},500);}
-function launchApp(){finishOb();}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open')); });
 
-// ═══════════════════════════════════════════
-// UTILS
-// ═══════════════════════════════════════════
-function setEngine(s){const dot=document.getElementById('eng-dot'),lbl=document.getElementById('eng-label');if(!dot||!lbl)return;dot.className='eng-dot'+{busy:' busy',ready:' ready',idle:''}[s];lbl.textContent={busy:'thinking…',ready:'ready',idle:'idle'}[s]||s;}
-function addLog(layer,key,type,msg){APP.log.push({layer,key,type,msg});if(APP.log.length>200)APP.log.shift();}
-function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendToEngine();}}
-function useEx(btn){document.getElementById('user-input').value=btn.textContent;document.getElementById('user-input').focus();}
-function openModal(id){document.getElementById(id)?.classList.add('open');}
-function closeModal(id){document.getElementById(id)?.classList.remove('open');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.overlay.open,.brief-overlay.open').forEach(o=>o.classList.remove('open'));if((e.metaKey||e.ctrlKey)&&e.key==='Enter')sendToEngine();if(e.altKey&&e.key==='b')openBrief();});
+// ── START ─────────────────────────────────────────────────────────────────────
+loadDemo('spotify');
+setTimeout(()=>openModal('how-modal'),600);
 
-// ═══════════════════════════════════════════
-// BOOT
-// ═══════════════════════════════════════════
-document.addEventListener('DOMContentLoaded',function(){
-  Object.keys(CONN).forEach(id=>{try{const c=localStorage.getItem('seed_creds_'+id);if(c){const creds=JSON.parse(c);APP.connectors[id]={status:'live',creds,artifacts:[],nodes:[],lastSync:'restored',name:CONN[id].name};}}catch(e){}});
-  initOb();
-  try{checkSession();}catch(e){showApp();}
-});
 </script>
 </body>
 </html>
