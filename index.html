@@ -307,7 +307,7 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(-
 /* Node animation */
 .ni{animation:ni .22s ease forwards}@keyframes ni{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 /* ── ONBOARDING OVERLAY ── */
-.ob-overlay{position:fixed;inset:0;background:rgba(248,247,242,.95);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;transition:opacity .25s}
+.ob-overlay{position:fixed;inset:0;background:rgba(248,247,242,.97);backdrop-filter:blur(8px);z-index:500;display:none;align-items:center;justify-content:center;transition:opacity .25s}.ob-overlay.visible{display:flex}
 .ob-overlay.hidden{opacity:0;pointer-events:none}
 .ob-card{background:var(--paper);border:1px solid var(--b2);border-radius:12px;padding:36px;width:440px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(20,20,19,.12)}
 .ob-logo{display:flex;align-items:center;gap:9px;margin-bottom:28px}
@@ -494,16 +494,21 @@ async function obFinish() {
   if (brief) { const inp = document.getElementById('eng-input'); if (inp) inp.value = brief; setTimeout(() => triggerEngine(), 400); }
 }
 
-function enterDemoMode() { currentUser = null; hideOnboarding(); }
+function enterDemoMode() {
+  currentUser = null;
+  hideOnboarding();
+  // Make sure canvas is loaded
+  if (!ST.demo) loadDemo('spotify');
+}
 
 function hideOnboarding() {
   const ov = document.getElementById('ob-overlay');
-  if (ov) { ov.classList.add('hidden'); setTimeout(() => ov.style.display='none', 300); }
+  if (ov) { ov.classList.remove('visible'); ov.style.display = 'none'; }
 }
 
 function showUserMenu() {
   if (currentUser) { if (confirm('Sign out of Seed?')) { supabase?.auth.signOut(); location.reload(); } }
-  else { const ob=document.getElementById('ob-overlay'); ob.style.display='flex'; ob.classList.remove('hidden'); obStep('auth'); }
+  else { const ob=document.getElementById('ob-overlay'); if(ob){ob.style.display='flex';ob.classList.add('visible');obStep('auth');} }
 }
 
 // CONNECTOR REGISTRY
@@ -779,7 +784,7 @@ async function boot() {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) { currentUser=session.user; applyWorkspace({}); await loadUserConnectors(); setTimeout(()=>openModal('how-modal'),500); return; }
   }
-  const ob=document.getElementById('ob-overlay'); if(ob) ob.style.display='flex';
+  const ob=document.getElementById('ob-overlay'); if(ob) { ob.style.display='flex'; ob.classList.add('visible'); }
 }
 document.addEventListener('DOMContentLoaded', boot);
 
