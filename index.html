@@ -285,7 +285,506 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(-
 /* Node animation */
 .ni{animation:node-in .22s ease forwards}
 @keyframes node-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── ENGINE UI ── */
+.tb-engine{display:flex;align-items:center;gap:7px;padding:0 12px;border-right:1px solid var(--b);margin-right:2px}
+.eng-dot{width:6px;height:6px;border-radius:50%;background:var(--paper3);flex-shrink:0;transition:background .3s;position:relative}
+.eng-dot.busy{background:var(--amber)}.eng-dot.busy::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--amber);animation:ering 1.1s ease-out infinite}.eng-dot.ready{background:var(--teal)}
+@keyframes ering{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(2.2)}}
+.eng-lbl{font-size:10px;font-family:var(--fm);color:var(--ink4)}
+.engine-input-zone{padding:10px 12px;border-top:1px solid var(--b);background:var(--paper)}
+.eiz-row{display:flex;gap:5px;align-items:flex-end;margin-bottom:5px}
+.eiz-input{flex:1;background:var(--paper2);border:1px solid var(--b);color:var(--ink);font-family:var(--fb);font-size:12px;padding:7px 10px;border-radius:5px;outline:none;resize:none;max-height:68px;line-height:1.55;transition:border-color .15s}
+.eiz-input:focus{border-color:var(--amber)}.eiz-input::placeholder{color:var(--ink5)}
+.eiz-send{width:30px;height:30px;border-radius:5px;background:var(--ink);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
+.eiz-send:hover{background:var(--ink2);transform:scale(1.05)}.eiz-send:disabled{background:var(--paper3);cursor:not-allowed;transform:none}
+.eiz-chips{display:flex;gap:4px;flex-wrap:wrap}
+.eiz-chip{font-size:9px;font-family:var(--fm);color:var(--ink4);padding:2px 8px;border:1px solid var(--b);border-radius:10px;cursor:pointer;background:transparent;transition:all .1s}
+.eiz-chip:hover{color:var(--amber);border-color:var(--abr)}
+/* User badge */
+.user-badge{width:28px;height:28px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:var(--fm);border:1.5px solid var(--b);transition:all .12s}
+.user-badge:hover{border-color:var(--ink3)}
+/* Node animation */
+.ni{animation:ni .22s ease forwards}@keyframes ni{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+/* ── ONBOARDING OVERLAY ── */
+.ob-overlay{position:fixed;inset:0;background:rgba(248,247,242,.95);backdrop-filter:blur(8px);z-index:500;display:flex;align-items:center;justify-content:center;transition:opacity .25s}
+.ob-overlay.hidden{opacity:0;pointer-events:none}
+.ob-card{background:var(--paper);border:1px solid var(--b2);border-radius:12px;padding:36px;width:440px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(20,20,19,.12)}
+.ob-logo{display:flex;align-items:center;gap:9px;margin-bottom:28px}
+.ob-lm{width:24px;height:24px;background:var(--ink);border-radius:5px;display:flex;align-items:center;justify-content:center}
+.ob-wordmark{font-family:var(--fd);font-size:18px;font-weight:400;font-style:italic;color:var(--ink)}
+.ob-step{display:none;flex-direction:column}.ob-step.active{display:flex}
+.ob-step-num{font-size:10px;font-family:var(--fm);color:var(--ink4);margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em}
+.ob-step-title{font-family:var(--fd);font-size:26px;font-weight:400;font-style:italic;color:var(--ink);line-height:1.2;margin-bottom:8px}
+.ob-step-desc{font-size:13px;color:var(--ink3);line-height:1.65;margin-bottom:20px}
+.ob-tabs{display:flex;gap:3px;margin-bottom:16px;background:var(--paper2);border-radius:6px;padding:3px}
+.ob-tab{flex:1;padding:6px;border-radius:4px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:transparent;color:var(--ink3);transition:all .12s}
+.ob-tab.on{background:var(--paper);color:var(--ink);box-shadow:0 1px 3px rgba(20,20,19,.1)}
+.ob-field-wrap{margin-bottom:13px}
+.ob-field-label{font-size:10px;font-family:var(--fm);color:var(--ink3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.ob-field{width:100%;background:var(--paper2);border:1px solid var(--b);color:var(--ink);font-family:var(--fb);font-size:13px;padding:9px 11px;border-radius:6px;outline:none;transition:border-color .15s;resize:none}
+.ob-field:focus{border-color:var(--amber)}.ob-field::placeholder{color:var(--ink5)}
+.ob-status{font-size:11px;font-family:var(--fm);padding:7px 10px;border-radius:5px;margin-bottom:10px;display:none}
+.ob-status.err{display:block;background:var(--cbg);color:var(--coral);border:1px solid var(--cbr)}
+.ob-status.ok{display:block;background:var(--tbg);color:var(--teal);border:1px solid var(--tbr)}
+.ob-status.info{display:block;background:var(--bbg);color:var(--blue);border:1px solid var(--bbr)}
+.ob-actions{display:flex;align-items:center;gap:7px;margin-top:4px;flex-wrap:wrap}
+.ob-divider{text-align:center;font-size:10px;font-family:var(--fm);color:var(--ink5);margin:12px 0;position:relative}
+.ob-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--b)}
+.ob-divider span,.ob-divider{background:var(--paper);position:relative;display:inline-block;padding:0 8px}
+.ob-google-btn{width:100%;justify-content:center;gap:8px}
+.ob-pack-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:14px}
+.ob-pack{border:1px solid var(--b);border-radius:8px;padding:12px;cursor:pointer;transition:all .12s;background:var(--paper)}
+.ob-pack:hover{border-color:var(--b2);background:var(--paper2)}.ob-pack.sel{border-color:var(--amber);background:var(--abg)}
+.ob-pack-icon{font-size:16px;margin-bottom:6px}.ob-pack-name{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.ob-pack-desc{font-size:10px;font-family:var(--fm);color:var(--ink4);line-height:1.5}
+/* ── SIDE PANELS (Integrations, Org Map) ── */
+.panel-overlay{position:fixed;inset:0;background:rgba(20,20,19,.35);backdrop-filter:blur(2px);z-index:400;display:flex;align-items:flex-start;justify-content:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
+.panel-overlay.open{opacity:1;pointer-events:all}
+.side-panel{width:540px;max-width:95vw;height:100vh;background:var(--paper);border-left:1px solid var(--b2);display:flex;flex-direction:column;overflow:hidden;transform:translateX(20px);transition:transform .2s}
+.panel-overlay.open .side-panel{transform:translateX(0)}
+.sp-header{padding:20px 22px;border-bottom:1px solid var(--b);position:relative;flex-shrink:0}
+.sp-title{font-family:var(--fd);font-size:18px;font-weight:400;font-style:italic;color:var(--ink);margin-bottom:3px}
+.sp-sub{font-size:10px;font-family:var(--fm);color:var(--ink4)}
+.sp-close{position:absolute;top:16px;right:16px;font-size:14px}
+.sp-body{flex:1;overflow-y:auto;padding:16px 22px}
+/* ── INTEGRATIONS ── */
+.int-section-label{font-size:9px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.08em;margin:12px 0 7px}
+.int-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.int-card{background:var(--paper2);border:1px solid var(--b);border-radius:8px;padding:13px;position:relative;transition:border-color .12s}
+.int-card.live{border-color:var(--tbr)}.int-card.error{border-color:var(--cbr)}
+.ic-sdot{position:absolute;top:10px;right:10px;width:6px;height:6px;border-radius:50%}
+.ics-live{background:var(--teal)}.ics-idle{background:var(--paper3)}.ics-err{background:var(--coral)}.ics-conn{background:var(--amber);animation:icsconn .8s step-end infinite}@keyframes icsconn{0%,100%{opacity:1}50%{opacity:.3}}
+.ic-icon{width:26px;height:26px;border-radius:5px;font-size:10px;font-weight:700;font-family:var(--fm);display:flex;align-items:center;justify-content:center;margin-bottom:7px}
+.ic-name{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:1px}.ic-cat{font-size:9px;font-family:var(--fm);color:var(--ink4);margin-bottom:5px;text-transform:uppercase;letter-spacing:.06em}
+.ic-meta{font-size:10px;font-family:var(--fm);color:var(--ink3);margin-bottom:7px;line-height:1.5}
+.ic-btns{display:flex;gap:5px;flex-wrap:wrap}
+.int-avail-wrap{display:flex;gap:6px;flex-wrap:wrap}
+.int-avail-pill{font-size:10px;font-family:var(--fm);color:var(--ink3);padding:4px 10px;border:1px solid var(--b);border-radius:12px;cursor:pointer;background:transparent;transition:all .1s}
+.int-avail-pill:hover{color:var(--amber);border-color:var(--abr)}
+/* Connector setup steps */
+.conn-setup-steps{margin-bottom:14px}
+.cstep{display:flex;gap:9px;padding:6px 0;border-bottom:.5px solid var(--b)}
+.cstep:last-child{border-bottom:none}.cstep-num{width:18px;height:18px;border-radius:50%;background:var(--paper3);font-size:9px;font-family:var(--fm);color:var(--ink3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cstep-text{font-size:11px;color:var(--ink2);line-height:1.55}
+.conn-field-wrap{margin-bottom:12px}.conn-field-label{font-size:10px;font-family:var(--fm);color:var(--ink3);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.conn-field{width:100%;background:var(--paper2);border:1px solid var(--b);color:var(--ink);font-family:var(--fb);font-size:13px;padding:8px 11px;border-radius:5px;outline:none;transition:border-color .15s}
+.conn-field:focus{border-color:var(--amber)}
+.conn-status-msg{font-size:11px;font-family:var(--fm);padding:7px 10px;border-radius:5px;margin-bottom:10px}
+/* ── ORG MAP ── */
+.org-squad-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}
+.squad-card{background:var(--paper2);border:1px solid var(--b);border-radius:8px;padding:14px;cursor:pointer;transition:all .12s}
+.squad-card:hover{border-color:var(--b2);transform:translateY(-1px)}
+.sq-name{font-family:var(--fd);font-size:14px;font-style:italic;color:var(--ink);margin-bottom:7px}
+.sq-score{font-family:var(--fd);font-size:30px;font-weight:400;line-height:1;margin-bottom:4px}
+.sq-bar{height:2px;background:var(--b);border-radius:1px;overflow:hidden;margin-bottom:6px}
+.sq-fill{height:100%;border-radius:1px}
+.sq-intent{font-size:10px;font-family:var(--fm);color:var(--ink4);margin-bottom:8px;line-height:1.4}
+.sq-foot{display:flex;align-items:center;justify-content:space-between}
+.sq-avs{display:flex}.sq-av{width:18px;height:18px;border-radius:50%;font-size:7px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid var(--paper2);margin-right:-4px}
+.dep-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:.5px solid var(--b)}
+.dep-row:last-child{border-bottom:none}.dep-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dep-label{flex:1;font-size:11px;color:var(--ink2)}
+/* ── SCENARIOS ── */
+.scenario-cards{display:grid;gap:8px}
+.sc-card{background:var(--paper2);border:1px solid var(--b);border-radius:8px;padding:14px;cursor:pointer;transition:all .12s;display:flex;align-items:flex-start;gap:12px}
+.sc-card:hover{border-color:var(--b2);background:var(--paper)}
+.sc-icon{font-size:22px;flex-shrink:0}.sc-name{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px}
+.sc-desc{font-size:11px;font-family:var(--fm);color:var(--ink4);line-height:1.5}
+.sc-meta{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+
+// SUPABASE AUTH + ONBOARDING
+const SUPA_URL = 'https://hsytgwwwubztsqiciunv.supabase.co';
+const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXRnd3d3dWJ6dHNxaWNpdW52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzY1MTAsImV4cCI6MjA5MDAxMjUxMH0.TNW1gNEtJQSGUeXK37K-YfscJLqJMEK-pJvmeqGS7xo';
+let supabase = null;
+let currentUser = null;
+let obSelectedPack = 'software';
+
+function initSupabase() {
+  if (window.supabase) supabase = window.supabase.createClient(SUPA_URL, SUPA_ANON);
+}
+
+function setObStatus(id, msg, type) {
+  const el = document.getElementById(id); if (!el) return;
+  el.className = 'ob-status ' + type; el.style.display = 'block'; el.textContent = msg;
+}
+
+function obAuthTab(tab, btn) {
+  document.querySelectorAll('.ob-tab').forEach(t => t.classList.remove('on')); btn.classList.add('on');
+  document.getElementById('obs-signin-form').style.display = tab === 'signin' ? '' : 'none';
+  document.getElementById('obs-signup-form').style.display = tab === 'signup' ? '' : 'none';
+}
+
+async function doSignIn() {
+  if (!supabase) { enterDemoMode(); return; }
+  const email = document.getElementById('ob-email').value.trim();
+  const pw = document.getElementById('ob-pw').value;
+  if (!email || !pw) { setObStatus('ob-signin-status','Enter email and password','err'); return; }
+  const btn = document.getElementById('ob-signin-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  setObStatus('ob-signin-status', 'Checking credentials…', 'info');
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password: pw });
+  if (error) { setObStatus('ob-signin-status', error.message, 'err'); btn.disabled=false; btn.textContent='Sign in →'; }
+  else { currentUser = data.user; await loadUserWorkspace(); }
+}
+
+async function doSignUp() {
+  if (!supabase) { enterDemoMode(); return; }
+  const email = document.getElementById('ob-email2').value.trim();
+  const pw = document.getElementById('ob-pw2').value;
+  if (!email || !pw || pw.length < 8) { setObStatus('ob-signup-status','Enter valid email + password (8+ chars)','err'); return; }
+  const btn = document.getElementById('ob-signup-btn');
+  btn.disabled=true; btn.textContent='Creating…';
+  setObStatus('ob-signup-status','Creating your account…','info');
+  const { data, error } = await supabase.auth.signUp({ email, password: pw, options: { emailRedirectTo: window.location.href } });
+  if (error) { setObStatus('ob-signup-status', error.message, 'err'); btn.disabled=false; btn.textContent='Create account →'; }
+  else if (data.user && !data.user.confirmed_at) { setObStatus('ob-signup-status','Check your email to confirm, then sign in.','ok'); btn.disabled=false; btn.textContent='Create account →'; }
+  else { currentUser = data.user; obStep('workspace'); }
+}
+
+async function doGoogleSignIn() {
+  if (!supabase) { enterDemoMode(); return; }
+  await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.href } });
+}
+
+async function loadUserWorkspace() {
+  if (!supabase || !currentUser) return;
+  const { data } = await supabase.from('seed_workspaces').select('*').eq('user_id', currentUser.id).single();
+  if (data && data.onboarded_at) { applyWorkspace(data); await loadUserConnectors(); hideOnboarding(); }
+  else if (data) { applyWorkspace(data); obStep('workspace'); }
+  else obStep('workspace');
+}
+
+function applyWorkspace(ws) {
+  const av = document.getElementById('user-av');
+  if (av && currentUser) {
+    av.textContent = (currentUser.email||'U').substring(0,2).toUpperCase();
+    av.style.background = 'var(--tbg)'; av.style.color = 'var(--teal)'; av.style.border = '1.5px solid var(--teal)';
+  }
+}
+
+async function loadUserConnectors() {
+  if (!supabase || !currentUser) return;
+  const { data } = await supabase.from('seed_connectors').select('*').eq('user_id', currentUser.id);
+  if (data) { data.forEach(r => { CONN_STATE[r.tool_id] = { status:r.status, creds:r.creds, artifactsCount:r.artifacts_count, nodesCount:r.nodes_count, lastSync:r.last_sync }; }); updateIntBadge(); }
+}
+
+function obStep(step) {
+  document.querySelectorAll('.ob-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('obs-' + step)?.classList.add('active');
+}
+
+function selPack(el) {
+  document.querySelectorAll('.ob-pack').forEach(p => p.classList.remove('sel')); el.classList.add('sel');
+  obSelectedPack = el.dataset.pack;
+}
+
+async function obFinish() {
+  const wsName = document.getElementById('ob-ws-name')?.value.trim()||'My workspace';
+  const role = document.getElementById('ob-role')?.value||'PM';
+  const teamSize = document.getElementById('ob-team-size')?.value||'6-15 people';
+  const brief = document.getElementById('ob-brief-text')?.value.trim()||'';
+  if (supabase && currentUser) {
+    await supabase.from('seed_workspaces').upsert({ user_id:currentUser.id, name:wsName, domain_pack:obSelectedPack, role, team_size:teamSize, brief, onboarded_at:new Date().toISOString() }, { onConflict:'user_id' });
+  }
+  hideOnboarding();
+  if (brief) { const inp = document.getElementById('eng-input'); if (inp) inp.value = brief; setTimeout(() => triggerEngine(), 400); }
+}
+
+function enterDemoMode() { currentUser = null; hideOnboarding(); }
+
+function hideOnboarding() {
+  const ov = document.getElementById('ob-overlay');
+  if (ov) { ov.classList.add('hidden'); setTimeout(() => ov.style.display='none', 300); }
+}
+
+function showUserMenu() {
+  if (currentUser) { if (confirm('Sign out of Seed?')) { supabase?.auth.signOut(); location.reload(); } }
+  else { const ob=document.getElementById('ob-overlay'); ob.style.display='flex'; ob.classList.remove('hidden'); obStep('auth'); }
+}
+
+// CONNECTOR REGISTRY
+const CONN_STATE = {};
+const CONN_DEFS = {
+  github: { name:'GitHub', cat:'engineering', icon:'G', bg:'#24292f', tc:'#88a0c0', steps:['github.com/settings/tokens → New token','Select scopes: repo → Generate','Copy token'], fields:[{id:'token',label:'Personal Access Token',type:'password',ph:'ghp_…'},{id:'repo',label:'Repository (optional)',ph:'owner/repo'}] },
+  notion: { name:'Notion', cat:'documentation', icon:'N', bg:'#252525', tc:'#888', steps:['notion.so/my-integrations → New integration → copy token','Open Notion pages → Connections → select integration'], fields:[{id:'token',label:'Integration Token',type:'password',ph:'ntn_…'}] },
+  jira: { name:'Jira', cat:'project mgmt', icon:'J', bg:'#0052CC', tc:'#fff', steps:['id.atlassian.net/security/api-tokens → Create token'], fields:[{id:'domain',label:'Domain',ph:'yourcompany'},{id:'email',label:'Email',ph:'you@co.com'},{id:'token',label:'API Token',type:'password',ph:'ATATT3…'}] },
+  linear: { name:'Linear', cat:'project mgmt', icon:'L', bg:'#5e6ad2', tc:'#fff', steps:['Linear → Settings → API → Personal API keys → Create'], fields:[{id:'token',label:'API Key',type:'password',ph:'lin_api_…'}] },
+  figma: { name:'Figma', cat:'design', icon:'F', bg:'#ff7262', tc:'#fff', steps:['Figma → Account settings → Security → Personal access tokens'], fields:[{id:'token',label:'Access Token',type:'password',ph:'figd_…'},{id:'filekey',label:'File key (optional)',ph:'from figma.com/file/XXXXX/'}] },
+  productboard: { name:'Productboard', cat:'product', icon:'P', bg:'#f97316', tc:'#fff', steps:['Productboard → Profile → API access → Generate key'], fields:[{id:'token',label:'API Token',type:'password',ph:'pb-token-…'}] },
+};
+const AVAIL_CONNS = ['Slack','Confluence','Miro','Amplitude','Datadog','Loom','PTC Windchill'];
+let currentConnTool = null;
+
+function openIntegrations() { renderIntBody(); document.getElementById('int-overlay').classList.add('open'); }
+
+function renderIntBody() {
+  const ids = Object.keys(CONN_DEFS);
+  const connected = ids.filter(id => CONN_STATE[id]?.status === 'live');
+  const unconn = ids.filter(id => !CONN_STATE[id] || CONN_STATE[id].status !== 'live');
+  let html = '';
+  if (connected.length) html += '<div class="int-section-label">Connected</div><div class="int-grid">' + connected.map(connCard).join('') + '</div>';
+  html += '<div class="int-section-label">Available</div><div class="int-grid">' + unconn.map(connCard).join('') + '</div>';
+  html += '<div class="int-section-label">Coming soon</div><div class="int-avail-wrap">' + AVAIL_CONNS.map(n => `<div class="int-avail-pill">${n} +</div>`).join('') + '</div>';
+  document.getElementById('int-body').innerHTML = html;
+  updateIntBadge();
+}
+
+function connCard(id) {
+  const def = CONN_DEFS[id]; if (!def) return '';
+  const state = CONN_STATE[id]; const st = state?.status||'idle';
+  const dotC = st==='live'?'ics-live':st==='connecting'?'ics-conn':st==='error'?'ics-err':'ics-idle';
+  const cardC = 'int-card'+(st==='live'?' live':st==='error'?' error':'');
+  const meta = state ? `${state.artifactsCount||0} artifacts · ${state.nodesCount||0} nodes · ${state.lastSync?new Date(state.lastSync).toLocaleDateString():'never'}` : 'Not connected';
+  const btns = state?.status === 'live'
+    ? `<button class="btn sm ghost" onclick="syncConn('${id}')">↻ Sync</button><button class="btn sm ghost" style="color:var(--coral)" onclick="disconnConn('${id}')">Disconnect</button>`
+    : `<button class="btn sm" style="background:var(--abg);color:var(--amber);border-color:var(--abr)" onclick="openConnModal('${id}')">Connect →</button>`;
+  return `<div class="${cardC}"><div class="ic-sdot ${dotC}"></div><div class="ic-icon" style="background:${def.bg};color:${def.tc}">${def.icon}</div><div class="ic-name">${def.name}</div><div class="ic-cat">${def.cat}</div><div class="ic-meta">${meta}</div><div class="ic-btns">${btns}</div></div>`;
+}
+
+function updateIntBadge() {
+  const n = Object.keys(CONN_STATE).filter(id => CONN_STATE[id]?.status==='live').length;
+  const btn = document.getElementById('btn-integrations'); if (btn) btn.textContent = n ? `Integrations (${n})` : 'Integrations';
+}
+
+function openConnModal(toolId) {
+  currentConnTool = toolId; const def = CONN_DEFS[toolId]; if (!def) return;
+  document.getElementById('conn-modal-title').textContent = 'Connect ' + def.name;
+  document.getElementById('conn-setup-steps').innerHTML = def.steps.map((s,i) => `<div class="cstep"><div class="cstep-num">${i+1}</div><div class="cstep-text">${s}</div></div>`).join('');
+  document.getElementById('conn-fields').innerHTML = def.fields.map(f => `<div class="conn-field-wrap"><div class="conn-field-label">${f.label}</div><input class="conn-field" id="cf-${f.id}" type="${f.type||'text'}" placeholder="${f.ph||''}" autocomplete="off"></div>`).join('');
+  const st = document.getElementById('conn-status-msg'); if (st) st.style.display='none';
+  document.getElementById('conn-btn').disabled = false; openModal('conn-modal');
+}
+
+async function doConnect() {
+  const def = CONN_DEFS[currentConnTool]; if (!def) return;
+  const creds = {}; def.fields.forEach(f => { creds[f.id] = document.getElementById('cf-'+f.id)?.value.trim()||''; });
+  if (!creds.token && !creds.key) { showConnMsg('Enter your credentials first','err'); return; }
+  showConnMsg('Connecting to '+def.name+'…','info');
+  document.getElementById('conn-btn').disabled = true;
+  CONN_STATE[currentConnTool] = { status:'connecting', creds, artifactsCount:0, nodesCount:0, lastSync:null };
+  try {
+    const { arts, nodes } = await extractFromConnector(currentConnTool, creds);
+    CONN_STATE[currentConnTool] = { status:'live', creds, artifactsCount:arts, nodesCount:nodes, lastSync:new Date().toISOString() };
+    log_e('L1','connector.sync','ok', def.name+' · '+arts+' artifacts · '+nodes+' nodes');
+    if (supabase && currentUser) {
+      await supabase.from('seed_connectors').upsert({ user_id:currentUser.id, tool_id:currentConnTool, creds, status:'live', artifacts_count:arts, nodes_count:nodes, last_sync:new Date().toISOString() }, { onConflict:'user_id,tool_id' });
+    } else { try { localStorage.setItem('seed_conn_'+currentConnTool, JSON.stringify(CONN_STATE[currentConnTool])); } catch(e){} }
+    showConnMsg('Connected · '+arts+' artifacts · '+nodes+' nodes','ok');
+    setTimeout(() => { closeOverlay('conn-modal'); renderIntBody(); }, 1200);
+  } catch(err) { CONN_STATE[currentConnTool].status='error'; showConnMsg(friendlyErr(err),'err'); }
+  document.getElementById('conn-btn').disabled = false;
+}
+
+function showConnMsg(msg, type) {
+  const el = document.getElementById('conn-status-msg'); if (!el) return;
+  const c = {ok:'var(--teal)',err:'var(--coral)',info:'var(--blue)',warn:'var(--amber)'};
+  const b = {ok:'var(--tbg)',err:'var(--cbg)',info:'var(--bbg)',warn:'var(--abg)'};
+  const br = {ok:'var(--tbr)',err:'var(--cbr)',info:'var(--bbr)',warn:'var(--abr)'};
+  el.style.cssText += `;display:block;color:${c[type]};background:${b[type]};border:1px solid ${br[type]};border-radius:5px`;
+  el.textContent = msg;
+}
+
+async function syncConn(id) {
+  const state = CONN_STATE[id]; if (!state) return; state.status = 'connecting';
+  try {
+    const { arts, nodes } = await extractFromConnector(id, state.creds);
+    state.status='live'; state.artifactsCount=arts; state.nodesCount=nodes; state.lastSync=new Date().toISOString();
+    if (supabase && currentUser) await supabase.from('seed_connectors').upsert({ user_id:currentUser.id, tool_id:id, creds:state.creds, status:'live', artifacts_count:arts, nodes_count:nodes, last_sync:state.lastSync }, { onConflict:'user_id,tool_id' });
+  } catch(e) { state.status='error'; }
+  renderIntBody();
+}
+
+async function disconnConn(id) {
+  if (!confirm('Disconnect '+CONN_DEFS[id]?.name+'?')) return;
+  delete CONN_STATE[id];
+  if (supabase && currentUser) await supabase.from('seed_connectors').delete().eq('user_id',currentUser.id).eq('tool_id',id);
+  else { try { localStorage.removeItem('seed_conn_'+id); } catch(e){} }
+  renderIntBody();
+}
+
+function friendlyErr(err) {
+  const m = err.message||String(err);
+  if (m.includes('401')||m.includes('Unauthorized')) return 'Invalid credentials';
+  if (m.includes('403')) return 'Access denied — check token scopes';
+  if (m.includes('404')) return 'Not found — check domain/repo';
+  if (m.includes('Failed to fetch')||m.includes('CORS')) return 'Network error — check token';
+  return m.substring(0,80);
+}
+
+async function extractFromConnector(id, creds) {
+  const ext = { github:extractGH, notion:extractNotion, jira:extractJira, linear:extractLinear, figma:extractFigma, productboard:extractPB };
+  const fn = ext[id]; if (!fn) throw new Error('No extractor for '+id); return fn(creds);
+}
+async function extractGH(creds) {
+  const h = {'Authorization':'token '+creds.token,'Accept':'application/vnd.github.v3+json'};
+  if (creds.repo && creds.repo.includes('/')) {
+    const r = await fetch(`https://api.github.com/repos/${creds.repo}/issues?state=all&per_page=15`,{headers:h});
+    if (!r.ok) throw new Error(r.status+' '+r.statusText);
+    const d = await r.json(); return {arts:d.length, nodes:Math.floor(d.length*.7)};
+  }
+  const r = await fetch('https://api.github.com/user/repos?sort=updated&per_page=5',{headers:h});
+  if (!r.ok) throw new Error(r.status+' '+r.statusText);
+  const repos = await r.json(); return {arts:repos.length, nodes:Math.floor(repos.length*2)};
+}
+async function extractNotion(creds) {
+  const r = await fetch('https://api.notion.com/v1/search',{method:'POST',headers:{'Authorization':'Bearer '+creds.token,'Notion-Version':'2022-06-28','Content-Type':'application/json'},body:JSON.stringify({page_size:20})});
+  if (!r.ok) { const e=await r.json().catch(()=>({})); throw new Error(r.status+' '+(e.message||r.statusText)); }
+  const d = await r.json(); return {arts:d.results?.length||0, nodes:Math.floor((d.results?.length||0)*.6)};
+}
+async function extractJira(creds) {
+  const domain=(creds.domain||'').replace(/\.atlassian\.net.*/,'').replace(/https?:\/\//,'').trim();
+  if (!domain) throw new Error('Domain required');
+  const auth=btoa(creds.email+':'+creds.token);
+  const r=await fetch(`https://${domain}.atlassian.net/rest/api/3/search?jql=ORDER%20BY%20updated%20DESC&maxResults=20`,{headers:{'Authorization':'Basic '+auth,'Accept':'application/json'}});
+  if (!r.ok) { const e=await r.json().catch(()=>({})); throw new Error(r.status+' '+(e.errorMessages?.[0]||r.statusText)); }
+  const d=await r.json(); return {arts:d.total||0, nodes:Math.floor((d.issues?.length||0)*.8)};
+}
+async function extractLinear(creds) {
+  const r=await fetch('https://api.linear.app/graphql',{method:'POST',headers:{'Authorization':creds.token,'Content-Type':'application/json'},body:'{"query":"{issues(first:20){nodes{id title}}}"}'});
+  if (!r.ok) throw new Error(r.status+' '+r.statusText);
+  const d=await r.json(); if(d.errors) throw new Error(d.errors[0]?.message||'GraphQL error');
+  const n=d.data?.issues?.nodes?.length||0; return {arts:n, nodes:Math.floor(n*.8)};
+}
+async function extractFigma(creds) {
+  const h={'X-Figma-Token':creds.token};
+  const r=await fetch('https://api.figma.com/v1/me',{headers:h});
+  if (!r.ok) throw new Error(r.status+' '+r.statusText);
+  if (creds.filekey) {
+    const r2=await fetch(`https://api.figma.com/v1/files/${creds.filekey}`,{headers:h});
+    if (!r2.ok) throw new Error(r2.status+' '+r2.statusText);
+    const d=await r2.json(); let c=0; function cf(n,d2){if(d2>3)return;if(['FRAME','COMPONENT','SECTION'].includes(n.type))c++;if(n.children)n.children.forEach(ch=>cf(ch,d2+1));} cf(d.document,0); return {arts:c, nodes:Math.floor(c*.6)};
+  }
+  return {arts:1, nodes:1};
+}
+async function extractPB(creds) {
+  const r=await fetch('https://api.productboard.com/features?archived=false',{headers:{'Authorization':'Bearer '+creds.token,'X-Version':'1'}});
+  if (!r.ok) throw new Error(r.status+' '+r.statusText);
+  const d=await r.json(); return {arts:d.data?.length||0, nodes:Math.floor((d.data?.length||0)*.75)};
+}
+
+// ORG MAP
+function openOrgMap() { renderOrgBody(); document.getElementById('org-overlay').classList.add('open'); }
+
+function renderOrgBody() {
+  const d = DEMOS[ST.demo]||{};
+  const squads = [
+    {name:'Primary squad', intent:d.intent||'Not set', score:d.intents?.[0]?.score||.84, tensions:d.tensions?.filter(t=>!ST.resolved[t.id]).length||0, team:d.team?.slice(0,3)||[]},
+    {name:'Platform team', intent:'API contract integrity & shared service stability', score:.91, tensions:0, team:[{initials:'PL',bg:'#edf2fb',tc:'var(--blue)'},{initials:'EN',bg:'#fdf5e6',tc:'var(--amber)'}]},
+    {name:'Consumer squad', intent:'Downstream stability & feature parity', score:.78, tensions:1, team:[{initials:'CS',bg:'#fdf0ec',tc:'var(--coral)'},{initials:'DV',bg:'#edf2fb',tc:'var(--blue)'}]},
+  ];
+  const squadCards = squads.map(sq => {
+    const p=Math.round(sq.score*100), c=sq.score>.85?'var(--teal)':sq.score>.65?'var(--amber)':'var(--coral)';
+    const avs=(sq.team||[]).map(m=>`<div class="sq-av" style="background:${m.bg};color:${m.tc};border-color:var(--paper2)">${m.initials||m.name?.substring(0,2)||'?'}</div>`).join('');
+    const badge=sq.tensions?`<span class="tag" style="font-size:9px;background:var(--cbg);color:var(--coral);border-color:var(--cbr)">${sq.tensions} tension${sq.tensions>1?'s':''}</span>`:'<span class="tag" style="font-size:9px;background:var(--tbg);color:var(--teal);border-color:var(--tbr)">all clear</span>';
+    return `<div class="squad-card"><div class="sq-name">${sq.name}</div><div class="sq-score" style="color:${c}">${p}%</div><div class="sq-bar"><div class="sq-fill" style="width:${p}%;background:${c}"></div></div><div class="sq-intent">${sq.intent}</div><div class="sq-foot"><div class="sq-avs">${avs}</div>${badge}</div></div>`;
+  }).join('');
+  const activeTensions = (d.tensions||[]).filter(t=>!ST.resolved[t.id]);
+  const depRows = activeTensions.slice(0,3).map(t => `<div class="dep-row"><div class="dep-dot" style="background:${t.severity==='high'?'var(--coral)':'var(--amber)'}"></div><span class="dep-label">${t.message.substring(0,90)}…</span><span class="tag" style="font-size:9px;${t.severity==='high'?'background:var(--cbg);color:var(--coral);border-color:var(--cbr)':'background:var(--abg);color:var(--amber);border-color:var(--abr)'}">${t.severity}</span></div>`).join('') || '<div style="padding:8px 0;font-size:11px;color:var(--ink4)">No active cross-team tensions</div>';
+  document.getElementById('org-body').innerHTML = `<div class="org-squad-grid">${squadCards}</div><div style="font-size:9px;font-family:var(--fm);color:var(--ink4);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Cross-team dependencies</div><div style="background:var(--paper2);border:1px solid var(--b);border-radius:8px;padding:12px">${depRows}</div>`;
+}
+
+// SCENARIOS
+const SCENARIOS = [
+  { id:'spotify_sprint', icon:'⬡', name:'Spotify — Sprint week 2', desc:'Podcast Monetisation squad. API contract change surfaces mid-sprint, upstream blast radius unacknowledged.', pack:'spotify',
+    steps:["Offline download mode for monetised episodes added to sprint scope. Not in Q3 charter. Does this change the launch date?","Creator analytics node depends on event-tracking service owned by Growth squad. Schema change not yet filed with Growth.","Latency regression in ad-serving endpoint found in staging — 380ms above SLA. QA escalating to Elena for triage.","Platform review for monetisation contract extension returned — needs auth handshake redesign. Estimated 3-week delay."] },
+  { id:'dyson_dvt', icon:'◈', name:'Dyson — DVT stage transition', desc:'AM-12 Purifier Air Max. Moving from EV to DVT. MCU supply chain risk and FCC certification gap surface.', pack:'dyson',
+    steps:["STM32H7A3ZI MCU procurement update: 28-week lead time from ST. Program schedule buffer is 12 weeks. Q4 launch is at risk.","FCC Part 15 Class B certification not yet in program graph. Wireless firmware update feature requires pre-certification lab — 6-week lead time.","Cross-discipline conflict: mechanical team spec is 47mm fan housing, electrical team needs 52mm heatsink clearance. DVT tooling is in 4 days.","DVT milestone reached. Cost multiplier is now 40x. All design changes require formal ECO sign-off from program director."] },
+  { id:'gds_beta', icon:'◎', name:'GDS UK Gov — Beta gate blockers', desc:'Universal Credit claim journey. WCAG 2.2 failures and missing DPIA surface before beta launch.', pack:'gds',
+    steps:["Accessibility audit complete: 14 WCAG 2.2 failures across mobile claim flow. 6 are Level AA blockers for beta.","No Data Protection Impact Assessment filed for new income verification data collection. GDPR Article 35 required.","Mobile journey (GOV.UK Frontend) and assisted digital channel (telephony script) diverging — 3 pages show different outcomes to users.","Ministerial approval gate confirmed: accessibility statement must be published and approved before beta. Legal team blocking dependency."] },
+];
+
+function openScenarioModal() {
+  document.getElementById('scenario-cards').innerHTML = SCENARIOS.map(sc => `<div class="sc-card" onclick="runScenario('${sc.id}')"><div class="sc-icon">${sc.icon}</div><div><div class="sc-name">${sc.name}</div><div class="sc-desc">${sc.desc}</div><div class="sc-meta"><span class="tag" style="font-size:9px;background:var(--abg);color:var(--amber);border-color:var(--abr)">${sc.pack} pack</span><span class="tag" style="font-size:9px;background:var(--paper3);color:var(--ink3);border-color:var(--b)">${sc.steps.length} steps</span></div></div></div>`).join('');
+  openModal('scenario-modal');
+}
+
+async function runScenario(id) {
+  closeOverlay('scenario-modal');
+  const sc = SCENARIOS.find(s => s.id === id); if (!sc) return;
+  loadDemo(sc.pack);
+  for (const step of sc.steps) {
+    const inp = document.getElementById('eng-input'); if (inp) inp.value = step;
+    await triggerEngine();
+    await new Promise(r => setTimeout(r, 1800));
+  }
+}
+
+// LIVE CLAUDE ENGINE
+function getSeedSys(demo) {
+  const d = DEMOS[demo]||{};
+  const lvls = (d.levels||['platform','product','feature','service']).join('|');
+  const team = (d.team||[]).map(m=>m.name).join(', ')||'PM, Eng Lead, Designer';
+  return `You are the Seed Process Intelligence Engine. Current demo: ${demo}. Squad intent: ${d.intent||'not set'}. Process levels: ${lvls}. Team: ${team}. Respond ONLY with valid JSON (no markdown): {"thinking":"2-3 sentences","node":{"id":"N-${Date.now()}","label":"verb noun max 5 words","type":"action|decision|artifact|event","level":"${lvls.split('|')[2]||'feature'}","owner":"${(d.team||[{name:'PM'}])[0].name}","status":"staged","tainted":false,"source":[{"tool":"Engine","icon":"E","color":"#141413","ref":"input","text":"source text","confidence":0.8,"span":"key phrase"}],"relatedNodes":[],"crossTeam":[],"history":[{"action":"Added via engine input","time":"just now"}],"intentImpact":[]},"tension":null,"summary":"one sentence"} Only add tension if input reveals conflict/dependency/scope issue: {"id":"T-${Date.now()}","type":"level_mismatch|scope_drift|dependency_blindspot|intent_conflict","severity":"high|medium","message":"question ending with ?","options":["Option A with consequence","Option B","Dismiss (risk retained)"]}`;
+}
+
+async function triggerEngine() {
+  const inp = document.getElementById('eng-input'); const val = (inp?.value||'').trim(); if (!val) return;
+  if (inp) inp.value = ''; setEngineState('busy');
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,system:getSeedSys(ST.demo),messages:[{role:'user',content:val}]})
+    });
+    if (!resp.ok) { const e=await resp.json(); throw new Error(e.error?.message||'API error '+resp.status); }
+    const data = await resp.json(); const raw = data.content?.[0]?.text||'';
+    let parsed; try { const m=raw.match(/\{[\s\S]*\}/); parsed=JSON.parse(m?m[0]:raw); } catch { parsed=null; }
+    if (parsed?.node && ST.demo && DEMOS[ST.demo]) {
+      DEMOS[ST.demo].nodes[parsed.node.id] = parsed.node;
+      if (parsed.tension && !DEMOS[ST.demo].tensions.find(t=>t.id===parsed.tension.id)) DEMOS[ST.demo].tensions.push(parsed.tension);
+      renderCanvas(); renderMetrics();
+      log_e('L2','engine.node','ok',`${parsed.node.id} "${parsed.node.label}" [${parsed.node.type}·${parsed.node.level}]`);
+    }
+    setEngineState('ready');
+  } catch(err) {
+    if (err.message.includes('Failed to fetch')||err.message.includes('NetworkError')||err.message.includes('CORS')) useDemoFallback(val);
+    else { log_e('L1','engine.err','err',err.message); setEngineState('idle'); }
+  }
+}
+
+function useDemoFallback(input) {
+  if (!ST.demo||!DEMOS[ST.demo]) { setEngineState('idle'); return; }
+  const d=DEMOS[ST.demo]; const t=input.toLowerCase();
+  const type=/decision|approved|chose|gate|freeze/.test(t)?'decision':/spec|brief|prd|diagram|wireframe/.test(t)?'artifact':/launched|shipped|merged|done/.test(t)?'event':'action';
+  const lvl=d.levels||['platform','product','feature','service'];
+  const level=/platform|contract|shared|infrastructure/.test(t)?lvl[0]:/epic|roadmap|okr|quarter/.test(t)?lvl[1]:/api|service|endpoint/.test(t)?lvl[3]:lvl[2];
+  const owner=d.team?.[Math.floor(Math.random()*d.team.length)]?.name||'PM';
+  const id='N-eng-'+Date.now().toString(36);
+  const node={id,label:input.split(' ').slice(0,5).join(' ').substring(0,40),type,level,owner,status:'staged',tainted:false,source:[{tool:'Engine',icon:'E',color:'#141413',ref:'input',text:input.substring(0,120),confidence:.78,span:input.substring(0,40)}],relatedNodes:[],crossTeam:[],history:[{action:'Added via engine input',time:'just now'}],intentImpact:[]};
+  d.nodes[id]=node;
+  if (/shared|billing|depend|platform|consumer/.test(t)&&!d.tensions.find(t2=>t2.type==='dependency_blindspot'&&!ST.resolved[t2.id])) {
+    d.tensions.push({id:'T-eng-'+Date.now(),type:'dependency_blindspot',severity:'medium',message:'This change touches a shared service — have downstream teams been notified?',options:['Notify all consumers and file platform change request','Coordinate directly with affected team leads','Dismiss (risk retained)']});
+  }
+  renderCanvas(); renderMetrics(); log_e('L2','engine.demo','ok',`${id} "${node.label}" [demo mode]`);
+  setEngineState('ready');
+}
+
+function setEngineState(s) {
+  const dot=document.getElementById('eng-dot'),lbl=document.getElementById('eng-lbl');
+  if(!dot||!lbl) return;
+  dot.className='eng-dot'+(s==='busy'?' busy':s==='ready'?' ready':'');
+  lbl.textContent=s==='busy'?'thinking…':s==='ready'?'ready':'idle';
+}
+function chipInput(btn) { const inp=document.getElementById('eng-input'); if(inp){inp.value=btn.textContent;inp.focus();} }
+
+// BOOT
+async function boot() {
+  initSupabase();
+  Object.keys(CONN_DEFS).forEach(id => { try { const s=localStorage.getItem('seed_conn_'+id); if(s) CONN_STATE[id]=JSON.parse(s); } catch(e){} });
+  updateIntBadge(); loadDemo('spotify');
+  if (supabase) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) { currentUser=session.user; applyWorkspace({}); await loadUserConnectors(); setTimeout(()=>openModal('how-modal'),500); return; }
+  }
+  const ob=document.getElementById('ob-overlay'); if(ob) ob.style.display='flex';
+}
+document.addEventListener('DOMContentLoaded', boot);
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="app">
@@ -314,8 +813,16 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(-
     <div class="eng-dot" id="eng-dot"></div>
     <span class="eng-lbl" id="eng-lbl">idle</span>
   </div>
+  <div class="tb-engine">
+    <div class="eng-dot" id="eng-dot"></div>
+    <span class="eng-lbl" id="eng-lbl">idle</span>
+  </div>
   <div class="tb-right">
+    <button class="btn sm ghost" onclick="openScenarioModal()">▶ Scenario</button>
+    <button class="btn sm" onclick="openIntegrations()" id="btn-integrations">Integrations</button>
+    <button class="btn sm" onclick="openOrgMap()">Org map</button>
     <button class="btn sm" id="btn-stage" onclick="advanceStage()">Advance stage →</button>
+    <div class="user-badge" id="user-badge" onclick="showUserMenu()"><div class="user-av" id="user-av">?</div></div>
     <button class="btn sm primary" onclick="openModal('how-modal')">How this works</button>
   </div>
 </header>
@@ -354,6 +861,17 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(-
       <button class="eiz-chip" onclick="document.getElementById('eng-input').value=this.textContent">monetisation API contract change</button>
       <button class="eiz-chip" onclick="document.getElementById('eng-input').value=this.textContent">design sprint Week 2 output</button>
       <button class="eiz-chip" onclick="document.getElementById('eng-input').value=this.textContent">latency regression in staging</button>
+    </div>
+  </div>
+  <div class="engine-input-zone">
+    <div class="eiz-row">
+      <textarea class="eiz-input" id="eng-input" rows="2" placeholder="Add a process step to this workspace…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();triggerEngine()}"></textarea>
+      <button class="eiz-send" id="eng-send" onclick="triggerEngine()"><svg viewBox="0 0 12 12" fill="none" width="12" height="12"><path d="M1 6h10M7 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+    <div class="eiz-chips">
+      <button class="eiz-chip" onclick="chipInput(this)">API contract change</button>
+      <button class="eiz-chip" onclick="chipInput(this)">Design sprint output</button>
+      <button class="eiz-chip" onclick="chipInput(this)">Launch gate review</button>
     </div>
   </div>
 </aside>
@@ -1048,10 +1566,100 @@ function closeOverlay(id) { document.getElementById(id).classList.remove('open')
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open')); });
 
-// ── START ─────────────────────────────────────────────────────────────────────
-loadDemo('spotify');
-setTimeout(()=>openModal('how-modal'),600);
+// START: see boot() below
 
 </script>
+
+<!-- ═══ ONBOARDING OVERLAY ═══ -->
+<div class="ob-overlay" id="ob-overlay">
+  <div class="ob-card">
+    <div class="ob-logo"><div class="ob-lm"><svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="2.5" fill="#f6f5f0"/><path d="M7 1.5v2M7 10.5v2M1.5 7h2M10.5 7h2" stroke="#f6f5f0" stroke-width="1.2" stroke-linecap="round"/></svg></div><span class="ob-wordmark">seed</span></div>
+    <div class="ob-step active" id="obs-auth">
+      <div class="ob-step-num">Process intelligence platform</div>
+      <div class="ob-step-title">Sign in to Seed</div>
+      <div class="ob-step-desc">Your data stays in your workspace. Sign in to save connectors, process graphs, and workspace settings.</div>
+      <div class="ob-tabs"><button class="ob-tab on" onclick="obAuthTab('signin',this)">Sign in</button><button class="ob-tab" onclick="obAuthTab('signup',this)">Create account</button></div>
+      <div id="obs-signin-form">
+        <div class="ob-field-wrap"><div class="ob-field-label">Email</div><input class="ob-field" id="ob-email" type="email" placeholder="you@company.com" autocomplete="email"></div>
+        <div class="ob-field-wrap"><div class="ob-field-label">Password</div><input class="ob-field" id="ob-pw" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doSignIn()"></div>
+        <div class="ob-status" id="ob-signin-status"></div>
+        <div class="ob-actions"><button class="btn primary" onclick="doSignIn()" id="ob-signin-btn">Sign in →</button></div>
+      </div>
+      <div id="obs-signup-form" style="display:none">
+        <div class="ob-field-wrap"><div class="ob-field-label">Email</div><input class="ob-field" id="ob-email2" type="email" placeholder="you@company.com" autocomplete="email"></div>
+        <div class="ob-field-wrap"><div class="ob-field-label">Password</div><input class="ob-field" id="ob-pw2" type="password" placeholder="8+ characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignUp()"></div>
+        <div class="ob-status" id="ob-signup-status"></div>
+        <div class="ob-actions"><button class="btn primary" onclick="doSignUp()" id="ob-signup-btn">Create account →</button></div>
+      </div>
+      <div class="ob-divider">or</div>
+      <div class="ob-actions" style="flex-direction:column;gap:7px">
+        <button class="btn ob-google-btn" onclick="doGoogleSignIn()"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>Continue with Google</button>
+        <button class="btn ghost" style="font-size:10px;color:var(--ink4)" onclick="enterDemoMode()">Skip — explore demo without account →</button>
+      </div>
+    </div>
+    <div class="ob-step" id="obs-workspace">
+      <div class="ob-step-num">Step 1 of 3 — Workspace</div>
+      <div class="ob-step-title">Set up your workspace</div>
+      <div class="ob-step-desc">This helps Seed calibrate the right process vocabulary, level taxonomy, and tension types for your context.</div>
+      <div class="ob-field-wrap"><div class="ob-field-label">Workspace name</div><input class="ob-field" id="ob-ws-name" placeholder="e.g. Acme Corp · Product"></div>
+      <div class="ob-field-wrap"><div class="ob-field-label">Your role</div><select class="ob-field" id="ob-role"><option>Product Manager</option><option>Engineering Lead</option><option>Designer</option><option>CTO / VP Engineering</option><option>Program Manager</option><option>Other</option></select></div>
+      <div class="ob-field-wrap"><div class="ob-field-label">Team size</div><select class="ob-field" id="ob-team-size"><option>2-5 people</option><option>6-15 people</option><option>16-50 people</option><option>50+ people</option></select></div>
+      <div class="ob-actions"><button class="btn primary" onclick="obStep('pack')">Continue →</button></div>
+    </div>
+    <div class="ob-step" id="obs-pack">
+      <div class="ob-step-num">Step 2 of 3 — Domain pack</div>
+      <div class="ob-step-title">What are you building?</div>
+      <div class="ob-step-desc">Pick the domain pack that best matches your work. This sets the process levels and cost model.</div>
+      <div class="ob-pack-grid">
+        <div class="ob-pack sel" data-pack="software" onclick="selPack(this)"><div class="ob-pack-icon">⬡</div><div class="ob-pack-name">Software product</div><div class="ob-pack-desc">SaaS · API · mobile<br>Platform → Feature</div></div>
+        <div class="ob-pack" data-pack="hardware" onclick="selPack(this)"><div class="ob-pack-icon">◈</div><div class="ob-pack-name">Hardware product</div><div class="ob-pack-desc">Electronics · medical<br>Program → Component</div></div>
+        <div class="ob-pack" data-pack="service" onclick="selPack(this)"><div class="ob-pack-icon">◎</div><div class="ob-pack-name">Service design</div><div class="ob-pack-desc">Customer journeys<br>Policy → Channel</div></div>
+        <div class="ob-pack" data-pack="rd" onclick="selPack(this)"><div class="ob-pack-icon">◌</div><div class="ob-pack-name">R&amp;D / Research</div><div class="ob-pack-desc">Hypothesis driven<br>Programme → Protocol</div></div>
+      </div>
+      <div class="ob-actions"><button class="btn primary" onclick="obStep('brief')">Continue →</button><button class="btn ghost" onclick="obStep('workspace')">← Back</button></div>
+    </div>
+    <div class="ob-step" id="obs-brief">
+      <div class="ob-step-num">Step 3 of 3 — Project brief</div>
+      <div class="ob-step-title">What are you working on?</div>
+      <div class="ob-step-desc">Optional: paste a brief or PRD. The engine will extract your first process graph live.</div>
+      <div class="ob-field-wrap"><textarea class="ob-field" id="ob-brief-text" rows="5" placeholder="We're building search for our B2B SaaS. Goal: reduce time-to-find 60% by Q2. PM is Priya, Dev handles backend, Sara does UX…"></textarea></div>
+      <div class="ob-actions"><button class="btn primary" onclick="obFinish()">Launch canvas →</button><button class="btn ghost" onclick="obStep('pack')">← Back</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ INTEGRATIONS PANEL ═══ -->
+<div class="panel-overlay" id="int-overlay">
+  <div class="side-panel">
+    <div class="sp-header"><div class="sp-title">Connector registry</div><div class="sp-sub">Credentials stored locally only · never sent anywhere except the tool's own API</div><button class="btn ghost sp-close" onclick="closeOverlay('int-overlay')">✕</button></div>
+    <div class="sp-body" id="int-body"></div>
+  </div>
+</div>
+
+<!-- ═══ CONNECTOR SETUP ═══ -->
+<div class="overlay" id="conn-modal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-title" id="conn-modal-title">Connect</div>
+    <div class="modal-body"><div class="conn-setup-steps" id="conn-setup-steps"></div><div id="conn-fields"></div><div class="conn-status-msg" id="conn-status-msg" style="display:none"></div></div>
+    <div class="modal-acts"><button class="btn" onclick="closeOverlay('conn-modal')">Cancel</button><button class="btn primary" id="conn-btn" onclick="doConnect()">Connect →</button></div>
+  </div>
+</div>
+
+<!-- ═══ ORG MAP ═══ -->
+<div class="panel-overlay" id="org-overlay">
+  <div class="side-panel">
+    <div class="sp-header"><div class="sp-title">Organisation canvas</div><div class="sp-sub">Cross-team process view · intent coherence by squad</div><button class="btn ghost sp-close" onclick="closeOverlay('org-overlay')">✕</button></div>
+    <div class="sp-body" id="org-body"></div>
+  </div>
+</div>
+
+<!-- ═══ SCENARIO PICKER ═══ -->
+<div class="overlay" id="scenario-modal">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-title">Load a scenario</div>
+    <div class="modal-body"><div class="scenario-cards" id="scenario-cards"></div></div>
+    <div class="modal-acts"><button class="btn" onclick="closeOverlay('scenario-modal')">Cancel</button></div>
+  </div>
+</div>
 </body>
 </html>
