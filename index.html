@@ -818,10 +818,6 @@ document.addEventListener('DOMContentLoaded', boot);
     <div class="eng-dot" id="eng-dot"></div>
     <span class="eng-lbl" id="eng-lbl">idle</span>
   </div>
-  <div class="tb-engine">
-    <div class="eng-dot" id="eng-dot"></div>
-    <span class="eng-lbl" id="eng-lbl">idle</span>
-  </div>
   <div class="tb-right">
     <button class="btn sm ghost" onclick="openScenarioModal()">▶ Scenario</button>
     <button class="btn sm" onclick="openIntegrations()" id="btn-integrations">Integrations</button>
@@ -868,11 +864,7 @@ document.addEventListener('DOMContentLoaded', boot);
       <button class="eiz-chip" onclick="document.getElementById('eng-input').value=this.textContent">latency regression in staging</button>
     </div>
   </div>
-  <div class="engine-input-zone">
-    <div class="eiz-row">
-      <textarea class="eiz-input" id="eng-input" rows="2" placeholder="Add a process step to this workspace…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();triggerEngine()}"></textarea>
-      <button class="eiz-send" id="eng-send" onclick="triggerEngine()"><svg viewBox="0 0 12 12" fill="none" width="12" height="12"><path d="M1 6h10M7 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    </div>
+  <div 
     <div class="eiz-chips">
       <button class="eiz-chip" onclick="chipInput(this)">API contract change</button>
       <button class="eiz-chip" onclick="chipInput(this)">Design sprint output</button>
@@ -1569,7 +1561,14 @@ function log_e(l,k,t,v) { ST.log.push({l,k,t,v}); if(ST.log.length>200) ST.log.s
 function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(o=>o.classList.remove('open')); });
+document.querySelectorAll('.panel-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open')}));
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.overlay.open,.panel-overlay.open').forEach(o=>o.classList.remove('open'));
+    const ob=document.getElementById('ob-overlay');
+    if(ob&&ob.classList.contains('visible')){ob.classList.remove('visible');ob.style.display='none';}
+  }
+});
 
 // START: see boot() below
 
