@@ -398,6 +398,7 @@ html,body{height:100%;background:var(--paper);color:var(--ink);font-family:var(-
 <script>
 
 
+
 // SUPABASE AUTH + ONBOARDING
 const SUPA_URL = 'https://hsytgwwwubztsqiciunv.supabase.co';
 const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhzeXRnd3d3dWJ6dHNxaWNpdW52Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0MzY1MTAsImV4cCI6MjA5MDAxMjUxMH0.TNW1gNEtJQSGUeXK37K-YfscJLqJMEK-pJvmeqGS7xo';
@@ -791,7 +792,9 @@ async function boot() {
 document.addEventListener('DOMContentLoaded', boot);
 
 
+
 </script>
+
 t>
 </head>
 <body>
@@ -856,8 +859,8 @@ t>
   </div>
   <div class="engine-input-zone">
     <div class="eiz-row">
-      <textarea class="eiz-input" id="eng-input" rows="2" placeholder="Add a process step…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendToEngine(document.getElementById('eng-input').value);document.getElementById('eng-input').value=''}"></textarea>
-      <button class="eiz-send" id="eng-send" onclick="sendToEngine(document.getElementById('eng-input').value);document.getElementById('eng-input').value=''">
+      <textarea class="eiz-input" id="eng-input" rows="2" placeholder="Add a process step…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();triggerEngine()}"></textarea>
+      <button class="eiz-send" id="eng-send" onclick="triggerEngine()">
         <svg viewBox="0 0 12 12" fill="none" width="12" height="12"><path d="M1 6h10M7 2l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
@@ -867,13 +870,7 @@ t>
       <button class="eiz-chip" onclick="document.getElementById('eng-input').value=this.textContent">latency regression in staging</button>
     </div>
   </div>
-  <div 
-    <div class="eiz-chips">
-      <button class="eiz-chip" onclick="chipInput(this)">API contract change</button>
-      <button class="eiz-chip" onclick="chipInput(this)">Design sprint output</button>
-      <button class="eiz-chip" onclick="chipInput(this)">Launch gate review</button>
-    </div>
-  </div>
+
 </aside>
 
 <!-- CANVAS -->
@@ -948,6 +945,7 @@ t>
 
 
 <script>
+
 
 // ── DEMO DATA ─────────────────────────────────────────────────────────────────
 
@@ -1575,7 +1573,9 @@ document.addEventListener('keydown',e=>{
 
 // START: see boot() below
 
+
 </script>
+
 
 <!-- ═══ ONBOARDING OVERLAY ═══ -->
 <div class="ob-overlay" id="ob-overlay">
